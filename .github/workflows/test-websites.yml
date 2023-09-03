@@ -21,3 +21,9 @@ jobs:
 
       - name: Run Website Tests
         run: python test_websites.py
+        
+      - name: Upload report as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: website-report
+          path: report.md
