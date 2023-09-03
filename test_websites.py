@@ -1,0 +1,27 @@
+import requests
+import json
+
+# List of websites to test
+websites = [
+    'https://audiolibri.org',
+    'https://get.domainsblacklists.com'
+]
+
+# Initialize Markdown report with table header
+report_md = "| Site | Score |\n|------|-------|\n"
+
+for website in websites:
+    # PageSpeed API
+    pagespeed_url = f"https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url={website}"
+    pagespeed_response = requests.get(pagespeed_url)
+    pagespeed_data = json.loads(pagespeed_response.text)
+    pagespeed_score = pagespeed_data["lighthouseResult"]["categories"]["performance"]["score"] * 100
+
+    # TODO: Add Lighthouse and Security Headers checks
+
+    # Update Markdown report with table row data
+    report_md += f"| {website} | {pagespeed_score} |\n"
+
+# Save report to a Markdown file
+with open("report.md", "w") as f:
+    f.write(report_md)
