@@ -21,6 +21,3 @@ jobs:
 
       - name: Run Website Tests
         run: python test_websites.py
-
-      - name: Save the report
-        run: mv report.md ${{ github.workspace }}
