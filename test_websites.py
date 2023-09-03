@@ -8,7 +8,7 @@ websites = [
 ]
 
 # Initialize Markdown report with table header
-report_md = "## Pagespeed report\n| Site | Score |\n|------|-------|\n"
+report_md = "# Websites\n## PageSpeed report\n| Site | Score |\n|------|-------|\n"
 
 for website in websites:
     # PageSpeed API
@@ -23,5 +23,5 @@ for website in websites:
     report_md += f"| {website} | {pagespeed_score} |\n"
 
 # Save report to a Markdown file
-with open("report.md", "w") as f:
+with open("README.md", "w") as f:
     f.write(report_md)
