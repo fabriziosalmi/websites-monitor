@@ -1,9 +1,8 @@
 name: Create PageSpeed report
 
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron:  '0 4 * * *'
 
 jobs:
   pagespeed-report:
