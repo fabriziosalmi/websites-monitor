@@ -3,6 +3,7 @@ name: Create PageSpeed report
 on:
   schedule:
     - cron:  '0 4 * * *'
+  workflow_dispatch:
 
 jobs:
   pagespeed-report:
