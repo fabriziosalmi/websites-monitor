@@ -23,4 +23,4 @@ jobs:
         run: python test_websites.py
 
       - name: Save the report
-        run: mv report.txt ${{ github.workspace }}
+        run: mv report.md ${{ github.workspace }}
