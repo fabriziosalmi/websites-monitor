@@ -8,7 +8,7 @@ websites = [
 ]
 
 # Initialize Markdown report with table header
-report_md = "| Site | Score |\n|------|-------|\n"
+report_md = "## Pagespeed report\n| Site | Score |\n|------|-------|\n"
 
 for website in websites:
     # PageSpeed API
