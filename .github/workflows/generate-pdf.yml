@@ -6,7 +6,8 @@ on:
       - main
     paths:
       - 'README.md'
-
+ workflow_dispatch:
+ 
 jobs:
   generate-pdf:
     runs-on: ubuntu-latest
