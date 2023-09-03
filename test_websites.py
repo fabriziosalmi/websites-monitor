@@ -4,7 +4,8 @@ import json
 # List of websites to test
 websites = [
     'https://audiolibri.org',
-    'https://get.domainsblacklists.com'
+    'https://get.domainsblacklists.com',
+    'https://review.domainsblacklists.com'
 ]
 
 # Initialize Markdown report with table header
