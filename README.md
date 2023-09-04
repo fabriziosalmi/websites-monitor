@@ -1,9 +1,9 @@
 # Websites
 ## PageSpeed and Security Header Report
-| Site | PageSpeed Score | Content-Security-Policy | Revealing Headers | SSL | Domain | CDN |
+| Site | Performances | CSP | Headers | SSL | Expiration | CDN |
 |------|-----------------|--------------------------|------------------|-----|--------|-----|
-| audiolibri.org | 99.0 | 🟢 | 🔴 | 🟢 | 🟢 | 🟢 |
-| get.domainsblacklists.com | 100 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 |
+| audiolibri.org | 98.0 | 🟢 | 🔴 | 🟢 | 🟢 | 🟢 |
+| get.domainsblacklists.com | 99.0 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 |
 
 ---
-Last Updated: 2023-09-04 23:26:42
+Last Updated: 2023-09-04 23:29:41
