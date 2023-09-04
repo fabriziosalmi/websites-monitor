@@ -1,9 +1,9 @@
 # Websites
-### Performance, CSP, unsecure headers and domain expiration Report
-| Site | Performances | CSP | Headers | Expiration |
-|------|-----------------|--------------------------|------------------|--------|
-| audiolibri.org | 98.0 | 🟢 | 🔴 | 🟢 |
-| get.domainsblacklists.com | 99.0 | 🔴 | 🔴 | 🟢 |
+## PageSpeed and Security Header Report
+| Site | PageSpeed Score | Content-Security-Policy | Revealing Headers | SSL | Domain | CDN |
+|------|-----------------|--------------------------|------------------|-----|--------|-----|
+| audiolibri.org | 99.0 | 🟢 | 🔴 | 🟢 | 🟢 | 🟢 |
+| get.domainsblacklists.com | 100 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 |
 
 ---
-Last Updated: 2023-09-04 23:18:42
+Last Updated: 2023-09-04 23:26:42
