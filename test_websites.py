@@ -2,6 +2,8 @@ import requests
 import json
 from datetime import datetime
 import whois
+import ssl
+import socket
 
 # Function to check domain expiration
 def check_domain_expiration(domain):
@@ -22,6 +24,40 @@ def check_domain_expiration(domain):
         print(f"An error occurred while checking domain expiration for {domain}: {e}")
         return "🔴"
 
+# Function to check SSL certificate
+def check_ssl_cert(host, port=443):
+    try:
+        context = ssl.create_default_context()
+        conn = socket.create_connection((host, port))
+        sock = context.wrap_socket(conn, server_hostname=host)
+        cert = sock.getpeercert()
+        sock.close()
+
+        cert_expiry = datetime.strptime(cert['notAfter'], r"%b %d %H:%M:%S %Y %Z")
+        days_to_expire = (cert_expiry - datetime.utcnow()).days
+
+        if days_to_expire <= 0:
+            return "🔴"
+        elif days_to_expire <= 30:
+            return "🟠"
+        else:
+            return "🟢"
+    except (ssl.SSLError, ssl.CertificateError):
+        return "🔴"
+
+# Function to check for popular CDNs in headers
+def check_cdn(headers):
+    cdn_headers = [
+        ("Server", "cloudflare"),
+        ("X-hello-human", "KeyCDN"),
+        ("X-CDN", "stackpath"),
+        ("X-Cache", "Fastly")
+    ]
+    for header, value in cdn_headers:
+        if header in headers and value.lower() in headers[header].lower():
+            return "🟢"
+    return "🟠"
+
 # List of websites to test
 websites = [
     'audiolibri.org',
@@ -29,7 +65,7 @@ websites = [
 ]
 
 # Initialize Markdown report with table header
-report_md = "# Websites\n### Performance, CSP, unsecure headers and domain expiration Report\n| Site | Performances | CSP | Headers | Expiration |\n|------|-----------------|--------------------------|------------------|--------|\n"
+report_md = "# Websites\n## PageSpeed and Security Header Report\n| Site | PageSpeed Score | Content-Security-Policy | Revealing Headers | SSL | Domain | CDN |\n|------|-----------------|--------------------------|------------------|-----|--------|-----|\n"
 
 for website in websites:
     # PageSpeed API
@@ -48,11 +84,17 @@ for website in websites:
     # Check for revealing headers
     revealing_status = "🟢" if not any(header in headers for header in ['Server', 'X-Powered-By', 'X-AspNet-Version']) else "🔴"
 
+    # Check SSL Certificate
+    ssl_status = check_ssl_cert(website)
+
     # Check Domain Expiration
     domain_status = check_domain_expiration(website)
 
+    # Check CDN
+    cdn_status = check_cdn(headers)
+
     # Update Markdown report with table row data
-    report_md += f"| {website} | {pagespeed_score} | {csp_status} | {revealing_status} | {domain_status} |\n"
+    report_md += f"| {website} | {pagespeed_score} | {csp_status} | {revealing_status} | {ssl_status} | {domain_status} | {cdn_status} |\n"
 
 # Get the current time and format it as a string
 current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
