@@ -29,7 +29,7 @@ websites = [
 ]
 
 # Initialize Markdown report with table header
-report_md = "# Websites\n## PageSpeed and Security Header Report\n| Site | PageSpeed Score | Content-Security-Policy | Revealing Headers | Domain |\n|------|-----------------|--------------------------|------------------|--------|\n"
+report_md = "# Websites\n### Performance, CSP, unsecure headers and domain expiration Report\n| Site | Performances | CSP | Headers | Expiration |\n|------|-----------------|--------------------------|------------------|--------|\n"
 
 for website in websites:
     # PageSpeed API
