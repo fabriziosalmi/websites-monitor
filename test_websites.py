@@ -21,7 +21,13 @@ for website in websites:
     # TODO: Add Lighthouse and Security Headers checks
 
     # Update Markdown report with table row data
-    report_md += f"| {website} | {pagespeed_score} |\n\nTO add a new website to the monitoring workflow just add it to the test_websites.py file."
+    report_md += f"| {website} | {pagespeed_score} |\n\nTO add a new website to the monitoring workflow just add it to the test_websites.py file:\n```# List of websites to test
+websites = [
+    'https://audiolibri.org',
+    'https://get.domainsblacklists.com',
+    'https://review.domainsblacklists.com'
+]
+```"
 
 # Save report to a Markdown file
 with open("README.md", "w") as f:
