@@ -5,7 +5,8 @@ import json
 websites = [
     'https://audiolibri.org',
     'https://get.domainsblacklists.com',
-    'https://review.domainsblacklists.com'
+    'https://review.domainsblacklists.com',
+    'https://mp3.freeundergroundtekno.org'
 ]
 
 # Initialize Markdown report with table header
