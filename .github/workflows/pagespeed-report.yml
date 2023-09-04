@@ -1,4 +1,4 @@
-name: Create PageSpeed report
+name: Create report
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  pagespeed-report:
+  create-report:
     runs-on: ubuntu-latest
 
     steps:
