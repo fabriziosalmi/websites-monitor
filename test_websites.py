@@ -4,13 +4,11 @@ import json
 # List of websites to test
 websites = [
     'https://audiolibri.org',
-    'https://get.domainsblacklists.com',
-    'https://review.domainsblacklists.com',
-    'https://mp3.freeundergroundtekno.org'
+    'https://get.domainsblacklists.com'
 ]
 
 # Initialize Markdown report with table header
-report_md = "# Websites\n## PageSpeed performances report\n| Site | Score |\n|------|-------|\n"
+report_md = "# Websites\n## PageSpeed report\n| Site | Score |\n|------|-------|\n"
 
 for website in websites:
     # PageSpeed API
@@ -27,4 +25,3 @@ for website in websites:
 # Save report to a Markdown file
 with open("README.md", "w") as f:
     f.write(report_md)
-
