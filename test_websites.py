@@ -10,7 +10,7 @@ websites = [
 
 # Initialize Markdown report with table header
 report_md = "# Websites\n## PageSpeed performances report\n| Site | Score |\n|------|-------|\n"
-text_md += f"\nTo add a new website to the monitoring workflow just add it to the test_websites.py file."
+text_md = f"\nTo add a new website to the monitoring workflow just add it to the test_websites.py file."
 
 for website in websites:
     # PageSpeed API
