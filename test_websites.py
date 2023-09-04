@@ -9,7 +9,7 @@ websites = [
 ]
 
 # Initialize Markdown report with table header
-report_md = "# Websites\n## PageSpeed report\n| Site | Score |\n|------|-------|\n"
+report_md = "# Websites\n## PageSpeed performances report\n| Site | Score |\n|------|-------|\n"
 
 for website in websites:
     # PageSpeed API
@@ -21,7 +21,7 @@ for website in websites:
     # TODO: Add Lighthouse and Security Headers checks
 
     # Update Markdown report with table row data
-    report_md += f"| {website} | {pagespeed_score} |\n"
+    report_md += f"| {website} | {pagespeed_score} |\n\nTO add a new website to the monitoring workflow just add it to the test_websites.py file."
 
 # Save report to a Markdown file
 with open("README.md", "w") as f:
