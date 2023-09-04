@@ -19,7 +19,7 @@ jobs:
         python-version: '3.x'
 
     - name: Install dependencies
-      run: pip install requests
+      run: pip install requests python-whois
 
     - name: Run Website Tests
       run: python test_websites.py
