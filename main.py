@@ -21,19 +21,27 @@ report_md += "1. Fork this repository.\n"
 report_md += "2. Add the websites you want to monitor in the `websites.txt` file, one per line.\n"
 report_md += "3. Enable GitHub Actions if not already enabled.\n"
 report_md += "4. The README will be automatically updated with the latest check results once a day.\n"
+
 report_md += "\n### Monitoring Checks\n"
-report_md += "| Site | Performances | CSP | Headers | SSL | Expiration | CDN |\n"
-report_md += "|------|-----------------|--------------------------|------------------|-----|--------|-----|\n"
+report_md += "| Check Type | " + " | ".join(websites) + " |\n"
+report_md += "|------------|" + "---|" * len(websites) + "\n"
 
-for website in websites:
-    pagespeed_score = check_pagespeed(website)
-    csp_status, revealing_status = check_security_headers(website)
-    ssl_status = check_ssl_cert(website)
-    domain_status = check_domain_expiration(website)
-    cdn_status = check_cdn(website)
-
-    # Update Markdown report with table row data
-    report_md += f"| {website} | {pagespeed_score} | {csp_status} | {revealing_status} | {ssl_status} | {domain_status} | {cdn_status} |\n"
+checks = ["Performances", "CSP", "Headers", "SSL", "Expiration", "CDN"]
+for check in checks:
+    report_md += f"| {check} | "
+    for website in websites:
+        if check == "Performances":
+            report_md += f"{check_pagespeed(website)} | "
+        elif check == "CSP" or check == "Headers":
+            csp_status, revealing_status = check_security_headers(website)
+            report_md += f"{csp_status if check == 'CSP' else revealing_status} | "
+        elif check == "SSL":
+            report_md += f"{check_ssl_cert(website)} | "
+        elif check == "Expiration":
+            report_md += f"{check_domain_expiration(website)} | "
+        elif check == "CDN":
+            report_md += f"{check_cdn(website)} | "
+    report_md += "\n"
 
 # Get the current time and format it as a string
 current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
