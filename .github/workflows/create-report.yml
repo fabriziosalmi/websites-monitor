@@ -19,7 +19,7 @@ jobs:
         python-version: '3.x'
 
     - name: Install dependencies
-      run: pip install requests python-whois
+      run: pip install requests python-whois dnspython
 
     - name: Run Website Tests
       run: python main.py
