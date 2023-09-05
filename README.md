@@ -9,10 +9,14 @@ This project aims to continuously monitor various aspects of specified websites.
 4. The README will be automatically updated with the latest check results once a day.
 
 ### Monitoring Checks
-| Site | Performances | CSP | Headers | SSL | Expiration | CDN |
-|------|-----------------|--------------------------|------------------|-----|--------|-----|
-| audiolibri.org | 98.0 | CSP | Revealing-Headers | 🟢 | 🟢 | 🟠 |
-| get.domainsblacklists.com | 99.0 | CSP | Revealing-Headers | 🟢 | 🟢 | 🟠 |
+| Check Type | audiolibri.org | get.domainsblacklists.com |
+|------------|---|---|
+| Performances | 98.0 | 99.0 | 
+| CSP | CSP | CSP | 
+| Headers | Revealing-Headers | Revealing-Headers | 
+| SSL | 🟢 | 🟢 | 
+| Expiration | 🟢 | 🟢 | 
+| CDN | 🟠 | 🟠 | 
 
 ---
-Last Updated: 2023-09-05 22:42:40
+Last Updated: 2023-09-05 23:03:30
