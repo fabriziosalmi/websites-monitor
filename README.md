@@ -12,8 +12,8 @@ This project aims to continuously monitor various aspects of specified websites.
 | Check Type | audiolibri.org | get.domainsblacklists.com |
 |------------|---|---|
 | Pagespeed Performances | 99.0 | 100 | 
-| CSP | {'CSP': '🟢', 'Revealing-Headers': '🔴'} | {'CSP': '🔴', 'Revealing-Headers': '🔴'} | 
-| Headers | {'CSP': '🟢', 'Revealing-Headers': '🔴'} | {'CSP': '🔴', 'Revealing-Headers': '🔴'} | 
+| CSP | 🟢 | 🔴 | 
+| Headers | 🟢  | 🔴 | 
 | SSL Expiration | 🟢 | 🟢 | 
 | Domain Expiration | 🟢 | 🟢 | 
 | CDN | 🟠 | 🟠 | 
