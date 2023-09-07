@@ -1,4 +1,4 @@
-name: PDF Report
+name: Monitor and Report
 
 on:
   workflow_dispatch:
@@ -18,10 +18,11 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install fpdf PyGithub
-        # Add any other dependencies you need for main.py or other scripts
+        sudo apt-get install -y pandoc
+        pip install PyGithub
 
     - name: Generate and release report
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: python generate_report.py
+``
