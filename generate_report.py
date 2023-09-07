@@ -1,24 +1,39 @@
-from fpdf import FPDF
 from github import Github
 import os
+import subprocess
+import datetime
 
-def generate_pdf_report(data):
-    # Initialize PDF
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    
-    # Add data to PDF (customize this section as needed)
-    for line in data:
-        pdf.cell(200, 10, txt=line, ln=True)
+def generate_pdf_report_from_readme():
+    # Use pandoc to convert README.md to PDF, excluding the introduction
+    output_file = "report.pdf"
+    with open("README.md", "r") as file:
+        content = file.readlines()
 
-    pdf_output_path = "report.pdf"
-    pdf.output(pdf_output_path)
+    # Filter out the introduction or any other unwanted lines
+    start_index = None
+    for idx, line in enumerate(content):
+        if "| Website | Result |" in line:  # Assuming this is the start of your table
+            start_index = idx
+            break
 
-    return pdf_output_path
+    if start_index is None:
+        print("Table not found in README.md")
+        return
+
+    table_content = content[start_index:]
+    temp_md = "\n".join(table_content)
+    with open("temp.md", "w") as temp_file:
+        temp_file.write(temp_md)
+
+    # Convert to PDF
+    cmd = f"pandoc temp.md -o {output_file}"
+    subprocess.call(cmd, shell=True)
+    os.remove("temp.md")  # Cleanup temporary markdown file
+
+    return output_file
 
 def create_github_release(pdf_path):
-    # Authenticate with GitHub using a token (set this in your GitHub secrets)
+    # Authenticate with GitHub
     g = Github(os.environ["GITHUB_TOKEN"])
     repo = g.get_user().get_repo("websites-monitor")
 
@@ -28,6 +43,6 @@ def create_github_release(pdf_path):
     # Attach PDF to the release
     release.upload_asset(pdf_path)
 
-def main(data):
-    pdf_path = generate_pdf_report(data)
+def main():
+    pdf_path = generate_pdf_report_from_readme()
     create_github_release(pdf_path)
