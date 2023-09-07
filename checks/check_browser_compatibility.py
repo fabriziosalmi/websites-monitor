@@ -1,5 +1,10 @@
 from selenium import webdriver
 
+options = webdriver.ChromeOptions()
+options.headless = True
+
+driver = webdriver.Chrome(options=options)
+
 def check_browser_compatibility(website):
     try:
         drivers = [webdriver.Chrome(), webdriver.Firefox(), webdriver.Safari()]
