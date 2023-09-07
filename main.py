@@ -5,6 +5,7 @@ from checks.check_ssl_cert import check_ssl_cert
 from checks.check_domain_expiration import check_domain_expiration
 from checks.check_cdn import check_cdn
 from checks.check_dns_blacklist import check_dns_blacklist
+from checks.check_domainsblacklists_blacklist import check_domainsblacklists_blacklist
 from checks.check_alt_tags import check_alt_tags
 from checks.check_cors_headers import check_cors_headers
 from checks.check_cookie_flags import check_cookie_flags
@@ -53,6 +54,7 @@ check_functions = [
     ("Domain Expiration", check_domain_expiration),
     ("CDN", check_cdn),
     ("DNS Blacklists (Spamhaus + Spamcop)", check_dns_blacklist),
+    ("DNS Blacklist (DomainsBlacklists)", check_domainsblacklists_blacklist),
     ("Alt Tags", check_alt_tags),
     ("CORS Headers", check_cors_headers),
     ("Cookie Flags", check_cookie_flags),
