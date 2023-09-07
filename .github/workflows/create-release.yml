@@ -1,4 +1,4 @@
-name: Release
+name: Create release
 
 on:
   workflow_dispatch:
@@ -23,5 +23,5 @@ jobs:
 
     - name: Generate and release report
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PAT }}
       run: python generate_report.py
