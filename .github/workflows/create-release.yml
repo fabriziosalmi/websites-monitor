@@ -22,6 +22,6 @@ jobs:
         pip install PyGithub
 
     - name: Run the report generator
-      run: python generate_report.py
+      run: python create_release.py
       env:
         PAT: ${{ secrets.PAT }}
