@@ -13,7 +13,8 @@ _This project is in super mega ultra alpha status.. double check and review ever
 4. The README will be automatically updated with the latest check results once a day.
 
 
-## Monitoring Checks
+## Monitoring Checks 
+[![Create report](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml)
 | Check Type | audiolibri.org | get.domainsblacklists.com | example.com |
 |------------|---|---|---|
 | Pagespeed Performances | 98 | 99 | 100 | 
