@@ -1,18 +1,4 @@
 import requests
-
-def ensure_url_scheme(website):
-    """
-    Ensure the URL has an http or https scheme.
-    
-    Args:
-    - website (str): URL of the website.
-
-    Returns:
-    - str: URL with https scheme.
-    """
-    if not website.startswith(('http://', 'https://')):
-        return f'https://{website}'
-    return website
     
 def check_cookie_duration(website):
     """
@@ -24,7 +10,7 @@ def check_cookie_duration(website):
     - str: "🔴" if any cookie has an overly long duration, "🟢" otherwise, "🟡" for any errors.
     """
     try:
-        response = requests.get(website)
+        response = requests.get(f"https://{website}")
         long_duration_cookies = 0
         for cookie in response.cookies:
             # Check if 'max-age' or 'expires' is set for the cookie
