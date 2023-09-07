@@ -18,6 +18,7 @@ from checks.check_semantic_markup import check_semantic_markup
 from checks.check_subdomain_enumeration import check_subdomain_enumeration
 from checks.check_website_load_time import check_website_load_time
 from checks.check_xss_protection import check_xss_protection
+from checks.check_domain_breach import check_domain_breach
 
 # Read websites from external file
 with open('websites.txt', 'r') as f:
@@ -65,6 +66,7 @@ check_functions = [
     ("Subdomain Enumeration", check_subdomain_enumeration),
     ("Website Load Time", check_website_load_time),
     ("XSS Protection", check_xss_protection),
+    ("Domain breach", check_domain_breach),
 ]
 
 # Populate the table with check results
