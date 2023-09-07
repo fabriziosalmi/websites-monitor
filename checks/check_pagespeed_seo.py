@@ -1,7 +1,7 @@
 import requests
 import json
 
-def check_pagespeed(website):
+def check_pagespeed_seo(website):
     try:
         pagespeed_url = f"https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://{website}"
         pagespeed_response = requests.get(pagespeed_url)
