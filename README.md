@@ -13,11 +13,11 @@ _This project is in super mega ultra alpha status.. double check and review ever
 4. The README will be automatically updated with the latest check results once a day.
 
 
-## Monitoring Checks 
+## Monitoring Checks
 [![Create report](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml)
 | Check Type | audiolibri.org | get.domainsblacklists.com | example.com |
 |------------|---|---|---|
-| Pagespeed Performances | 98 | 99 | 100 | 
+| Pagespeed Performances | 99 | 100 | 100 | 
 | Headers | 🟠 | 🟠 | 🔴 | 
 | SSL Expiration | 🟢 | 🟢 | 🟢 | 
 | SSL cyphers | ⚪ | ⚪ | ⚪ | 
@@ -55,4 +55,4 @@ _This project is in super mega ultra alpha status.. double check and review ever
 | 3rd party resources | ⚪ | ⚪ | ⚪ | 
 
 ---
-Last Updated: 2023-09-07 13:25:32
+Last Updated: 2023-09-07 13:32:55
