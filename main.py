@@ -24,7 +24,6 @@ from checks.check_subdomain_enumeration import check_subdomain_enumeration
 from checks.check_website_load_time import check_website_load_time
 from checks.check_xss_protection import check_xss_protection
 from checks.check_domain_breach import check_domain_breach
-from checks.check_accessibility.py import check_accessibility
 from checks.check_ad_and_tracking.py import check_ad_and_tracking
 from checks.check_amp_compatibility.py import check_amp_compatibility
 from checks.check_asset_minification.py import check_asset_minification
@@ -105,7 +104,6 @@ check_functions = [
     ("Website Load Time", check_website_load_time),
     ("XSS Protection", check_xss_protection),
     ("Domain breach", check_domain_breach),
-    ("Accessibility", check_accessibility),
     ("Ad and tracking", check_ad_and_tracking),
     ("AMP", check_amp_compatibility),
     ("Minifications", check_asset_minification),
