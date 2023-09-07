@@ -8,6 +8,8 @@ on:
 jobs:
   create-report:
     runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.set-output.outputs.status }}
 
     steps:
     - name: Checkout repository
@@ -22,7 +24,19 @@ jobs:
       run: pip install requests python-whois dnspython beautifulsoup4
 
     - name: Run Website Tests
-      run: python main.py
+      id: test
+      run: python main.py || echo "error" >> error.log
+      continue-on-error: true  # This will ensure the next steps are executed even if this step fails.
+
+    - name: Set Output status
+      id: set-output
+      run: |
+        if [[ -f error.log ]]; then
+          echo "Error encountered in Website Tests"
+          echo "::set-output name=status::error"
+        else
+          echo "::set-output name=status::success"
+        fi
 
     - name: Commit and push report
       run: |
@@ -31,3 +45,7 @@ jobs:
         git add README.md
         git commit -m "Add generated report" -a || echo "No changes to commit"
         git push
+
+    - name: Fail if error encountered
+      if: steps.set-output.outputs.status == 'error'
+      run: exit 1
