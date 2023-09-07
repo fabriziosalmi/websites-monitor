@@ -51,7 +51,7 @@ check_functions = [
     ("SSL Expiration", check_ssl_cert),
     ("Domain Expiration", check_domain_expiration),
     ("CDN", check_cdn),
-    ("DNS Blacklist", check_dns_blacklist),
+    ("DNS Blacklists (Spamhaus + Spamcop)", check_dns_blacklist),
     ("Alt Tags", check_alt_tags),
     ("CORS Headers", check_cors_headers),
     ("Cookie Flags", check_cookie_flags),
