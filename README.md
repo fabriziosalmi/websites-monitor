@@ -12,7 +12,6 @@ _This project is in super mega ultra alpha status.. double check and review ever
 3. Enable GitHub Actions if not already enabled.
 4. The README will be automatically updated with the latest check results once a day.
 
----
 
 ## Monitoring Checks
 | Check Type | audiolibri.org | get.domainsblacklists.com | example.com |
