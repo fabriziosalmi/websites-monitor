@@ -26,10 +26,6 @@ _This project is in super mega ultra alpha status.. double check and review ever
 | DNS Blacklist (DomainsBlacklists) | 🟢 | 🟢 | 🟢 | 
 | Alt Tags | 🟢 | 🟢 | 🟢 | 
 | CORS Headers | 🟢 | 🟢 | 🟢 | 
-| Cookie flags | 🔴 | 🔴 | 🔴 | 
-| Cookie policy | 🔴 | 🔴 | 🔴 | 
-| Cookie duration | 🟢 | 🟢 | 🟢 | 
-| Cookie Same-Site | ⚪ | ⚪ | ⚪ | 
 | HSTS | 🟢 | 🔴 | 🔴 | 
 | Open Graph Protocol | 🔴 | 🔴 | 🔴 | 
 | Privacy-Protected Whois | 🔴 | 🔴 | 🔴 | 
@@ -41,6 +37,29 @@ _This project is in super mega ultra alpha status.. double check and review ever
 | Website Load Time | 🟢 | 🟢 | 🟢 | 
 | XSS Protection | 🟢 | 🟢 | 🔴 | 
 | Domain breach | 🔘 | 🔘 | 🔘 | 
+| Ad and tracking | 🟢 | 🟢 | 🟢 | 
+| AMP | 🔴 | 🔴 | 🔴 | 
+| Minifications | ⚪ | ⚪ | ⚪ | 
+| Broken links | 🔴 | 🟢 | 🟢 | 
+| Brotli | 🔴 | 🔴 | 🔴 | 
+| Client rendering | 🔴 | 🟢 | 🟢 | 
+| Content-Type headers | 🟢 | 🟢 | 🟢 | 
+| Deprecated libs | 🟢 | 🟢 | 🟢 | 
+| DNSSEC | 🔴 | 🔴 | 🔴 | 
+| External links | 🟡 | 🟡 | 🟡 | 
+| Favicon | 🔴 | 🔴 | 🔴 | 
+| FLOC | 🔴 | 🔴 | 🔴 | 
+| Internationalization | 🔴 | 🔴 | 🔴 | 
+| Mixed content | 🟢 | 🟢 | 🟢 | 
+| Mobile friendly | ⚪ | ⚪ | ⚪ | 
+| Outdated JS | 🟢 | 🟢 | 🟢 | 
+| Rate limited | 🔴 | 🔴 | 🔴 | 
+| Redirect chains | 🟢 | 🟢 | 🟢 | 
+| Response time | 🟡 | 🟡 | 🟡 | 
+| Subresources integrity | 🔴 | 🔴 | 🔴 | 
+| 3rd party requests | 🟡 | 🟡 | 🟡 | 
+| 3rd party resources | ⚪ | ⚪ | ⚪ | 
+| URL canonicalization | 🟢 | 🔴 | 🔴 | 
 
 ---
-Last Updated: 2023-09-07 12:44:57
+Last Updated: 2023-09-07 13:20:57
