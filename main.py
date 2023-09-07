@@ -47,7 +47,6 @@ report_md += "|------------|" + "---|" * len(websites) + "\n"
 # List of check functions and their human-readable names
 check_functions = [
     ("Pagespeed Performances", check_pagespeed),
-    ("CSP", check_security_headers),
     ("Headers", check_security_headers),
     ("SSL Expiration", check_ssl_cert),
     ("Domain Expiration", check_domain_expiration),
