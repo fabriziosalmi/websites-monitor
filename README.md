@@ -11,12 +11,12 @@ This project aims to continuously monitor various aspects of specified websites.
 ### Monitoring Checks
 | Check Type | audiolibri.org | get.domainsblacklists.com |
 |------------|---|---|
-| Pagespeed Performances | 98 | 100 | 
+| Pagespeed Performances | 97 | 99 | 
 | Headers | 🟠 | 🟠 | 
 | SSL Expiration | 🟢 | 🟢 | 
 | Domain Expiration | 🟢 | 🟢 | 
 | CDN | 🟠 | 🟠 | 
-| DNS Blacklist | 🟢 | 🟢 | 
+| DNS Blacklists (Spamhaus + Spamcop) | 🟢 | 🟢 | 
 | Alt Tags | 🟢 | 🟢 | 
 | CORS Headers | 🟢 | 🟢 | 
 | Cookie Flags | 🔴 | 🔴 | 
@@ -32,4 +32,4 @@ This project aims to continuously monitor various aspects of specified websites.
 | XSS Protection | 🟢 | 🟢 | 
 
 ---
-Last Updated: 2023-09-07 08:06:26
+Last Updated: 2023-09-07 08:08:17
