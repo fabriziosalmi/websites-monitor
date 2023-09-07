@@ -11,16 +11,20 @@ This project aims to continuously monitor various aspects of specified websites.
 ### Monitoring Checks
 | Check Type | audiolibri.org | get.domainsblacklists.com | example.com |
 |------------|---|---|---|
-| Pagespeed Performances | 100 | 99 | 100 | 
+| Pagespeed Performances | 98 | 99 | 100 | 
 | Headers | 🟠 | 🟠 | 🔴 | 
 | SSL Expiration | 🟢 | 🟢 | 🟢 | 
+| SSL cyphers | ⚪ | ⚪ | ⚪ | 
 | Domain Expiration | 🟢 | 🟢 | 🟢 | 
 | CDN | 🟠 | 🟠 | 🟠 | 
 | DNS Blacklists (Spamhaus + Spamcop) | 🟢 | 🟢 | 🟢 | 
 | DNS Blacklist (DomainsBlacklists) | 🟢 | 🟢 | 🟢 | 
 | Alt Tags | 🟢 | 🟢 | 🟢 | 
 | CORS Headers | 🟢 | 🟢 | 🟢 | 
-| Cookie Flags | 🔴 | 🔴 | 🔴 | 
+| Cookie flags | 🔴 | 🔴 | 🔴 | 
+| Cookie policy | 🟠 | 🟠 | 🟠 | 
+| Cookie duration | 🟡 | 🟡 | 🟡 | 
+| Cookie Same-Site | ⚪ | ⚪ | ⚪ | 
 | HSTS | 🟢 | 🔴 | 🔴 | 
 | Open Graph Protocol | 🔴 | 🔴 | 🔴 | 
 | Privacy-Protected Whois | 🔴 | 🔴 | 🔴 | 
@@ -34,4 +38,4 @@ This project aims to continuously monitor various aspects of specified websites.
 | Domain breach | 🔘 | 🔘 | 🔘 | 
 
 ---
-Last Updated: 2023-09-07 10:24:44
+Last Updated: 2023-09-07 12:17:27
