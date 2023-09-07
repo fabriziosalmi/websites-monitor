@@ -8,7 +8,7 @@ from checks.check_cdn import check_cdn
 from checks.check_dns_blacklist import check_dns_blacklist
 from checks.check_domainsblacklists_blacklist import check_domainsblacklists_blacklist
 from checks.check_alt_tags import check_alt_tags
-from checks.check_cors_headers import check_cors_headers
+# from checks.check_cors_headers import check_cors_headers
 # from checks.check_cookie_flags import check_cookie_flags
 # from checks.check_cookie_policy import check_cookie_policy
 # from checks.check_cookie_duration import check_cookie_duration
@@ -26,28 +26,28 @@ from checks.check_xss_protection import check_xss_protection
 from checks.check_domain_breach import check_domain_breach
 from checks.check_ad_and_tracking import check_ad_and_tracking
 from checks.check_amp_compatibility import check_amp_compatibility
-from checks.check_asset_minification import check_asset_minification
-from checks.check_broken_links import check_broken_links
+# from checks.check_asset_minification import check_asset_minification
+# from checks.check_broken_links import check_broken_links
 from checks.check_brotli_compression import check_brotli_compression
 # from checks.check_browser_compatibility import check_browser_compatibility
 from checks.check_clientside_rendering import check_clientside_rendering
 from checks.check_content_type_headers import check_content_type_headers
 from checks.check_deprecated_libraries import check_deprecated_libraries
-from checks.check_dnssec import check_dnssec
-from checks.check_external_links import check_external_links
+# from checks.check_dnssec import check_dnssec
+# from checks.check_external_links import check_external_links
 from checks.check_favicon import check_favicon
 from checks.check_floc import check_floc
 from checks.check_internationalization import check_internationalization
 from checks.check_mixed_content import check_mixed_content
-from checks.check_mobile_friendly import check_mobile_friendly
+# from checks.check_mobile_friendly import check_mobile_friendly
 from checks.check_outdated_js_libraries import check_outdated_js_libraries
 from checks.check_rate_limiting import check_rate_limiting
 from checks.check_redirect_chains import check_redirect_chains
 from checks.check_server_response_time import check_server_response_time
 from checks.check_subresource_integrity import check_subresource_integrity
-from checks.check_third_party_requests import check_third_party_requests
+# from checks.check_third_party_requests import check_third_party_requests
 from checks.check_third_party_resources import check_third_party_resources
-from checks.check_url_canonicalization import check_url_canonicalization
+# from checks.check_url_canonicalization import check_url_canonicalization
 
 # Initialize an error log
 error_log = []
@@ -88,7 +88,7 @@ check_functions = [
     ("DNS Blacklists (Spamhaus + Spamcop)", check_dns_blacklist),
     ("DNS Blacklist (DomainsBlacklists)", check_domainsblacklists_blacklist),
     ("Alt Tags", check_alt_tags),
-    ("CORS Headers", check_cors_headers),
+#     ("CORS Headers", check_cors_headers),
 #     ("Cookie flags", check_cookie_flags),
 #     ("Cookie policy", check_cookie_policy),
 #     ("Cookie duration", check_cookie_duration),
@@ -106,28 +106,28 @@ check_functions = [
     ("Domain breach", check_domain_breach),
     ("Ad and tracking", check_ad_and_tracking),
     ("AMP", check_amp_compatibility),
-    ("Minifications", check_asset_minification),
-    ("Broken links", check_broken_links),
+#     ("Minifications", check_asset_minification),
+#     ("Broken links", check_broken_links),
     ("Brotli", check_brotli_compression),
 #     ("Browser compatibility", check_browser_compatibility),
     ("Client rendering", check_clientside_rendering),
     ("Content-Type headers", check_content_type_headers),
     ("Deprecated libs", check_deprecated_libraries),
-    ("DNSSEC", check_dnssec),
-    ("External links", check_external_links),
+#     ("DNSSEC", check_dnssec),
+#     ("External links", check_external_links),
     ("Favicon", check_favicon),
     ("FLOC", check_floc),
     ("Internationalization", check_internationalization),
     ("Mixed content", check_mixed_content),
-    ("Mobile friendly", check_mobile_friendly),
+#     ("Mobile friendly", check_mobile_friendly),
     ("Outdated JS", check_outdated_js_libraries),
     ("Rate limited", check_rate_limiting),
     ("Redirect chains", check_redirect_chains),
     ("Response time", check_server_response_time),
     ("Subresources integrity", check_subresource_integrity),
-    ("3rd party requests", check_third_party_requests),
+#     ("3rd party requests", check_third_party_requests),
     ("3rd party resources", check_third_party_resources),
-    ("URL canonicalization", check_url_canonicalization),
+#     ("URL canonicalization", check_url_canonicalization),
 ]
 
 # Populate the table with check results
