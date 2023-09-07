@@ -1,17 +1,19 @@
-from github import Github
-import os
+import requests
 import subprocess
-import datetime
-import traceback
+import os
+from github import Github
 
 def generate_pdf_report_from_readme():
-    output_file = "report.pdf"
-    with open("README.md", "r") as file:
-        content = file.readlines()
+    # Fetch README.md content from GitHub
+    repo_url = "https://raw.githubusercontent.com/fabriziosalmi/websites-monitor/main/README.md"
+    response = requests.get(repo_url)
+    response.raise_for_status()
+    content = response.text.splitlines()
 
+    # Filter out the introduction or any other unwanted lines
     start_index = None
     for idx, line in enumerate(content):
-        if "| Website | Result |" in line:
+        if "| Website | Result |" in line:  # Assuming this is the start of your table
             start_index = idx
             break
 
@@ -24,27 +26,35 @@ def generate_pdf_report_from_readme():
     with open("temp.md", "w") as temp_file:
         temp_file.write(temp_md)
 
+    # Convert to PDF
+    output_file = "report.pdf"
     cmd = f"pandoc temp.md -o {output_file}"
     subprocess.call(cmd, shell=True)
-    os.remove("temp.md")
+    os.remove("temp.md")  # Cleanup temporary markdown file
 
     return output_file
 
 def create_github_release(pdf_path):
+    # Authenticate with GitHub
     g = Github(os.environ["GITHUB_TOKEN"])
-    repo = g.get_repo("fabriziosalmi/websites-monitor")  # Specifying repo in this manner
+    repo = g.get_user().get_repo("websites-monitor")
 
+    # Check if "latest" release already exists; if it does, delete it
+    try:
+        latest_release = repo.get_release("latest")
+        latest_release.delete_release()
+    except:
+        pass
+
+    # Create a new release
     release = repo.create_git_release(tag="latest", name="Report.PDF", message="Latest monitoring report.", draft=False, prerelease=False)
+
+    # Attach PDF to the release
     release.upload_asset(pdf_path)
 
 def main():
-    try:
-        pdf_path = generate_pdf_report_from_readme()
-        if pdf_path:
-            create_github_release(pdf_path)
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        traceback.print_exc()
+    pdf_path = generate_pdf_report_from_readme()
+    create_github_release(pdf_path)
 
 if __name__ == "__main__":
     main()
