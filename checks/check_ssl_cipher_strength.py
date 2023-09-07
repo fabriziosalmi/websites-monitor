@@ -1,19 +1,5 @@
 import requests
 
-def ensure_url_scheme(website):
-    """
-    Ensure the URL has an http or https scheme.
-    
-    Args:
-    - website (str): URL of the website.
-
-    Returns:
-    - str: URL with https scheme.
-    """
-    if not website.startswith(('http://', 'https://')):
-        return f'https://{website}'
-    return website
-    
 def check_ssl_cipher_strength(website):
     """
     Check the strength of the SSL/TLS cipher suite of the website.
@@ -29,7 +15,7 @@ def check_ssl_cipher_strength(website):
     """
 
     try:
-        response = requests.get(website)
+        response = requests.get(f"https://{website}")
         cipher = response.raw.connection.socket.get_cipher()[0]
 
         # Depending on your security requirements, adjust these
