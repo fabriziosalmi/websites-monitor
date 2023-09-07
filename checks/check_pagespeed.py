@@ -13,8 +13,9 @@ def check_pagespeed(website):
         
         pagespeed_data = json.loads(pagespeed_response.text)
         pagespeed_score = pagespeed_data["lighthouseResult"]["categories"]["performance"]["score"] * 100
-        
-        return pagespeed_score
+
+        # Rounding the score to ensure it's an integer
+        return round(pagespeed_score)
         
     except Exception as e:
         print(f"An error occurred while checking PageSpeed for {website}: {e}")
