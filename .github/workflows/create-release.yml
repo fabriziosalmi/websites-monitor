@@ -19,7 +19,7 @@ jobs:
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install PyGithub # Add other dependencies as needed
+        pip install markdown PyGithub # Add other dependencies as needed
 
     - name: Install WeasyPrint dependencies
       run: |
