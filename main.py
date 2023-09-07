@@ -1,9 +1,5 @@
 from datetime import datetime
 from checks.check_pagespeed_performances import check_pagespeed_performances
-from checks.check_pagespeed_accessibility import check_pagespeed_accessibility
-from checks.check_pagespeed_bestpractices import check_pagespeed_bestpractices
-from checks.check_pagespeed_seo import check_pagespeed_seo
-from checks.check_pagespeed_pwa import check_pagespeed_pwa
 from checks.check_security_headers import check_security_headers
 from checks.check_ssl_cert import check_ssl_cert
 from checks.check_domain_expiration import check_domain_expiration
@@ -51,10 +47,6 @@ report_md += "|------------|" + "---|" * len(websites) + "\n"
 # List of check functions and their human-readable names
 check_functions = [
     ("Pagespeed Performances", check_pagespeed_performances),
-    ("Pagespeed Accessiblity", check_pagespeed_accessibility),
-    ("Pagespeed Best Practices", check_pagespeed_bestpractices),
-    ("Pagespeed SEO", check_pagespeed_seo),
-    ("Pagespeed PWA", check_pagespeed_pwa),
     ("Headers", check_security_headers),
     ("SSL Expiration", check_ssl_cert),
     ("Domain Expiration", check_domain_expiration),
