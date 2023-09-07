@@ -21,11 +21,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install PyGithub # Add other dependencies as needed
 
-    - name: Install pandoc and texlive
+    - name: Install WeasyPrint dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y pandoc
-        sudo apt-get install -y texlive-xetex
+        sudo apt-get install -y python3-dev python3-pip python3-setuptools python3-wheel python3-cffi libcairo2 libffi-dev libgdk-pixbuf2.0-0 libpango-1.0-0 shared-mime-info
+        pip install WeasyPrint
 
     - name: Generate and upload report
       run: python create_release.py
