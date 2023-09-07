@@ -16,7 +16,7 @@ _This project is in super mega ultra alpha status.. double check and review ever
 ### Monitoring Checks
 | Check Type | audiolibri.org | get.domainsblacklists.com | example.com |
 |------------|---|---|---|
-| Pagespeed Performances | 99 | 98 | 100 | 
+| Pagespeed Performances | 98 | 99 | 100 | 
 | Headers | 🟠 | 🟠 | 🔴 | 
 | SSL Expiration | 🟢 | 🟢 | 🟢 | 
 | SSL cyphers | ⚪ | ⚪ | ⚪ | 
@@ -25,7 +25,6 @@ _This project is in super mega ultra alpha status.. double check and review ever
 | DNS Blacklists (Spamhaus + Spamcop) | 🟢 | 🟢 | 🟢 | 
 | DNS Blacklist (DomainsBlacklists) | 🟢 | 🟢 | 🟢 | 
 | Alt Tags | 🟢 | 🟢 | 🟢 | 
-| CORS Headers | 🟢 | 🟢 | 🟢 | 
 | HSTS | 🟢 | 🔴 | 🔴 | 
 | Open Graph Protocol | 🔴 | 🔴 | 🔴 | 
 | Privacy-Protected Whois | 🔴 | 🔴 | 🔴 | 
@@ -39,27 +38,20 @@ _This project is in super mega ultra alpha status.. double check and review ever
 | Domain breach | 🔘 | 🔘 | 🔘 | 
 | Ad and tracking | 🟢 | 🟢 | 🟢 | 
 | AMP | 🔴 | 🔴 | 🔴 | 
-| Minifications | ⚪ | ⚪ | ⚪ | 
-| Broken links | 🔴 | 🟢 | 🟢 | 
 | Brotli | 🔴 | 🔴 | 🔴 | 
 | Client rendering | 🔴 | 🟢 | 🟢 | 
 | Content-Type headers | 🟢 | 🟢 | 🟢 | 
 | Deprecated libs | 🟢 | 🟢 | 🟢 | 
-| DNSSEC | 🔴 | 🔴 | 🔴 | 
-| External links | 🟡 | 🟡 | 🟡 | 
 | Favicon | 🔴 | 🔴 | 🔴 | 
 | FLOC | 🔴 | 🔴 | 🔴 | 
 | Internationalization | 🔴 | 🔴 | 🔴 | 
 | Mixed content | 🟢 | 🟢 | 🟢 | 
-| Mobile friendly | ⚪ | ⚪ | ⚪ | 
 | Outdated JS | 🟢 | 🟢 | 🟢 | 
 | Rate limited | 🔴 | 🔴 | 🔴 | 
 | Redirect chains | 🟢 | 🟢 | 🟢 | 
 | Response time | 🟡 | 🟡 | 🟡 | 
 | Subresources integrity | 🔴 | 🔴 | 🔴 | 
-| 3rd party requests | 🟡 | 🟡 | 🟡 | 
 | 3rd party resources | ⚪ | ⚪ | ⚪ | 
-| URL canonicalization | 🟢 | 🔴 | 🔴 | 
 
 ---
-Last Updated: 2023-09-07 13:20:57
+Last Updated: 2023-09-07 13:25:32
