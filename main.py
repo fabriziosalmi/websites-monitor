@@ -74,6 +74,7 @@ with open('usage_instructions.md', 'r') as f:
 
 # Initialize the table
 report_md += "\n## Monitoring Checks\n"
+report_md += "[![Create report](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml)\n"
 report_md += "| Check Type | " + " | ".join(websites) + " |\n"
 report_md += "|------------|" + "---|" * len(websites) + "\n"
 
