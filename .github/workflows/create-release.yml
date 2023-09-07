@@ -21,7 +21,7 @@ jobs:
         sudo apt-get install -y pandoc
         pip install PyGithub
 
-    - name: Generate and release report
-      env:
-        GITHUB_TOKEN: ${{ secrets.PAT }}
+    - name: Run the report generator
       run: python generate_report.py
+      env:
+        PAT: ${{ secrets.PAT }}
