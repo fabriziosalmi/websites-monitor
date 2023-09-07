@@ -1,40 +1,34 @@
-from github import Github
-import os
-import subprocess
 import requests
+import markdown
+from github import Github
+from weasyprint import HTML
 
 def generate_pdf_report_from_readme():
-    # Get the raw content of README.md from the repo
-    url = "https://raw.githubusercontent.com/fabriziosalmi/websites-monitor/main/README.md"
-    response = requests.get(url)
-    
-    if response.status_code != 200:
-        print(f"Failed to fetch README.md. Status Code: {response.status_code}")
-        return
+    # Get README from repo
+    response = requests.get("https://raw.githubusercontent.com/fabriziosalmi/websites-monitor/main/README.md")
+    content = response.text.split("Monitoring Checks")[1]  # Grab from "Monitoring Checks" onwards
 
-    content = response.text
-    output_file = "latest.pdf"
+    # Convert markdown to HTML, then to PDF
+    html_content = markdown.markdown(content)
+    HTML(string=html_content).write_pdf("latest.pdf")
 
-    with open("temp.md", "w") as temp_file:
-        temp_file.write(content)
-
-    # Convert the temporary markdown file to PDF
-    cmd = f"pandoc temp.md -o {output_file}"
-    subprocess.call(cmd, shell=True)
-    os.remove("temp.md")  # Cleanup temporary markdown file
-
-    return output_file
+    return "latest.pdf"
 
 def create_github_release(pdf_path):
-    # Authenticate with GitHub
     g = Github(os.environ["PAT"])
-    repo = g.get_user().get_repo("websites-monitor")
+    repo = g.get_repo("fabriziosalmi/websites-monitor")
+    
+    # Delete existing 'latest' release if it exists
+    try:
+        latest_release = repo.get_release("latest")
+        latest_release.delete_release()
+    except:
+        pass  # If no such release exists, simply pass
 
-    # Create a new release
+    # Now create the release
     release = repo.create_git_release(tag="latest", name="Latest Report", message="Latest monitoring report.", draft=False, prerelease=False)
-
-    # Attach PDF to the release
     release.upload_asset(pdf_path)
+
 
 def main():
     pdf_path = generate_pdf_report_from_readme()
