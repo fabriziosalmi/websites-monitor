@@ -73,7 +73,7 @@ with open('usage_instructions.md', 'r') as f:
     report_md += f"{f.read()}\n"
 
 # Initialize the table
-report_md += "\n### Monitoring Checks\n"
+report_md += "\n## Monitoring Checks\n"
 report_md += "| Check Type | " + " | ".join(websites) + " |\n"
 report_md += "|------------|" + "---|" * len(websites) + "\n"
 
