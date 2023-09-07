@@ -25,18 +25,27 @@ def get_filtered_readme_content():
     return "\n".join(content[start_index:])
 
 def create_github_release(pdf_path):
+    # Authenticate with GitHub
     g = Github(os.environ["PAT"])
-    repo = g.get_user().get_repo("websites-monitor")
+    repo = g.get_repo("fabriziosalmi/websites-monitor")
 
-    # Delete existing 'latest' tag if it exists
+    # Check if the release with the tag "latest" already exists
     try:
-        tag_ref = repo.get_git_ref("tags/latest")
-        tag_ref.delete()
+        release = repo.get_release("latest")
+        if release:
+            # If it exists, delete the release
+            release.delete_release()
+            # And the associated tag
+            repo.get_git_ref("tags/latest").delete()
     except:
         pass
 
+    # Now, create a new release
     release = repo.create_git_release(tag="latest", name="Latest Report", message="Latest monitoring report.", draft=False, prerelease=False)
+
+    # Attach PDF to the release
     release.upload_asset(pdf_path)
+
 
 def main():
     md_content = get_filtered_readme_content()
