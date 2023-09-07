@@ -52,7 +52,7 @@ report_md += "|------------|" + "---|" * len(websites) + "\n"
 check_functions = [
     ("Pagespeed Performances", check_pagespeed_performances),
     ("Pagespeed Accessiblity", check_pagespeed_accessibility),
-    ("Pagespeed Best Practices", check_bestpractices),
+    ("Pagespeed Best Practices", check_pagespeed_bestpractices),
     ("Pagespeed SEO", check_pagespeed_seo),
     ("Pagespeed PWA", check_pagespeed_pwa),
     ("Headers", check_security_headers),
