@@ -9,29 +9,29 @@ This project aims to continuously monitor various aspects of specified websites.
 4. The README will be automatically updated with the latest check results once a day.
 
 ### Monitoring Checks
-| Check Type | audiolibri.org | get.domainsblacklists.com |
-|------------|---|---|
-| Pagespeed Performances | 98 | 98 | 
-| Headers | 🟠 | 🟠 | 
-| SSL Expiration | 🟢 | 🟢 | 
-| Domain Expiration | 🟢 | 🟢 | 
-| CDN | 🟠 | 🟠 | 
-| DNS Blacklists (Spamhaus + Spamcop) | 🟢 | 🟢 | 
-| DNS Blacklist (DomainsBlacklists) | 🟢 | 🟢 | 
-| Alt Tags | 🟢 | 🟢 | 
-| CORS Headers | 🟢 | 🟢 | 
-| Cookie Flags | 🔴 | 🔴 | 
-| HSTS | 🟢 | 🔴 | 
-| Open Graph Protocol | 🔴 | 🔴 | 
-| Privacy-Protected Whois | 🔴 | 🔴 | 
-| Privacy Exposure | 🔴 | 🔴 | 
-| Robots.txt | 🔴 | 🔴 | 
-| Sitemap | 🔴 | 🔴 | 
-| Semantic Markup | 🔴 | 🔴 | 
-| Subdomain Enumeration | 🟢 | 🟢 | 
-| Website Load Time | 🟢 | 🟢 | 
-| XSS Protection | 🟢 | 🟢 | 
-| Domain breach | 🔘 | 🔘 | 
+| Check Type | audiolibri.org | get.domainsblacklists.com | example.com |
+|------------|---|---|---|
+| Pagespeed Performances | 100 | 99 | 100 | 
+| Headers | 🟠 | 🟠 | 🔴 | 
+| SSL Expiration | 🟢 | 🟢 | 🟢 | 
+| Domain Expiration | 🟢 | 🟢 | 🟢 | 
+| CDN | 🟠 | 🟠 | 🟠 | 
+| DNS Blacklists (Spamhaus + Spamcop) | 🟢 | 🟢 | 🟢 | 
+| DNS Blacklist (DomainsBlacklists) | 🟢 | 🟢 | 🟢 | 
+| Alt Tags | 🟢 | 🟢 | 🟢 | 
+| CORS Headers | 🟢 | 🟢 | 🟢 | 
+| Cookie Flags | 🔴 | 🔴 | 🔴 | 
+| HSTS | 🟢 | 🔴 | 🔴 | 
+| Open Graph Protocol | 🔴 | 🔴 | 🔴 | 
+| Privacy-Protected Whois | 🔴 | 🔴 | 🔴 | 
+| Privacy Exposure | 🔴 | 🔴 | 🟢 | 
+| Robots.txt | 🔴 | 🔴 | 🔴 | 
+| Sitemap | 🔴 | 🔴 | 🔴 | 
+| Semantic Markup | 🔴 | 🔴 | 🔴 | 
+| Subdomain Enumeration | 🟢 | 🟢 | 🔴 | 
+| Website Load Time | 🟢 | 🟢 | 🟢 | 
+| XSS Protection | 🟢 | 🟢 | 🔴 | 
+| Domain breach | 🔘 | 🔘 | 🔘 | 
 
 ---
-Last Updated: 2023-09-07 10:20:15
+Last Updated: 2023-09-07 10:24:44
