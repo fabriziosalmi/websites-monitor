@@ -10,6 +10,9 @@ from checks.check_domainsblacklists_blacklist import check_domainsblacklists_bla
 from checks.check_alt_tags import check_alt_tags
 from checks.check_cors_headers import check_cors_headers
 from checks.check_cookie_flags import check_cookie_flags
+from checks.check_cookie_policy import check_cookie_policy
+from checks.check_cookie_duration import check_cookie_duration
+from checks.check_cookie_samesite_attribute import check_cookie_samesite_attribute
 from checks.check_hsts import check_hsts
 from checks.check_open_graph_protocol import check_open_graph_protocol
 from checks.check_privacy_protected_whois import check_privacy_protected_whois
@@ -59,7 +62,10 @@ check_functions = [
     ("DNS Blacklist (DomainsBlacklists)", check_domainsblacklists_blacklist),
     ("Alt Tags", check_alt_tags),
     ("CORS Headers", check_cors_headers),
-    ("Cookie Flags", check_cookie_flags),
+    ("Cookie flags", check_cookie_flags),
+    ("Cookie policy", check_cookie_policy),
+    ("Cookie duration", check_cookie_duration),
+    ("Cookie Same-Site", check_cookie_samesite_attribute),
     ("HSTS", check_hsts),
     ("Open Graph Protocol", check_open_graph_protocol),
     ("Privacy-Protected Whois", check_privacy_protected_whois),
