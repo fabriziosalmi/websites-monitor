@@ -30,6 +30,7 @@ This project aims to continuously monitor various aspects of specified websites.
 | Subdomain Enumeration | 🟢 | 🟢 | 
 | Website Load Time | 🟢 | 🟢 | 
 | XSS Protection | 🟢 | 🟢 | 
+| Domain breach | 🔘 | 🔘 | 
 
 ---
-Last Updated: 2023-09-07 08:08:17
+Last Updated: 2023-09-07 08:24:49
