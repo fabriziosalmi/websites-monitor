@@ -25,6 +25,15 @@ from checks.check_website_load_time import check_website_load_time
 from checks.check_xss_protection import check_xss_protection
 from checks.check_domain_breach import check_domain_breach
 
+# Initialize an error log
+error_log = []
+
+def log_error(message):
+    """A simple function to log errors for later use."""
+    global error_log
+    error_log.append(message)
+    print(message)  # This will also print the error in the console
+
 # Read websites from external file
 with open('websites.txt', 'r') as f:
     websites = [line.strip() for line in f.readlines()]
@@ -83,8 +92,13 @@ check_functions = [
 for check_name, check_func in check_functions:
     report_md += f"| {check_name} | "
     for website in websites:
-        result = check_func(website)
-        report_md += f"{result} | "
+        try:
+            result = check_func(website)
+            report_md += f"{result} | "
+        except Exception as e:
+            err_msg = f"Error occurred with {check_name} for {website}: {e}"
+            log_error(err_msg)
+            report_md += "⚪ | "  # Add a default grey indicator for errors
     report_md += "\n"
 
 # Timestamp
@@ -94,3 +108,7 @@ report_md += f"\n---\nLast Updated: {current_time}\n"
 # Write the Markdown report to a file
 with open("README.md", "w") as f:
     f.write(report_md)
+
+# Exit with a non-zero code if errors were encountered
+if error_log:
+    exit(1)
