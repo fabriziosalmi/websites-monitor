@@ -1,10 +1,10 @@
-name: Monitor and Report
+name: Release
 
 on:
   workflow_dispatch:
 
 jobs:
-  monitor_and_report:
+  Release:
     runs-on: ubuntu-latest
 
     steps:
