@@ -2,6 +2,7 @@ from datetime import datetime
 from checks.check_pagespeed_performances import check_pagespeed_performances
 from checks.check_security_headers import check_security_headers
 from checks.check_ssl_cert import check_ssl_cert
+from checks.check_ssl_cipher_strength import check_ssl_cipher_strength
 from checks.check_domain_expiration import check_domain_expiration
 from checks.check_cdn import check_cdn
 from checks.check_dns_blacklist import check_dns_blacklist
@@ -51,6 +52,7 @@ check_functions = [
     ("Pagespeed Performances", check_pagespeed_performances),
     ("Headers", check_security_headers),
     ("SSL Expiration", check_ssl_cert),
+    ("SSL cyphers", check_ssl_cipher_strength),
     ("Domain Expiration", check_domain_expiration),
     ("CDN", check_cdn),
     ("DNS Blacklists (Spamhaus + Spamcop)", check_dns_blacklist),
