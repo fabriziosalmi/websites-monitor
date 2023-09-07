@@ -41,18 +41,12 @@ with open('websites.txt', 'r') as f:
 # Initialize Markdown report
 report_md = "# Websites Monitor\n"
 
-# Add project description
-report_md += "## Project Description\n"
-report_md += "This project aims to continuously monitor various aspects of specified websites. "
-report_md += "It runs a variety of checks, ranging from performance to security considerations. "
-report_md += "The GitHub Action is scheduled to run once per day, updating this README with the latest results.\n"
+# Read the project description and usage instructions
+with open('project_description.md', 'r') as f:
+    report_md += f"{f.read()}\n"
 
-# Add usage instructions
-report_md += "\n## How to Use\n"
-report_md += "1. Fork this repository.\n"
-report_md += "2. Add the websites you want to monitor in the `websites.txt` file, one per line.\n"
-report_md += "3. Enable GitHub Actions if not already enabled.\n"
-report_md += "4. The README will be automatically updated with the latest check results once a day.\n"
+with open('usage_instructions.md', 'r') as f:
+    report_md += f"{f.read()}\n"
 
 # Initialize the table
 report_md += "\n### Monitoring Checks\n"
