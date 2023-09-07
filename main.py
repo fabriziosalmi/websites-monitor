@@ -29,7 +29,7 @@ from checks.check_amp_compatibility import check_amp_compatibility
 from checks.check_asset_minification import check_asset_minification
 from checks.check_broken_links import check_broken_links
 from checks.check_brotli_compression import check_brotli_compression
-from checks.check_browser_compatibility import check_browser_compatibility
+# from checks.check_browser_compatibility import check_browser_compatibility
 from checks.check_clientside_rendering import check_clientside_rendering
 from checks.check_content_type_headers import check_content_type_headers
 from checks.check_deprecated_libraries import check_deprecated_libraries
@@ -109,7 +109,7 @@ check_functions = [
     ("Minifications", check_asset_minification),
     ("Broken links", check_broken_links),
     ("Brotli", check_brotli_compression),
-    ("Browser compatibility", check_browser_compatibility),
+#     ("Browser compatibility", check_browser_compatibility),
     ("Client rendering", check_clientside_rendering),
     ("Content-Type headers", check_content_type_headers),
     ("Deprecated libs", check_deprecated_libraries),
