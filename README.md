@@ -11,11 +11,7 @@ This project aims to continuously monitor various aspects of specified websites.
 ### Monitoring Checks
 | Check Type | audiolibri.org | get.domainsblacklists.com |
 |------------|---|---|
-| Pagespeed Performances | 98 | 99 | 
-| Pagespeed Accessiblity | 0 | 0 | 
-| Pagespeed Best Practices | 0 | 0 | 
-| Pagespeed SEO | 0 | 0 | 
-| Pagespeed PWA | 0 | 0 | 
+| Pagespeed Performances | 98 | 100 | 
 | Headers | 🟠 | 🟠 | 
 | SSL Expiration | 🟢 | 🟢 | 
 | Domain Expiration | 🟢 | 🟢 | 
@@ -36,4 +32,4 @@ This project aims to continuously monitor various aspects of specified websites.
 | XSS Protection | 🟢 | 🟢 | 
 
 ---
-Last Updated: 2023-09-07 08:03:27
+Last Updated: 2023-09-07 08:06:26
