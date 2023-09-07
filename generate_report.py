@@ -35,8 +35,8 @@ def generate_pdf_report_from_readme():
     return output_file
 
 def create_github_release(pdf_path):
-    # Authenticate with GitHub
-    g = Github(os.environ["GITHUB_TOKEN"])
+    # Authenticate with GitHub using PAT
+    g = Github(os.environ["PAT"])
     repo = g.get_user().get_repo("websites-monitor")
 
     # Check if "latest" release already exists; if it does, delete it
