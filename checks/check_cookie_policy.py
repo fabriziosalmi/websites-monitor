@@ -12,7 +12,7 @@ def check_cookie_policy(website):
     - str: "🔴" if no cookie policy is found or if it's inaccessible, "🟢" if a cookie policy is found and accessible, "🟠" for any errors.
     """
     try:
-        response = requests.get(website)
+        response = requests.get(f"https://{website}")
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # Common keywords associated with cookie policies
