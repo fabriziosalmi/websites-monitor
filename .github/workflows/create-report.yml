@@ -24,22 +24,22 @@ jobs:
       run: |
         pip install requests python-whois dnspython beautifulsoup4 selenium
     
-    - name: Setup Chrome
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
-        sudo apt-get install -y google-chrome-stable
-    
-    - name: Install Chromedriver
-      run: |
-        CHROME_MAIN_VERSION=`google-chrome-stable --version | sed -E 's/(^Google Chrome |\.[0-9]+ )//g'`
-        DRIVER_VERSION=`curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAIN_VERSION"`
-        curl -s -O "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
-        unzip chromedriver_linux64.zip -d ~/
-        rm -f chromedriver_linux64.zip
-        sudo mv -f ~/chromedriver /usr/local/bin/chromedriver
-        sudo chown root:root /usr/local/bin/chromedriver
-        sudo chmod 0755 /usr/local/bin/chromedriver
+#     - name: Setup Chrome
+#       run: |
+#         sudo apt-get update
+#         sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
+#         sudo apt-get install -y google-chrome-stable
+#     
+#     - name: Install Chromedriver
+#       run: |
+#         CHROME_MAIN_VERSION=`google-chrome-stable --version | sed -E 's/(^Google Chrome |\.[0-9]+ )//g'`
+#         DRIVER_VERSION=`curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAIN_VERSION"`
+#         curl -s -O "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
+#         unzip chromedriver_linux64.zip -d ~/
+#         rm -f chromedriver_linux64.zip
+#         sudo mv -f ~/chromedriver /usr/local/bin/chromedriver
+#         sudo chown root:root /usr/local/bin/chromedriver
+#         sudo chmod 0755 /usr/local/bin/chromedriver
 
 
     - name: Run Website Tests
