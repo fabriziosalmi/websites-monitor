@@ -1,0 +1,27 @@
+name: PDF Report
+
+on:
+  workflow_dispatch:
+
+jobs:
+  monitor_and_report:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Install dependencies
+      run: |
+        pip install fpdf PyGithub
+        # Add any other dependencies you need for main.py or other scripts
+
+    - name: Generate and release report
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: python generate_report.py
