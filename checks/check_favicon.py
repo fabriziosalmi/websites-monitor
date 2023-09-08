@@ -39,4 +39,4 @@ def check_favicon(website):
         
     except Exception as e:
         print(f"An error occurred while checking favicon for {website}: {e}")
-        return "🔴"
+        return "⚪"
