@@ -1,8 +1,10 @@
 import requests
-    
+from datetime import datetime
+
 def check_cookie_duration(website):
     """
     Ensure that session cookies set by the website don't have an overly long duration.
+    
     Args:
     - website (str): URL of the website to be checked.
     
@@ -12,22 +14,26 @@ def check_cookie_duration(website):
     try:
         response = requests.get(f"https://{website}")
         long_duration_cookies = 0
+        
         for cookie in response.cookies:
-            # Check if 'max-age' or 'expires' is set for the cookie
+            # Check if 'max-age' attribute exists for the cookie
             if cookie.has_attr('max-age'):
                 # Let's assume a session cookie with more than 7 days (604800 seconds) duration is too long.
-                # Adjust this value as per your requirements.
                 if int(cookie['max-age']) > 604800:
                     long_duration_cookies += 1
+            # Check if 'expires' attribute exists for the cookie
             elif cookie.has_attr('expires'):
-                # If using 'expires', calculate the duration from the current time.
-                # Remember to parse the 'expires' date and calculate the difference.
-                # This is a placeholder. Actual implementation might need date parsing and calculation.
-                pass
+                # Parse the 'expires' date and calculate the difference from the current time
+                expires_datetime = datetime.strptime(cookie['expires'], "%a, %d-%b-%Y %H:%M:%S %Z")
+                delta = expires_datetime - datetime.utcnow()
+                if delta.total_seconds() > 604800:
+                    long_duration_cookies += 1
 
+        # Return based on the count of long-duration cookies
         if long_duration_cookies > 0:
-            return "🔴"  # Cookies with long duration found
-        return "🟢"  # All cookies have acceptable durations
+            print(f"Found {long_duration_cookies} cookies with long duration on {website}.")
+            return "🔴"
+        return "🟢"
     except Exception as e:
         print(f"Error checking cookie duration for {website}. Error: {e}")
-        return "🟡"  # Error occurred
+        return "🟡"
