@@ -24,4 +24,4 @@ def check_privacy_protected_whois(domain):
         return "🔴"
     except Exception as e:
         print(f"An error occurred while checking privacy-protected Whois for {domain}: {e}")
-        return "🔴"
+        return "⚪"
