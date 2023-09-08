@@ -29,7 +29,3 @@ def check_subdomain_enumeration(website: str) -> (str, list):
         return "🔴", discovered_subdomains
     return "🟢", []
 
-# Usage:
-status, subdomains_found = check_subdomain_enumeration("example.com")
-print(status)
-print(subdomains_found)
