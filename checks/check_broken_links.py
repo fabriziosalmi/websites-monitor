@@ -32,4 +32,4 @@ def check_broken_links(website):
             return "🔴"
     except Exception as e:
         print(f"An error occurred while checking broken links for {website}: {e}")
-        return "🔴"
+        return "⚪"
