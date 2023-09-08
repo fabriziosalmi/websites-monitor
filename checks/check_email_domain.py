@@ -21,10 +21,10 @@ def check_email_domain(email_domain):
             return "🔴"
     except dns.resolver.NXDOMAIN:
         print(f"{email_domain} does not exist.")
-        return "🔴"
+        return "⚪"
     except dns.resolver.NoAnswer:
         print(f"{email_domain} does not have a TXT record.")
-        return "🔴"
+        return "⚪"
     except Exception as e:
         print(f"An error occurred while checking email domain for {email_domain}: {e}")
         return "⚪"
