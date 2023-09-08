@@ -24,4 +24,4 @@ def check_cms_used(website):
         return "🔴"
     except Exception as e:
         print(f"An error occurred while checking CMS for {website}: {e}")
-        return "🔴"
+        return "⚪"
