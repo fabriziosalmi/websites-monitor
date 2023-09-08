@@ -11,7 +11,7 @@ def check_sitemap(website):
         str: 
             - "🟢" if a sitemap is found.
             - "🔴" if a sitemap is not found or if there's a request-related error.
-            - "🟡" for any other unexpected errors.
+            - "⚪" for any other unexpected errors.
     """
     try:
         response = requests.get(f"https://{website}/sitemap.xml", timeout=10)
@@ -25,4 +25,4 @@ def check_sitemap(website):
     except Exception as e:
         # This block captures any other unexpected exceptions and provides an alert.
         print(f"Unexpected error while checking the sitemap for {website}: {e}")
-        return "🟡"
+        return "⚪"
