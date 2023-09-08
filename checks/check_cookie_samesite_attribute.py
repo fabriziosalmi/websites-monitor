@@ -13,7 +13,7 @@ def check_cookie_samesite_attribute(website):
            "🟠" if SameSite attribute is set to None but with Secure,
            "⚪" for any errors.
     """
-
+    
     try:
         response = requests.get(website)
         cookies = response.cookies
@@ -25,19 +25,24 @@ def check_cookie_samesite_attribute(website):
         for cookie in cookies:
             samesite_attr = cookie.get("SameSite")
 
-            if not samesite_attr:
-                print(f"Cookie {cookie.name} does not have SameSite attribute.")
+            if samesite_attr is None:
+                print(f"Cookie {cookie.name} does not have the SameSite attribute set.")
                 return "🔴"
             elif samesite_attr == "None" and not cookie.get("Secure"):
-                print(f"Cookie {cookie.name} has SameSite=None without Secure.")
+                print(f"Cookie {cookie.name} has SameSite set to None without the Secure attribute.")
                 return "🔴"
             elif samesite_attr == "None" and cookie.get("Secure"):
-                print(f"Cookie {cookie.name} has SameSite=None but with Secure.")
+                print(f"Cookie {cookie.name} has SameSite set to None but with the Secure attribute.")
                 return "🟠"
+            elif samesite_attr in ["Strict", "Lax"]:
+                continue
+            else:
+                print(f"Cookie {cookie.name} has an unexpected SameSite value: {samesite_attr}")
+                return "🔴"
 
-        # If all cookies have SameSite and are either Strict or Lax
+        # If all cookies pass the checks
         return "🟢"
 
     except Exception as e:
-        print(f"Error occurred: {e}")
+        print(f"Error occurred while checking SameSite attribute for {website}. Error: {e}")
         return "⚪"
