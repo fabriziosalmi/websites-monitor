@@ -9,7 +9,7 @@ def check_third_party_requests(website):
     - website (str): URL of the website to be checked.
     
     Returns:
-    - str: "🔴" if the website makes a high number of third-party requests, "🟢" otherwise, "🟡" for any errors.
+    - str: "🔴" if the website makes a high number of third-party requests, "🟢" otherwise, "⚪" for any errors.
     """
     try:
         response = requests.get(website)
@@ -34,5 +34,5 @@ def check_third_party_requests(website):
         return "🟢"  # Acceptable number of third-party requests
     except Exception as e:
         print(f"Error checking third-party requests for {website}. Error: {e}")
-        return "🟡"  # Error occurred
+        return "⚪"  # Error occurred
 
