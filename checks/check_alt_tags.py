@@ -32,4 +32,4 @@ def check_alt_tags(website):
             return "🟢"
     except Exception as e:
         print(f"An error occurred while checking alt tags for {website}: {e}")
-        return "🔴"
+        return "⚪"
