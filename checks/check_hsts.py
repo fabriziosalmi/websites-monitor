@@ -24,4 +24,4 @@ def check_hsts(website):
             return "🔴"
     except requests.RequestException as e:
         print(f"An error occurred while checking HSTS for {website}: {e}")
-        return "🔴"
+        return "⚪"
