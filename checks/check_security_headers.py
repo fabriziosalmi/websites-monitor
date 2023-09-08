@@ -42,8 +42,8 @@ def check_security_headers(website):
 
     except requests.RequestException:
         print(f"Network-related error occurred while checking security headers for {website}.")
-        return "🔴"  # Red: Error occurred
+        return "⚪"  # Red: Error occurred
 
     except Exception as e:
         print(f"An unexpected error occurred while checking security headers for {website}: {e}")
-        return "🔴"  # Red: Error occurred
+        return "⚪"  # Red: Error occurred
