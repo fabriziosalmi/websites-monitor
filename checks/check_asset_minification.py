@@ -22,7 +22,7 @@ def check_asset_minification(website_links):
             print(f"Error fetching content from {link}: {e}")
     
     if total_assets == 0:
-        return "🔴"  # No assets to check
+        return "⚪"  # No assets to check
     elif minified_count == 0:
         return "🔴"  # None of the assets are minified
     elif minified_count < total_assets:
