@@ -11,7 +11,7 @@ def check_external_links(website, max_workers=10):
     - max_workers (int): Maximum number of threads to use for checking links concurrently.
     
     Returns:
-    - str: "🔴" if any broken or malicious external link is found, "🟢" otherwise, "🟡" for any errors.
+    - str: "🔴" if any broken or malicious external link is found, "🟢" otherwise, "⚪" for any errors.
     """
     try:
         response = requests.get(website)
@@ -38,4 +38,4 @@ def check_external_links(website, max_workers=10):
 
     except Exception as e:
         print(f"Error checking external links for {website}. Error: {e}")
-        return "🟡"  # Error occurred
+        return "⚪"  # Error occurred
