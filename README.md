@@ -17,42 +17,41 @@ _This project is in super mega ultra alpha status.. double check and review ever
 [![Create report](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml)
 | Check Type | audiolibri.org | get.domainsblacklists.com | example.com |
 |------------|---|---|---|
-| Pagespeed Performances | 98 | 99 | 100 | 
-| Headers | 🟠 | 🟠 | 🔴 | 
+| Pagespeed Performances | 99 | 99 | 100 | 
+| Headers | 🔴 | 🔴 | 🔴 | 
 | SSL Expiration | 🟢 | 🟢 | 🟢 | 
 | SSL cyphers | ⚪ | ⚪ | ⚪ | 
 | Domain Expiration | 🟢 | 🟢 | 🟢 | 
-| CDN | 🟠 | 🟠 | 🟠 | 
+| CDN | 🔴 | 🔴 | 🔴 | 
 | DNS Blacklists (Spamhaus + Spamcop) | 🟢 | 🟢 | 🟢 | 
 | DNS Blacklist (DomainsBlacklists) | 🟢 | 🟢 | 🟢 | 
-| Alt Tags | 🟢 | 🟢 | 🟢 | 
-| HSTS | 🟢 | 🔴 | 🔴 | 
-| Open Graph Protocol | 🔴 | 🔴 | 🔴 | 
+| Alt Tags | 🟢 | 🔴 | 🔴 | 
+| HSTS | 🟢 | 🟢 | 🔴 | 
+| Open Graph Protocol | 🟢 | 🟢 | 🟢 | 
 | Privacy-Protected Whois | 🔴 | 🔴 | 🔴 | 
-| Privacy Exposure | 🔴 | 🔴 | 🟢 | 
+| Privacy Exposure | 🔴 | 🟢 | 🟢 | 
 | Robots.txt | 🔴 | 🔴 | 🔴 | 
 | Sitemap | 🔴 | 🔴 | 🔴 | 
 | Semantic Markup | 🔴 | 🔴 | 🔴 | 
-| Subdomain Enumeration | 🟢 | 🟢 | 🔴 | 
+| Subdomain Enumeration | ('🟢', []) | ('🟢', []) | ('🔴', ['www']) | 
 | Website Load Time | 🟢 | 🟢 | 🟢 | 
-| XSS Protection | 🟢 | 🟢 | 🔴 | 
+| XSS Protection | 🟢 | ⚪ | 🔴 | 
 | Domain breach | 🔘 | 🔘 | 🔘 | 
 | Ad and tracking | 🟢 | 🟢 | 🟢 | 
 | AMP | 🔴 | 🔴 | 🔴 | 
-| Brotli | 🔴 | 🔴 | 🔴 | 
+| Brotli | 🟢 | 🟢 | 🔴 | 
 | Client rendering | 🔴 | 🟢 | 🟢 | 
 | Content-Type headers | 🟢 | 🟢 | 🟢 | 
 | Deprecated libs | 🟢 | 🟢 | 🟢 | 
-| Favicon | 🔴 | 🔴 | 🔴 | 
-| FLOC | 🔴 | 🔴 | 🔴 | 
-| Internationalization | 🔴 | 🔴 | 🔴 | 
-| Mixed content | 🟢 | 🟢 | 🟢 | 
-| Outdated JS | 🟢 | 🟢 | 🟢 | 
+| Favicon | 🟢 | 🔴 | 🔴 | 
+| FLOC | 🔴 | 🟢 | 🔴 | 
+| Internationalization | ⚪ | ⚪ | ⚪ | 
+| Mixed content | 🔴 | 🟢 | 🟢 | 
 | Rate limited | 🔴 | 🔴 | 🔴 | 
 | Redirect chains | 🟢 | 🟢 | 🟢 | 
-| Response time | 🟡 | 🟡 | 🟡 | 
-| Subresources integrity | 🔴 | 🔴 | 🔴 | 
+| Response time | ⚪ | ⚪ | ⚪ | 
+| Subresources integrity | ('🔴', 0) | ('🔴', 0) | ('🔴', 0) | 
 | 3rd party resources | ⚪ | ⚪ | ⚪ | 
 
 ---
-Last Updated: 2023-09-08 04:03:43
+Last Updated: 2023-09-08 20:30:20
