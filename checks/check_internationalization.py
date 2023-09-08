@@ -26,4 +26,4 @@ def check_internationalization(html_content):
             return "🔴"
     except Exception as e:
         print(f"An error occurred while checking internationalization: {e}")
-        return "🔴"
+        return "⚪"
