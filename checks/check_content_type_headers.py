@@ -19,4 +19,4 @@ def check_content_type_headers(website):
             return "🔴"
     except Exception as e:
         print(f"An error occurred while checking Content-Type headers for {website}: {e}")
-        return "🔴"
+        return "⚪"
