@@ -36,4 +36,4 @@ def check_privacy_exposure(website):
         return "🟢"
     except Exception as e:
         print(f"An error occurred while checking for privacy exposure on {website}: {e}")
-        return "🔴"
+        return "⚪"
