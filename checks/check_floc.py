@@ -21,4 +21,4 @@ def check_floc(website):
             
     except requests.RequestException as e:
         print(f"An error occurred while checking FLoC for {website}: {e}")
-        return "🔴"
+        return "⚪"
