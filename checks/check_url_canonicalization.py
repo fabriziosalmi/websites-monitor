@@ -11,6 +11,7 @@ def check_url_canonicalization(website: str) -> str:
     
     Returns:
     - str: "🟢" if a correct canonical link element is found,
+           "⚪" on some errors,
            "🔴" otherwise.
     """
     try:
@@ -30,5 +31,5 @@ def check_url_canonicalization(website: str) -> str:
             
     except requests.RequestException as e:
         print(f"An error occurred while checking URL canonicalization for {website}: {e}")
-        return "🔴"
+        return "⚪"
 
