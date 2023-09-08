@@ -40,7 +40,6 @@ from checks.check_floc import check_floc
 from checks.check_internationalization import check_internationalization
 from checks.check_mixed_content import check_mixed_content
 # from checks.check_mobile_friendly import check_mobile_friendly
-from checks.check_outdated_js_libraries import check_outdated_js_libraries
 from checks.check_rate_limiting import check_rate_limiting
 from checks.check_redirect_chains import check_redirect_chains
 from checks.check_server_response_time import check_server_response_time
@@ -121,7 +120,6 @@ check_functions = [
     ("Internationalization", check_internationalization),
     ("Mixed content", check_mixed_content),
 #     ("Mobile friendly", check_mobile_friendly),
-    ("Outdated JS", check_outdated_js_libraries),
     ("Rate limited", check_rate_limiting),
     ("Redirect chains", check_redirect_chains),
     ("Response time", check_server_response_time),
