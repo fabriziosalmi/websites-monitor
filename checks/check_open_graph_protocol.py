@@ -61,4 +61,4 @@ def check_open_graph_protocol(website):
             return "🔴"
     except Exception as e:
         print(f"An error occurred while checking Open Graph Protocol tags on {website}: {e}")
-        return "🔴"  # Return red as a caution when an error occurs
+        return "⚪"  # Return red as a caution when an error occurs
