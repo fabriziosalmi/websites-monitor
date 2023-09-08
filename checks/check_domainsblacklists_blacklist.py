@@ -14,7 +14,7 @@ def check_domainsblacklists_blacklist(domain):
                 return "🔴"
         return "🟢"
     except requests.RequestException:
-        return "🟡"  # Return gray if there's an error in fetching or processing.
+        return "⚪"  # Return gray if there's an error in fetching or processing.
 
 # Example usage
 print(check_domainsblacklists_blacklist("example.com"))
