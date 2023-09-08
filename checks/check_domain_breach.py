@@ -19,6 +19,6 @@ def check_domain_breach(website):
         
     except Exception as e:
         print(f"An error occurred while checking breach data for {website}: {e}")
-        domain_breach = "🔘"  # Set "grey" due to a processing error.
+        domain_breach = "⚪"  # Set "grey" due to a processing error.
 
     return domain_breach
