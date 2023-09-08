@@ -9,7 +9,7 @@ def check_cookie_duration(website):
     - website (str): URL of the website to be checked.
     
     Returns:
-    - str: "🔴" if any cookie has an overly long duration, "🟢" otherwise, "🟡" for any errors.
+    - str: "🔴" if any cookie has an overly long duration, "🟢" otherwise, "⚪" for any errors.
     """
     try:
         response = requests.get(f"https://{website}")
@@ -36,4 +36,4 @@ def check_cookie_duration(website):
         return "🟢"
     except Exception as e:
         print(f"Error checking cookie duration for {website}. Error: {e}")
-        return "🟡"
+        return "⚪"
