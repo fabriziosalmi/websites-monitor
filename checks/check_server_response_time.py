@@ -28,4 +28,4 @@ def check_server_response_time(website):
         return "🔴"  # Red: Server did not respond in time.
     except Exception as e:
         print(f"Error encountered: {e}")
-        return "🟡"  # Grey: An error occurred while checking.
+        return "⚪"  # Grey: An error occurred while checking.
