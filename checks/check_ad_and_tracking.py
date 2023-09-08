@@ -25,4 +25,4 @@ def check_ad_and_tracking(website):
             return "🟢"
     except Exception as e:
         print(f"An error occurred while checking for ad network and tracking scripts for {website}: {e}")
-        return "🔴"
+        return "⚪"
