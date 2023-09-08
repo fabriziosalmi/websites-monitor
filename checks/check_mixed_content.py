@@ -28,4 +28,4 @@ def check_mixed_content(website):
             return "🟢"
     except Exception as e:
         print(f"An error occurred while checking for mixed content on {website}: {e}")
-        return "🔴"  # Return red as a caution when an error occurs
+        return "⚪"  # Return red as a caution when an error occurs
