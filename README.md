@@ -3,6 +3,8 @@
 
 This project aims to continuously monitor various aspects of specified websites. It runs a variety of checks, ranging from performance to security considerations. The GitHub Action is scheduled to run once per day, updating this README with the latest results.
 
+_This project is in super mega ultra alpha status.. double check and review everything before to clone and use it :)_
+
 ## How to Use
 
 1. Fork this repository.
@@ -15,7 +17,7 @@ This project aims to continuously monitor various aspects of specified websites.
 [![Create report](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml)
 | Check Type | audiolibri.org | get.domainsblacklists.com | example.com |
 |------------|---|---|---|
-| Pagespeed Performances | 99 | 100 | 100 | 
+| Pagespeed Performances | 98 | 99 | 100 | 
 | Headers | 🟠 | 🟠 | 🔴 | 
 | SSL Expiration | 🟢 | 🟢 | 🟢 | 
 | SSL cyphers | ⚪ | ⚪ | ⚪ | 
@@ -53,4 +55,4 @@ This project aims to continuously monitor various aspects of specified websites.
 | 3rd party resources | ⚪ | ⚪ | ⚪ | 
 
 ---
-Last Updated: 2023-09-07 13:32:55
+Last Updated: 2023-09-08 04:03:43
