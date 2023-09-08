@@ -24,4 +24,4 @@ def check_clientside_rendering(website, threshold=10):
             return "🟢"
     except Exception as e:
         print(f"An error occurred while checking client-side rendering for {website}: {e}")
-        return "🔴"
+        return "⚪"
