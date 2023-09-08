@@ -18,16 +18,16 @@ def check_dnssec(domain):
         return "🟢"
     except dns.resolver.NoAnswer:
         print(f"No answer received for {domain}. It might be that the domain doesn't exist or there are connection issues.")
-        return "🔴"
+        return "⚪"
     except dns.resolver.NoNameservers:
         print(f"No name servers available for {domain}.")
-        return "🔴"
+        return "⚪"
     except dns.resolver.NXDOMAIN:
         print(f"The domain {domain} does not exist.")
-        return "🔴"
+        return "⚪"
     except dns.resolver.Timeout:
         print(f"Request to check DNSSEC for {domain} timed out.")
-        return "🔴"
+        return "⚪"
     except dns.dnssec.ValidationFailure:
         print(f"Validation failure while checking DNSSEC for {domain}.")
         return "🔴"
