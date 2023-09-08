@@ -25,4 +25,4 @@ def check_cookie_flags(website):
             return "🔴"
     except Exception as e:
         print(f"An error occurred while checking cookie flags for {website}: {e}")
-        return "🔴"
+        return "⚪"
