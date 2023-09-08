@@ -29,4 +29,4 @@ def check_rate_limiting(website):
             return "🔴"
     except Exception as e:
         print(f"An error occurred while checking rate limiting for {website}: {e}")
-        return "🔴"
+        return "⚪"
