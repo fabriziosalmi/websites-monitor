@@ -35,4 +35,4 @@ def check_cookie_policy(website):
         return "🔴"  # No cookie policy found
     except Exception as e:
         print(f"Error checking cookie policy for {website}. Error: {e}")
-        return "🟠"  # Error occurred
+        return "⚪"  # Error occurred
