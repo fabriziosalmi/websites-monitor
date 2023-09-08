@@ -1,6 +1,9 @@
 import requests
 
-def check_ssl_cipher_strength(website):
+STRONG_CIPHERS = {'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES256-GCM-SHA384'}
+MODERATE_CIPHERS = {'ECDHE-RSA-AES128-SHA', 'ECDHE-RSA-AES256-SHA'}
+
+def check_ssl_cipher_strength(website: str) -> str:
     """
     Check the strength of the SSL/TLS cipher suite of the website.
     
@@ -13,24 +16,19 @@ def check_ssl_cipher_strength(website):
            "🔴" if the cipher strength is weak,
            "⚪" for any errors.
     """
-
     try:
-        response = requests.get(f"https://{website}")
-        cipher = response.raw.connection.socket.get_cipher()[0]
-
-        # Depending on your security requirements, adjust these
-        strong_ciphers = ['ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES256-GCM-SHA384']
-        moderate_ciphers = ['ECDHE-RSA-AES128-SHA', 'ECDHE-RSA-AES256-SHA']
+        with requests.Session() as session:
+            response = session.get(f"https://{website}")
+            cipher = response.raw.connection.socket.get_cipher()[0]
         
-        if cipher in strong_ciphers:
+        if cipher in STRONG_CIPHERS:
             return "🟢"
-        elif cipher in moderate_ciphers:
+        elif cipher in MODERATE_CIPHERS:
             return "🟠"
         else:
             return "🔴"
-
+    except requests.RequestException as req_err:
+        print(f"Request error: {req_err}")
     except Exception as e:
-        print(f"Error occurred: {e}")
-        return "⚪"
-
-print(check_ssl_cipher_strength("https://example.com"))
+        print(f"Unexpected error: {e}")
+    return "⚪"
