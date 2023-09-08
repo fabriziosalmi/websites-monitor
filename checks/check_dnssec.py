@@ -33,5 +33,5 @@ def check_dnssec(domain):
         return "🔴"
     except Exception as e:
         print(f"An unexpected error occurred while checking DNSSEC for {domain}: {e}")
-        return "🟠"
+        return "⚪"
 
