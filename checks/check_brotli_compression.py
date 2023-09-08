@@ -15,4 +15,4 @@ def check_brotli_compression(website):
             return "🔴"
     except Exception as e:
         print(f"An error occurred while checking Brotli compression for {website}: {e}")
-        return "🔴"
+        return "⚪"
