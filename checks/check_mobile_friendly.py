@@ -15,4 +15,4 @@ def check_mobile_friendly(website, api_key):
             return "🔴"
     except Exception as e:
         print(f"An error occurred while checking mobile-friendliness for {website}: {e}")
-        return "🔴"
+        return "⚪"
