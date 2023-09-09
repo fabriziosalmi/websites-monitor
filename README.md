@@ -17,36 +17,36 @@ This project aims to continuously monitor various aspects of specified websites.
 [![Create report](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml)
 | Check Type | audiolibri.org | get.domainsblacklists.com | example.com |
 |------------|---|---|---|
-| Pagespeed Performances | 98 | 99 | 100 | 
-| Headers | 🔴 | 🔴 | 🔴 | 
-| SSL Expiration | 🟢 | 🟢 | 🟢 | 
+| Domain breach | 🔘 | 🔘 | 🔘 | 
 | Domain Expiration | 🟢 | 🟢 | 🟢 | 
-| CDN | 🔴 | 🔴 | 🔴 | 
+| SSL Expiration | 🟢 | 🟢 | 🟢 | 
 | DNS Blacklists (Spamhaus + Spamcop) | 🟢 | 🟢 | 🟢 | 
 | DNS Blacklist (DomainsBlacklists) | 🟢 | 🟢 | 🟢 | 
-| Alt Tags | 🟢 | 🔴 | 🔴 | 
+| Headers | 🔴 | 🔴 | 🔴 | 
 | HSTS | 🟢 | 🟢 | 🔴 | 
-| Open Graph Protocol | 🟢 | 🟢 | 🟢 | 
-| Privacy-Protected Whois | 🔴 | 🔴 | 🔴 | 
-| Privacy Exposure | 🔴 | 🟢 | 🟢 | 
+| XSS Protection | 🟢 | ⚪ | 🔴 | 
+| Redirect chains | 🟢 | 🟢 | 🟢 | 
+| Pagespeed Performances | 99 | 99 | 100 | 
+| Website Load Time | 🟢 | 🟢 | 🟢 | 
+| Rate limited | 🔴 | 🔴 | 🔴 | 
+| CDN | 🔴 | 🔴 | 🔴 | 
+| Brotli | 🟢 | 🟢 | 🔴 | 
+| Deprecated libs | 🟢 | 🟢 | 🟢 | 
+| Client rendering | 🔴 | 🟢 | 🟢 | 
+| Mixed content | 🔴 | 🟢 | 🟢 | 
+| Content-Type headers | 🟢 | 🟢 | 🟢 | 
+| Internationalization | ⚪ | ⚪ | ⚪ | 
+| FLOC | 🔴 | 🟢 | 🔴 | 
+| AMP | 🔴 | 🔴 | 🔴 | 
 | Robots.txt | 🔴 | 🔴 | 🔴 | 
 | Sitemap | 🔴 | 🔴 | 🔴 | 
-| Semantic Markup | 🔴 | 🔴 | 🔴 | 
-| Website Load Time | 🟢 | 🟢 | 🟢 | 
-| XSS Protection | 🟢 | ⚪ | 🔴 | 
-| Domain breach | 🔘 | 🔘 | 🔘 | 
-| Ad and tracking | 🟢 | 🟢 | 🟢 | 
-| AMP | 🔴 | 🔴 | 🔴 | 
-| Brotli | 🟢 | 🟢 | 🔴 | 
-| Client rendering | 🔴 | 🟢 | 🟢 | 
-| Content-Type headers | 🟢 | 🟢 | 🟢 | 
-| Deprecated libs | 🟢 | 🟢 | 🟢 | 
 | Favicon | 🟢 | 🔴 | 🔴 | 
-| FLOC | 🔴 | 🟢 | 🔴 | 
-| Internationalization | ⚪ | ⚪ | ⚪ | 
-| Mixed content | 🔴 | 🟢 | 🟢 | 
-| Rate limited | 🔴 | 🔴 | 🔴 | 
-| Redirect chains | 🟢 | 🟢 | 🟢 | 
+| Alt Tags | 🟢 | 🔴 | 🔴 | 
+| Open Graph Protocol | 🟢 | 🟢 | 🟢 | 
+| Semantic Markup | 🔴 | 🔴 | 🔴 | 
+| Ad and tracking | 🟢 | 🟢 | 🟢 | 
+| Privacy-Protected Whois | 🔴 | 🔴 | 🔴 | 
+| Privacy Exposure | 🔴 | 🟢 | 🟢 | 
 
 ---
-Last Updated: 2023-09-09 18:08:07
+Last Updated: 2023-09-09 23:32:40
