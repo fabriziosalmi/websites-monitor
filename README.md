@@ -3,7 +3,7 @@
 
 This project aims to continuously monitor various aspects of specified websites. It runs a variety of checks, ranging from performance to security considerations. The GitHub Action is scheduled to run once per day, updating this README with the latest results.
 
-_This project is in super mega ultra alpha status.. double check and review everything before to clone and use it :)_
+![Static Badge](https://img.shields.io/badge/project_status-alpha-red?style=for-the-badge&logo=github)
 
 ## How to Use
 
@@ -17,10 +17,9 @@ _This project is in super mega ultra alpha status.. double check and review ever
 [![Create report](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml)
 | Check Type | audiolibri.org | get.domainsblacklists.com | example.com |
 |------------|---|---|---|
-| Pagespeed Performances | 94 | 99 | 100 | 
+| Pagespeed Performances | 98 | 99 | 100 | 
 | Headers | 🔴 | 🔴 | 🔴 | 
 | SSL Expiration | 🟢 | 🟢 | 🟢 | 
-| SSL cyphers | ⚪ | ⚪ | ⚪ | 
 | Domain Expiration | 🟢 | 🟢 | 🟢 | 
 | CDN | 🔴 | 🔴 | 🔴 | 
 | DNS Blacklists (Spamhaus + Spamcop) | 🟢 | 🟢 | 🟢 | 
@@ -33,7 +32,6 @@ _This project is in super mega ultra alpha status.. double check and review ever
 | Robots.txt | 🔴 | 🔴 | 🔴 | 
 | Sitemap | 🔴 | 🔴 | 🔴 | 
 | Semantic Markup | 🔴 | 🔴 | 🔴 | 
-| Subdomain Enumeration | ('🟢', []) | ('🟢', []) | ('🔴', ['www']) | 
 | Website Load Time | 🟢 | 🟢 | 🟢 | 
 | XSS Protection | 🟢 | ⚪ | 🔴 | 
 | Domain breach | 🔘 | 🔘 | 🔘 | 
@@ -49,9 +47,6 @@ _This project is in super mega ultra alpha status.. double check and review ever
 | Mixed content | 🔴 | 🟢 | 🟢 | 
 | Rate limited | 🔴 | 🔴 | 🔴 | 
 | Redirect chains | 🟢 | 🟢 | 🟢 | 
-| Response time | ⚪ | ⚪ | ⚪ | 
-| Subresources integrity | ('🔴', 0) | ('🔴', 0) | ('🔴', 0) | 
-| 3rd party resources | ⚪ | ⚪ | ⚪ | 
 
 ---
-Last Updated: 2023-09-09 04:03:47
+Last Updated: 2023-09-09 18:08:07
