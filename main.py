@@ -2,7 +2,7 @@ from datetime import datetime
 from checks.check_pagespeed_performances import check_pagespeed_performances
 from checks.check_security_headers import check_security_headers
 from checks.check_ssl_cert import check_ssl_cert
-from checks.check_ssl_cipher_strength import check_ssl_cipher_strength
+# from checks.check_ssl_cipher_strength import check_ssl_cipher_strength
 from checks.check_domain_expiration import check_domain_expiration
 from checks.check_cdn import check_cdn
 from checks.check_dns_blacklist import check_dns_blacklist
@@ -20,7 +20,7 @@ from checks.check_privacy_exposure import check_privacy_exposure
 from checks.check_robot_txt import check_robot_txt
 from checks.check_sitemap import check_sitemap
 from checks.check_semantic_markup import check_semantic_markup
-from checks.check_subdomain_enumeration import check_subdomain_enumeration
+# from checks.check_subdomain_enumeration import check_subdomain_enumeration
 from checks.check_website_load_time import check_website_load_time
 from checks.check_xss_protection import check_xss_protection
 from checks.check_domain_breach import check_domain_breach
@@ -82,7 +82,7 @@ check_functions = [
     ("Pagespeed Performances", check_pagespeed_performances),
     ("Headers", check_security_headers),
     ("SSL Expiration", check_ssl_cert),
-    ("SSL cyphers", check_ssl_cipher_strength),
+#     ("SSL cyphers", check_ssl_cipher_strength),
     ("Domain Expiration", check_domain_expiration),
     ("CDN", check_cdn),
     ("DNS Blacklists (Spamhaus + Spamcop)", check_dns_blacklist),
@@ -100,7 +100,7 @@ check_functions = [
     ("Robots.txt", check_robot_txt),
     ("Sitemap", check_sitemap),
     ("Semantic Markup", check_semantic_markup),
-    ("Subdomain Enumeration", check_subdomain_enumeration),
+#    ("Subdomain Enumeration", check_subdomain_enumeration),
     ("Website Load Time", check_website_load_time),
     ("XSS Protection", check_xss_protection),
     ("Domain breach", check_domain_breach),
