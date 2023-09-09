@@ -42,10 +42,10 @@ from checks.check_mixed_content import check_mixed_content
 # from checks.check_mobile_friendly import check_mobile_friendly
 from checks.check_rate_limiting import check_rate_limiting
 from checks.check_redirect_chains import check_redirect_chains
-from checks.check_server_response_time import check_server_response_time
-from checks.check_subresource_integrity import check_subresource_integrity
+# from checks.check_server_response_time import check_server_response_time
+# from checks.check_subresource_integrity import check_subresource_integrity
 # from checks.check_third_party_requests import check_third_party_requests
-from checks.check_third_party_resources import check_third_party_resources
+# from checks.check_third_party_resources import check_third_party_resources
 # from checks.check_url_canonicalization import check_url_canonicalization
 
 # Initialize an error log
@@ -122,10 +122,10 @@ check_functions = [
 #     ("Mobile friendly", check_mobile_friendly),
     ("Rate limited", check_rate_limiting),
     ("Redirect chains", check_redirect_chains),
-    ("Response time", check_server_response_time),
-    ("Subresources integrity", check_subresource_integrity),
+#     ("Response time", check_server_response_time),
+#     ("Subresources integrity", check_subresource_integrity),
 #     ("3rd party requests", check_third_party_requests),
-    ("3rd party resources", check_third_party_resources),
+#     ("3rd party resources", check_third_party_resources),
 #     ("URL canonicalization", check_url_canonicalization),
 ]
 
