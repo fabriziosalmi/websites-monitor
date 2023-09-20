@@ -9,10 +9,10 @@ def check_domain_expiration(domain):
     - domain (str): The domain name to be checked.
 
     Returns:
-    - str: "🟢" if the domain has more than 30 days to expire,
-           "🟠" if the domain has between 15 to 30 days to expire,
-           "🔴" if the domain has less than 15 days to expire or there's an expiration-related error,
-           "⚪" for other errors.
+    - str: "🟢 (X days left)" if the domain has more than 30 days to expire,
+           "🟠 (X days left)" if the domain has between 15 to 30 days to expire,
+           "🔴 (X days left)" if the domain has less than 15 days to expire,
+           "⚪" for other errors, where X is the number of days until expiration.
     """
 
     def get_days_to_expire(exp_date):
@@ -31,11 +31,11 @@ def check_domain_expiration(domain):
             print(f"Couldn't retrieve expiration details for {domain}.")
             return "🔴"
         elif days_to_expire < 15:
-            return "🔴"
+            return f"🔴 ({days_to_expire} days left)"
         elif days_to_expire < 30:
-            return "🟠"
+            return f"🟠 ({days_to_expire} days left)"
         else:
-            return "🟢"
+            return f"🟢 ({days_to_expire} days left)"
     except Exception as e:
         print(f"An error occurred while checking domain expiration for {domain}: {e}")
         return "⚪"
