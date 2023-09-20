@@ -12,9 +12,10 @@ def check_ssl_cert(host, port=443):
 
     Returns:
         str: 
-            - "🟢" if the certificate is valid and has more than 30 days left.
-            - "🟠" if the certificate is valid but has 30 days or fewer left.
+            - "🟢 (X days left)" if the certificate is valid and has more than 30 days left.
+            - "🟠 (X days left)" if the certificate is valid but has 30 days or fewer left.
             - "🔴" if the certificate is expired or there's an SSL related error.
+            where X is the number of days left for the SSL certificate to expire.
     """
     context = ssl.create_default_context()
 
@@ -29,9 +30,9 @@ def check_ssl_cert(host, port=443):
         if days_to_expire <= 0:
             return "🔴"
         elif days_to_expire <= 30:
-            return "🟠"
+            return f"🟠 ({days_to_expire} days left)"
         else:
-            return "🟢"
+            return f"🟢 ({days_to_expire} days left)"
 
     except (ssl.SSLError, ssl.CertificateError) as e:
         # In a real-world scenario, you might want to log the error for debugging.
