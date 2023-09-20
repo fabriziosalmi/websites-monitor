@@ -19,14 +19,14 @@ This project aims to continuously monitor various aspects of specified websites.
 |------------|---|---|---|
 | Domain breach | 🔘 | 🔘 | 🔘 | 
 | Domain Expiration | 🟢 (225 days left) | 🟢 (313 days left) | 🟢 (327 days left) | 
-| SSL Expiration | 🟢 | 🟢 | 🟢 | 
+| SSL Expiration | 🟢 (63 days left) | 🟢 (37 days left) | 🟢 (146 days left) | 
 | DNS Blacklists (Spamhaus + Spamcop) | 🟢 | 🟢 | 🟢 | 
 | DNS Blacklist (DomainsBlacklists) | 🟢 | 🟢 | 🟢 | 
 | Headers | 🔴 | 🔴 | 🔴 | 
 | HSTS | 🟢 | 🟢 | 🔴 | 
 | XSS Protection | 🟢 | ⚪ | 🔴 | 
 | Redirect chains | 🟢 | 🟢 | 🟢 | 
-| Pagespeed Performances | 98 | 99 | 100 | 
+| Pagespeed Performances | 98 | 98 | 100 | 
 | Website Load Time | 🟢 | 🟢 | 🟢 | 
 | Rate limited | 🔴 | 🔴 | 🔴 | 
 | CDN | 🔴 | 🔴 | 🔴 | 
@@ -49,4 +49,4 @@ This project aims to continuously monitor various aspects of specified websites.
 | Privacy Exposure | 🔴 | 🟢 | 🟢 | 
 
 ---
-Last Updated: 2023-09-20 09:16:35
+Last Updated: 2023-09-20 09:22:23
