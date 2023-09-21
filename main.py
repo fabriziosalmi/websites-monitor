@@ -4,7 +4,7 @@ from checks.check_domain_expiration import check_domain_expiration
 from checks.check_ssl_cert import check_ssl_cert
 from checks.check_dns_blacklist import check_dns_blacklist
 from checks.check_domainsblacklists_blacklist import check_domainsblacklists_blacklist
-from checks.check_security_headers import check_security_headers
+# from checks.check_security_headers import check_security_headers
 from checks.check_hsts import check_hsts
 from checks.check_xss_protection import check_xss_protection
 from checks.check_redirect_chains import check_redirect_chains
@@ -86,7 +86,7 @@ check_functions = [
     ("SSL Expiration", check_ssl_cert),
     ("DNS Blacklists (Spamhaus + Spamcop)", check_dns_blacklist),
     ("DNS Blacklist (DomainsBlacklists)", check_domainsblacklists_blacklist),
-    ("Headers", check_security_headers),
+#    ("Headers", check_security_headers),
     ("HSTS", check_hsts),
     ("XSS Protection", check_xss_protection),
     ("Redirect chains", check_redirect_chains),
