@@ -3,12 +3,8 @@ import requests
 def check_security_headers(website):
     # List of recommended headers and their respective ideal values or indicators
     recommended_headers = {
-        'Content-Security-Policy': None, 
-        'Strict-Transport-Security': None,
         'X-Content-Type-Options': "nosniff",
-        'X-Frame-Options': None,
-        'X-XSS-Protection': "1; mode=block",
-        'Referrer-Policy': None
+        'X-XSS-Protection': "1; mode=block"
     }
 
     try:
