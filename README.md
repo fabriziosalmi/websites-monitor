@@ -18,18 +18,18 @@ This project aims to continuously monitor various aspects of specified websites.
 | Check Type | audiolibri.org | get.domainsblacklists.com | example.com |
 |------------|---|---|---|
 | Domain breach | 🔘 | 🔘 | 🔘 | 
-| Domain Expiration | 🟢 (65 days left) | 🟢 (153 days left) | 🟢 (167 days left) | 
-| SSL Expiration | 🟢 (80 days left) | 🟢 (54 days left) | 🟢 (368 days left) | 
+| Domain Expiration | 🟢 (64 days left) | 🟢 (152 days left) | 🟢 (166 days left) | 
+| SSL Expiration | 🟢 (79 days left) | 🟢 (53 days left) | 🟢 (367 days left) | 
 | DNS Blacklists (Spamhaus + Spamcop) | 🟢 | 🟢 | 🟢 | 
-| DNS Blacklist (DomainsBlacklists) | 🟢 | 🟢 | 🟢 | 
-| HSTS | 🟢 | 🟢 | 🔴 | 
+| DNS Blacklist (DomainsBlacklists) | ⚪ | ⚪ | ⚪ | 
+| HSTS | 🟢 | ⚪ | 🔴 | 
 | XSS Protection | 🟢 | ⚪ | 🔴 | 
 | Redirect chains | 🟢 | 🟢 | 🟢 | 
-| Pagespeed Performances | 96 | 98 | 100 | 
+| Pagespeed Performances | 98 | 0 | 100 | 
 | Website Load Time | 🟢 | 🟢 | 🟢 | 
 | Rate limited | 🔴 | 🔴 | 🔴 | 
 | CDN | 🔴 | 🔴 | 🔴 | 
-| Brotli | 🟢 | 🟢 | 🔴 | 
+| Brotli | 🟢 | ⚪ | 🔴 | 
 | Deprecated libs | 🟢 | 🟢 | 🟢 | 
 | Client rendering | 🔴 | 🟢 | 🟢 | 
 | Mixed content | 🔴 | 🟢 | 🟢 | 
@@ -45,7 +45,7 @@ This project aims to continuously monitor various aspects of specified websites.
 | Semantic Markup | 🔴 | 🔴 | 🔴 | 
 | Ad and tracking | 🟢 | 🟢 | 🟢 | 
 | Privacy-Protected Whois | 🔴 | 🔴 | 🔴 | 
-| Privacy Exposure | 🔴 | 🟢 | 🟢 | 
+| Privacy Exposure | 🔴 | 🔴 | 🟢 | 
 
 ---
-Last Updated: 2024-02-27 04:03:24
+Last Updated: 2024-02-28 04:06:52
