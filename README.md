@@ -18,34 +18,34 @@ This project aims to continuously monitor various aspects of specified websites.
 | Check Type | audiolibri.org | get.domainsblacklists.com | example.com |
 |------------|---|---|---|
 | Domain breach | 🔘 | 🔘 | 🔘 | 
-| Domain Expiration | 🟢 (58 days left) | 🟢 (146 days left) | 🟢 (160 days left) | 
-| SSL Expiration | 🟢 (73 days left) | 🟢 (47 days left) | 🟢 (361 days left) | 
+| Domain Expiration | 🟢 (57 days left) | 🟢 (145 days left) | 🟢 (159 days left) | 
+| SSL Expiration | 🟢 (72 days left) | 🟢 (46 days left) | 🟢 (360 days left) | 
 | DNS Blacklists (Spamhaus + Spamcop) | 🟢 | 🟢 | 🟢 | 
-| DNS Blacklist (DomainsBlacklists) | ⚪ | ⚪ | ⚪ | 
-| HSTS | 🟢 | ⚪ | 🔴 | 
-| XSS Protection | 🟢 | ⚪ | 🔴 | 
-| Redirect chains | 🟢 | 🟢 | 🟢 | 
-| Pagespeed Performances | 97 | 0 | 100 | 
+| DNS Blacklist (DomainsBlacklists) | 🟢 | 🟢 | 🟢 | 
+| HSTS | 🟢 | 🟢 | 🔴 | 
+| XSS Protection | 🟢 | 🟢 | 🔴 | 
+| Redirect chains | 🟢 | 🟠 | 🟢 | 
+| Pagespeed Performances | 98 | 92 | 100 | 
 | Website Load Time | 🟢 | 🟢 | 🟢 | 
 | Rate limited | 🔴 | 🔴 | 🔴 | 
 | CDN | 🔴 | 🔴 | 🔴 | 
-| Brotli | 🟢 | ⚪ | 🔴 | 
+| Brotli | 🟢 | 🔴 | 🔴 | 
 | Deprecated libs | 🟢 | 🟢 | 🟢 | 
-| Client rendering | 🔴 | 🟢 | 🟢 | 
+| Client rendering | 🔴 | 🔴 | 🟢 | 
 | Mixed content | 🔴 | 🟢 | 🟢 | 
 | Content-Type headers | 🟢 | 🟢 | 🟢 | 
 | Internationalization | ⚪ | ⚪ | ⚪ | 
-| FLOC | 🔴 | 🟢 | 🔴 | 
+| FLOC | 🔴 | 🔴 | 🔴 | 
 | AMP | 🔴 | 🔴 | 🔴 | 
 | Robots.txt | 🔴 | 🔴 | 🔴 | 
 | Sitemap | 🔴 | 🔴 | 🔴 | 
-| Favicon | 🟢 | 🔴 | 🔴 | 
-| Alt Tags | 🟢 | 🔴 | 🔴 | 
-| Open Graph Protocol | 🟢 | 🟢 | 🟢 | 
+| Favicon | 🟢 | 🟢 | 🔴 | 
+| Alt Tags | 🟢 | 🟢 | 🔴 | 
+| Open Graph Protocol | 🟢 | 🔴 | 🟢 | 
 | Semantic Markup | 🔴 | 🔴 | 🔴 | 
 | Ad and tracking | 🟢 | 🟢 | 🟢 | 
 | Privacy-Protected Whois | 🔴 | 🔴 | 🔴 | 
 | Privacy Exposure | 🔴 | 🔴 | 🟢 | 
 
 ---
-Last Updated: 2024-03-05 04:07:09
+Last Updated: 2024-03-06 04:04:00
