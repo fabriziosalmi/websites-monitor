@@ -18,14 +18,14 @@ This project aims to continuously monitor various aspects of specified websites.
 | Check Type | audiolibri.org | get.domainsblacklists.com | example.com |
 |------------|---|---|---|
 | Domain breach | 🔘 | 🔘 | 🔘 | 
-| Domain Expiration | 🟢 (292 days left) | 🟢 (380 days left) | 🟠 (29 days left) | 
-| SSL Expiration | 🟢 (60 days left) | 🟢 (34 days left) | 🟢 (230 days left) | 
+| Domain Expiration | 🟢 (291 days left) | 🟢 (379 days left) | 🟠 (28 days left) | 
+| SSL Expiration | 🟢 (59 days left) | 🟢 (33 days left) | 🟢 (229 days left) | 
 | DNS Blacklists (Spamhaus + Spamcop) | 🟢 | 🟢 | 🟢 | 
 | DNS Blacklist (DomainsBlacklists) | 🟢 | 🟢 | 🟢 | 
 | HSTS | 🟢 | 🟢 | 🔴 | 
 | XSS Protection | 🟢 | 🟢 | 🔴 | 
 | Redirect chains | 🟢 | 🟠 | 🟢 | 
-| Pagespeed Performances | 99 | 99 | 100 | 
+| Pagespeed Performances | 99 | 98 | 100 | 
 | Website Load Time | 🟢 | 🟢 | 🟢 | 
 | Rate limited | 🔴 | 🔴 | 🔴 | 
 | CDN | 🔴 | 🔴 | 🔴 | 
@@ -48,4 +48,4 @@ This project aims to continuously monitor various aspects of specified websites.
 | Privacy Exposure | 🔴 | 🔴 | 🟢 | 
 
 ---
-Last Updated: 2024-07-14 04:04:08
+Last Updated: 2024-07-15 04:04:13
