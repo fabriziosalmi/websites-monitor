@@ -18,14 +18,14 @@ This project aims to continuously monitor various aspects of specified websites.
 | Check Type | audiolibri.org | get.domainsblacklists.com | example.com |
 |------------|---|---|---|
 | Domain breach | 🔘 | 🔘 | 🔘 | 
-| Domain Expiration | ⚪ | ⚪ | ⚪ | 
-| SSL Expiration | 🟢 (38 days left) | 🟢 (71 days left) | 🟢 (208 days left) | 
+| Domain Expiration | 🟢 (269 days left) | 🟢 (357 days left) | 🔴 (6 days left) | 
+| SSL Expiration | 🟢 (37 days left) | 🟢 (70 days left) | 🟢 (207 days left) | 
 | DNS Blacklists (Spamhaus + Spamcop) | 🟢 | 🟢 | 🟢 | 
 | DNS Blacklist (DomainsBlacklists) | 🟢 | 🟢 | 🟢 | 
 | HSTS | 🟢 | 🟢 | 🔴 | 
 | XSS Protection | 🟢 | 🟢 | 🔴 | 
 | Redirect chains | 🟢 | 🟠 | 🟢 | 
-| Pagespeed Performances | 99 | 96 | 100 | 
+| Pagespeed Performances | 98 | 98 | 100 | 
 | Website Load Time | 🟢 | 🟢 | 🟢 | 
 | Rate limited | 🔴 | 🔴 | 🔴 | 
 | CDN | 🔴 | 🔴 | 🔴 | 
@@ -44,8 +44,8 @@ This project aims to continuously monitor various aspects of specified websites.
 | Open Graph Protocol | 🟢 | 🔴 | 🟢 | 
 | Semantic Markup | 🔴 | 🔴 | 🔴 | 
 | Ad and tracking | 🟢 | 🟢 | 🟢 | 
-| Privacy-Protected Whois | ⚪ | ⚪ | ⚪ | 
+| Privacy-Protected Whois | 🔴 | 🔴 | 🔴 | 
 | Privacy Exposure | 🔴 | 🔴 | 🟢 | 
 
 ---
-Last Updated: 2024-08-05 04:04:26
+Last Updated: 2024-08-06 04:04:04
