@@ -1,24 +1,46 @@
 import requests
+from requests.exceptions import RequestException, HTTPError
 
-def check_domain_breach(website):
-    domain_breach = "🟢"  # Start with a default "safe" status.
-    
+def check_domain_breach(website: str) -> str:
+    """
+    Check if a domain has been found in any known data breaches.
+
+    Args:
+        website (str): The domain name to be checked.
+
+    Returns:
+        str:
+            - "🟢" if no breaches are found.
+            - "🔴" if the domain is found in any breaches.
+            - "⚪" if any errors occurred or if the breach check could not be completed.
+    """
+    domain_breach = "🟢"  # Default to "safe" status.
+
     try:
         breach_url = f"https://breachdirectory.com/api/domain/{website}"
-        response = requests.get(breach_url)
-        
-        if response.status_code != 200:
-            print(f"Error occurred while fetching breach data for {website}. Status Code: {response.status_code}")
-            domain_breach = "🔘"  # Assume "grey" due to an API error.
-        else:
-            data = response.json()
-            
-            # If the domain was found in any breaches, set the status to "red".
-            if data.get('found') and data['found'] == True:
-                domain_breach = "🔴"
-        
-    except Exception as e:
-        print(f"An error occurred while checking breach data for {website}: {e}")
-        domain_breach = "⚪"  # Set "grey" due to a processing error.
+        response = requests.get(breach_url, timeout=10)
+        response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx).
 
-    return domain_breach
+        # Parse JSON response
+        data = response.json()
+
+        # Check if the domain was found in any breaches
+        if data.get('found') is True:
+            print(f"Domain {website} has been found in a breach.")
+            return "🔴"  # Red: Domain found in a breach.
+        
+        print(f"Domain {website} has not been found in any breaches.")
+        return domain_breach  # Green: No breaches found.
+
+    except HTTPError as http_err:
+        print(f"HTTP error occurred while fetching breach data for {website}: {http_err}")
+        return "⚪"  # Grey: API error.
+    except RequestException as req_err:
+        print(f"Request error occurred while fetching breach data for {website}: {req_err}")
+        return "⚪"  # Grey: Request error.
+    except ValueError as json_err:
+        print(f"JSON parsing error occurred while fetching breach data for {website}: {json_err}")
+        return "⚪"  # Grey: JSON parsing error.
+    except Exception as e:
+        print(f"An unexpected error occurred while checking breach data for {website}: {e}")
+        return "⚪"  # Grey: Unexpected error.
