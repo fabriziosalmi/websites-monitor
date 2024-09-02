@@ -1,7 +1,7 @@
 import requests
 
 def check_domainsblacklists_blacklist(domain):
-    url = "https://get.domainsblacklists.com/blacklist.txt"
+    url = "https://github.com/fabriziosalmi/blacklists/releases/download/latest/blacklist.txt"
 
     try:
         response = requests.get(url, stream=True, timeout=10)
@@ -16,5 +16,4 @@ def check_domainsblacklists_blacklist(domain):
     except requests.RequestException:
         return "⚪"  # Return gray if there's an error in fetching or processing.
 
-# Example usage
-print(check_domainsblacklists_blacklist("example.com"))
+
