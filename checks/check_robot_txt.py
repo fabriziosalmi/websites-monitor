@@ -1,4 +1,5 @@
 import requests
+from requests.exceptions import RequestException, Timeout, HTTPError
 
 def check_robot_txt(website):
     """
@@ -11,19 +12,28 @@ def check_robot_txt(website):
     - str: "🟢" if the site has a valid robots.txt file, "🔴" otherwise, and 
            "⚪" in case of an error.
     """
+    # Ensure the website starts with 'http://' or 'https://'
+    if not website.startswith(('http://', 'https://')):
+        website = f"https://{website}"
+
     headers = {
         "User-Agent": "RobotsTxtChecker/1.0"
     }
 
     try:
-        response = requests.get(f"https://{website}/robots.txt", headers=headers)
-        content = response.text
+        # Perform the HTTP request with a timeout
+        response = requests.get(f"{website}/robots.txt", headers=headers, timeout=10)
+        response.raise_for_status()  # Raise an exception for HTTP errors
 
-        # Check for 200 status code and presence of specific directives
-        if response.status_code == 200 and ("User-agent" in content or "Disallow" in content):
+        # Check for presence of specific directives in the robots.txt content
+        content = response.text.lower()
+        if "user-agent" in content or "disallow" in content:
             return "🟢"
-        else:
-            return "🔴"
-    except Exception as e:
+        return "🔴"
+    
+    except (Timeout, HTTPError) as e:
+        print(f"Timeout or HTTP error occurred while checking robots.txt for {website}: {e}")
+    except RequestException as e:
         print(f"An error occurred while checking robots.txt for {website}: {e}")
-        return "⚪"
+    
+    return "⚪"
