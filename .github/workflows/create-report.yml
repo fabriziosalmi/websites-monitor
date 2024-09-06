@@ -24,15 +24,23 @@ jobs:
       run: |
         pip install requests python-whois dnspython beautifulsoup4 selenium
 
-    - name: Set up Chrome
-      uses: browser-actions/setup-chrome@v1
-      with:
-        chrome-version: 'stable'  # or specify a particular version if needed
+    - name: Install Chrome
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable
 
-    - name: Set up Chromedriver
-      uses: nanasess/setup-chromedriver@v1
-      with:
-        chromedriver-version: 'latest'  # or specify a particular version if needed
+    - name: Install Chromedriver
+      run: |
+        # Get the installed Chrome version
+        CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+        # Find the latest compatible Chromedriver version
+        DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*}")
+        # Download and install Chromedriver
+        curl -O "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
+        unzip chromedriver_linux64.zip -d ~/ && rm chromedriver_linux64.zip
+        sudo mv -f ~/chromedriver /usr/local/bin/chromedriver
+        sudo chown root:root /usr/local/bin/chromedriver
+        sudo chmod 0755 /usr/local/bin/chromedriver
 
     - name: Verify Chrome Installation
       run: |
