@@ -27,24 +27,28 @@ jobs:
     - name: Setup Chrome
       run: |
         sudo apt-get update
-        sudo apt-get install -y unzip whois
-#     
-#     - name: Install Chromedriver
-#       run: |
-#         CHROME_MAIN_VERSION=`google-chrome-stable --version | sed -E 's/(^Google Chrome |\.[0-9]+ )//g'`
-#         DRIVER_VERSION=`curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAIN_VERSION"`
-#         curl -s -O "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
-#         unzip chromedriver_linux64.zip -d ~/
-#         rm -f chromedriver_linux64.zip
-#         sudo mv -f ~/chromedriver /usr/local/bin/chromedriver
-#         sudo chown root:root /usr/local/bin/chromedriver
-#         sudo chmod 0755 /usr/local/bin/chromedriver
+        sudo apt-get install -y unzip whois google-chrome-stable
 
+    - name: Install Chromedriver
+      run: |
+        CHROME_MAIN_VERSION=`google-chrome-stable --version | sed -E 's/(^Google Chrome |\.[0-9]+ )//g'`
+        DRIVER_VERSION=`curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAIN_VERSION"`
+        curl -s -O "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
+        unzip chromedriver_linux64.zip -d ~/
+        rm -f chromedriver_linux64.zip
+        sudo mv -f ~/chromedriver /usr/local/bin/chromedriver
+        sudo chown root:root /usr/local/bin/chromedriver
+        sudo chmod 0755 /usr/local/bin/chromedriver
+
+    - name: Verify Chrome Installation
+      run: |
+        google-chrome --version
+        chromedriver --version
 
     - name: Run Website Tests
       id: test
-      run: python main.py || echo "error" >> error.log
-      continue-on-error: true  # This will ensure the next steps are executed even if this step fails.
+      run: python main.py
+      continue-on-error: false  # Ensures the workflow stops on error
 
     - name: Set Output status
       id: set-output
