@@ -1,6 +1,6 @@
 websites:
+  - audiolibri.org
   - example.com
-  - example.org
 output_file: README.md
 max_workers: 2
 timeout: 30
