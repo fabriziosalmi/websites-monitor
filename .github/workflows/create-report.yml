@@ -1,8 +1,7 @@
 name: Create report
-
 on:
   schedule:
-    - cron: '0 4 * * *'
+    - cron: '0 4 * * *'  # Fixed cron syntax
   workflow_dispatch:
 
 jobs:
@@ -10,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{ steps.set-output.outputs.status }}
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -26,17 +24,23 @@ jobs:
 
     - name: Install Chrome
       run: |
+        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
         sudo apt-get update
         sudo apt-get install -y google-chrome-stable
 
     - name: Install Chromedriver
       run: |
         # Get the installed Chrome version
-        CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+        CHROME_VERSION=$(google-chrome --version | cut -d " " -f 3)
+        echo "Chrome Version: $CHROME_VERSION"
+        
         # Find the latest compatible Chromedriver version
         DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*}")
+        echo "Driver Version: $DRIVER_VERSION"
+        
         # Download and install Chromedriver
-        curl -O "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
+        wget -q "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
         unzip chromedriver_linux64.zip -d ~/ && rm chromedriver_linux64.zip
         sudo mv -f ~/chromedriver /usr/local/bin/chromedriver
         sudo chown root:root /usr/local/bin/chromedriver
@@ -50,16 +54,15 @@ jobs:
     - name: Run Website Tests
       id: test
       run: python main.py
-      continue-on-error: false  # Ensures the workflow stops on error
+      continue-on-error: false
 
     - name: Set Output status
       id: set-output
       run: |
         if [[ -f error.log ]]; then
-          echo "Error encountered in Website Tests"
-          echo "::set-output name=status::error"
+          echo "status=error" >> $GITHUB_OUTPUT
         else
-          echo "::set-output name=status::success"
+          echo "status=success" >> $GITHUB_OUTPUT
         fi
 
     - name: Commit and push report
@@ -73,4 +76,3 @@ jobs:
     - name: Fail if error encountered
       if: steps.set-output.outputs.status == 'error'
       run: exit 1
-
