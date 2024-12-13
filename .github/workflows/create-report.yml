@@ -21,7 +21,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests python-whois dnspython beautifulsoup4 selenium
+          pip install requests python-whois dnspython beautifulsoup4 selenium pyyaml
 
       - name: Setup Chrome and Chromedriver
         uses: browser-actions/setup-chrome@v1
