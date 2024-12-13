@@ -11,57 +11,57 @@ jobs:
     outputs:
       status: ${{ steps.set-output.outputs.status }}
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup Python 3.x
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.x'
+      - name: Setup Python 3.x
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
 
-    - name: Install dependencies
-      run: |
-        pip install requests python-whois dnspython beautifulsoup4 selenium
+      - name: Install dependencies
+        run: |
+          pip install requests python-whois dnspython beautifulsoup4 selenium
 
-    - name: Setup Chrome and Chromedriver
-      uses: browser-actions/setup-chrome@v2
-      with:
-        chrome-version: 'stable' # Use stable Chrome version
-        driver-version: 'matching' # Automatically matches Chromedriver version
+      - name: Setup Chrome and Chromedriver
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 'stable'           # Use stable Chrome version
+          install-chromedriver: true         # Install matching Chromedriver
 
-    - name: Verify Chrome and Chromedriver Installation
-      run: |
-        google-chrome --version
-        chromedriver --version
-        CHROME_MAJOR=$(google-chrome --version | cut -d " " -f 3 | cut -d "." -f 1)
-        DRIVER_MAJOR=$(chromedriver --version | cut -d " " -f 2 | cut -d "." -f 1)
-        if [[ "$CHROME_MAJOR" != "$DRIVER_MAJOR" ]]; then
-          echo "Mismatch between Chrome and Chromedriver versions!"
-          exit 1
-        fi
+      - name: Verify Chrome and Chromedriver Installation
+        run: |
+          google-chrome --version
+          chromedriver --version
+          CHROME_MAJOR=$(google-chrome --version | cut -d ' ' -f 3 | cut -d '.' -f 1)
+          DRIVER_MAJOR=$(chromedriver --version | cut -d ' ' -f 2 | cut -d '.' -f 1)
+          if [[ "$CHROME_MAJOR" != "$DRIVER_MAJOR" ]]; then
+            echo "Mismatch between Chrome and Chromedriver versions!"
+            exit 1
+          fi
 
-    - name: Run Website Tests
-      id: test
-      run: python main.py
-      continue-on-error: false
+      - name: Run Website Tests
+        id: test
+        run: python main.py
+        continue-on-error: false
 
-    - name: Set Output status
-      id: set-output
-      run: |
-        if [[ -f error.log ]]; then
-          echo "status=error" >> $GITHUB_OUTPUT
-        else
-          echo "status=success" >> $GITHUB_OUTPUT
-        fi
+      - name: Set Output status
+        id: set-output
+        run: |
+          if [[ -f error.log ]]; then
+            echo "status=error" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+          fi
 
-    - name: Commit and push report
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add README.md
-        git commit -m "Add generated report" -a || echo "No changes to commit"
-        git push
+      - name: Commit and push report
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "Add generated report" -a || echo "No changes to commit"
+          git push
 
-    - name: Fail if error encountered
-      if: steps.set-output.outputs.status == 'error'
-      run: exit 1
+      - name: Fail if error encountered
+        if: steps.set-output.outputs.status == 'error'
+        run: exit 1
