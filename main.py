@@ -100,59 +100,60 @@ class WebsiteMonitor:
         self.check_functions = self._initialize_check_functions()
 
     class Check:
-    """Represents a single website check."""
-    def __init__(self, name: str, function: Callable, enabled: bool = True, timeout: Optional[int] = None):
-        self.name = name
-        self.function = function
-        self.enabled = enabled
-        self.timeout = timeout
-        
-    async def execute(self, website: str, default_timeout: int) -> str:
-        """Execute the check with timeout handling."""
-        timeout = self.timeout or default_timeout
-        try:
-            result = await asyncio.wait_for(self.function(website), timeout)
-            return result
-        except asyncio.TimeoutError:
-            return "🔴"  # Timeout indicator
-        except Exception as e:
-            logger.error(f"Check {self.name} failed for {website}: {e}")
-            return "⚪"  # Error indicator
+        """Represents a single website check."""
+        def __init__(self, name: str, function: Callable, enabled: bool = True, timeout: Optional[int] = None):
+            self.name = name
+            self.function = function
+            self.enabled = enabled
+            self.timeout = timeout
 
-def _initialize_check_functions(self) -> List[Check]:
-    """Initialize the list of check functions with their names."""
-    checks = [
-        Check("Domain breach", check_domain_breach),
-        Check("Domain Expiration", check_domain_expiration),
-        Check("SSL Certificate", check_ssl_cert),
-        Check("DNS Blacklists", check_dns_blacklist, timeout=45),
-        Check("DomainsBlacklists", check_domainsblacklists_blacklist),
-        Check("HSTS", check_hsts),
-        Check("XSS Protection", check_xss_protection),
-        Check("Redirect chains", check_redirect_chains),
-        Check("Pagespeed", check_pagespeed_performances, timeout=60),
-        Check("Load Time", check_website_load_time),
-        Check("Rate Limiting", check_rate_limiting),
-        Check("CDN", check_cdn),
-        Check("Brotli", check_brotli_compression),
-        Check("Deprecated Libraries", check_deprecated_libraries),
-        Check("Client Rendering", check_clientside_rendering),
-        Check("Mixed Content", check_mixed_content),
-        Check("Content-Type", check_content_type_headers),
-        Check("i18n", check_internationalization),
-        Check("FLoC", check_floc),
-        Check("AMP", check_amp_compatibility),
-        Check("Robots.txt", check_robot_txt),
-        Check("Sitemap", check_sitemap),
-        Check("Favicon", check_favicon),
-        Check("Alt Tags", check_alt_tags),
-        Check("Open Graph", check_open_graph_protocol),
-        Check("Semantic Markup", check_semantic_markup),
-        Check("Ad Tracking", check_ad_and_tracking),
-        Check("WHOIS Privacy", check_privacy_protected_whois),
-        Check("Privacy Exposure", check_privacy_exposure),
-    ]
-    return [check for check in checks if check.enabled]
+        async def execute(self, website: str, default_timeout: int) -> str:
+            """Execute the check with timeout handling."""
+            timeout = self.timeout or default_timeout
+            try:
+                result = await asyncio.wait_for(self.function(website), timeout)
+                return result
+            except asyncio.TimeoutError:
+                return "🔴"  # Timeout indicator
+            except Exception as e:
+                logger.error(f"Check {self.name} failed for {website}: {e}")
+                return "⚪"  # Error indicator
+
+    def _initialize_check_functions(self) -> List['WebsiteMonitor.Check']:
+        """Initialize the list of check functions with their names."""
+        checks = [
+            self.Check("Domain breach", check_domain_breach),
+            self.Check("Domain Expiration", check_domain_expiration),
+            self.Check("SSL Certificate", check_ssl_cert),
+            self.Check("DNS Blacklists", check_dns_blacklist, timeout=45),
+            self.Check("DomainsBlacklists", check_domainsblacklists_blacklist),
+            self.Check("HSTS", check_hsts),
+            self.Check("XSS Protection", check_xss_protection),
+            self.Check("Redirect chains", check_redirect_chains),
+            self.Check("Pagespeed", check_pagespeed_performances, timeout=60),
+            self.Check("Load Time", check_website_load_time),
+            self.Check("Rate Limiting", check_rate_limiting),
+            self.Check("CDN", check_cdn),
+            self.Check("Brotli", check_brotli_compression),
+            self.Check("Deprecated Libraries", check_deprecated_libraries),
+            self.Check("Client Rendering", check_clientside_rendering),
+            self.Check("Mixed Content", check_mixed_content),
+            self.Check("Content-Type", check_content_type_headers),
+            self.Check("i18n", check_internationalization),
+            self.Check("FLoC", check_floc),
+            self.Check("AMP", check_amp_compatibility),
+            self.Check("Robots.txt", check_robot_txt),
+            self.Check("Sitemap", check_sitemap),
+            self.Check("Favicon", check_favicon),
+            self.Check("Alt Tags", check_alt_tags),
+            self.Check("Open Graph", check_open_graph_protocol),
+            self.Check("Semantic Markup", check_semantic_markup),
+            self.Check("Ad Tracking", check_ad_and_tracking),
+            self.Check("WHOIS Privacy", check_privacy_protected_whois),
+            self.Check("Privacy Exposure", check_privacy_exposure),
+        ]
+        return [check for check in checks if check.enabled]
+
 
     def log_error(self, message: str) -> None:
         """Log errors with proper formatting and tracking."""
