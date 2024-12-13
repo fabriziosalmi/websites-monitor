@@ -1,7 +1,8 @@
 name: Create report
+
 on:
   schedule:
-    - cron: '0 4 * * *'  # Fixed cron syntax
+    - cron: '0 4 * * *'  # Runs daily at 4 AM
   workflow_dispatch:
 
 jobs:
@@ -17,39 +18,27 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.x'
-        
+
     - name: Install dependencies
       run: |
         pip install requests python-whois dnspython beautifulsoup4 selenium
 
-    - name: Install Chrome
-      run: |
-        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-        sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-        sudo apt-get update
-        sudo apt-get install -y google-chrome-stable
+    - name: Setup Chrome and Chromedriver
+      uses: browser-actions/setup-chrome@v2
+      with:
+        chrome-version: 'stable' # Use stable Chrome version
+        driver-version: 'matching' # Automatically matches Chromedriver version
 
-    - name: Install Chromedriver
-      run: |
-        # Get the installed Chrome version
-        CHROME_VERSION=$(google-chrome --version | cut -d " " -f 3)
-        echo "Chrome Version: $CHROME_VERSION"
-        
-        # Find the latest compatible Chromedriver version
-        DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*}")
-        echo "Driver Version: $DRIVER_VERSION"
-        
-        # Download and install Chromedriver
-        wget -q "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
-        unzip chromedriver_linux64.zip -d ~/ && rm chromedriver_linux64.zip
-        sudo mv -f ~/chromedriver /usr/local/bin/chromedriver
-        sudo chown root:root /usr/local/bin/chromedriver
-        sudo chmod 0755 /usr/local/bin/chromedriver
-
-    - name: Verify Chrome Installation
+    - name: Verify Chrome and Chromedriver Installation
       run: |
         google-chrome --version
         chromedriver --version
+        CHROME_MAJOR=$(google-chrome --version | cut -d " " -f 3 | cut -d "." -f 1)
+        DRIVER_MAJOR=$(chromedriver --version | cut -d " " -f 2 | cut -d "." -f 1)
+        if [[ "$CHROME_MAJOR" != "$DRIVER_MAJOR" ]]; then
+          echo "Mismatch between Chrome and Chromedriver versions!"
+          exit 1
+        fi
 
     - name: Run Website Tests
       id: test
