@@ -183,26 +183,26 @@ class WebsiteMonitor:
             return "⚪"
 
     class ReportGenerator:
-    """Handles report generation and formatting."""
-    def __init__(self, config: Config):
-        self.config = config
+        """Handles report generation and formatting."""
+        def __init__(self, config: Config):
+            self.config = config
         
-    def _create_table_header(self, websites: List[str]) -> str:
-        """Create the markdown table header."""
-        headers = ["Check Type"] + websites
-        header_row = "| " + " | ".join(headers) + " |"
-        separator_row = "|" + "|".join(["---"] * len(headers)) + "|"
-        return f"{header_row}\n{separator_row}\n"
+        def _create_table_header(self, websites: List[str]) -> str:
+            """Create the markdown table header."""
+            headers = ["Check Type"] + websites
+            header_row = "| " + " | ".join(headers) + " |"
+            separator_row = "|" + "|".join(["---"] * len(headers)) + "|"
+            return f"{header_row}\n{separator_row}\n"
         
-    def _format_check_row(self, check_name: str, results: List[str]) -> str:
-        """Format a single check row in the table."""
-        return f"| {check_name} | {' | '.join(results)} |"
+        def _format_check_row(self, check_name: str, results: List[str]) -> str:
+            """Format a single check row in the table."""
+            return f"| {check_name} | {' | '.join(results)} |"
         
-    async def generate_report(self, check_results: List[Tuple[str, List[str]]]) -> str:
-        """Generate the complete monitoring report."""
-        template = self._read_markdown_file(self.config.report_template)
-        if not template:
-            template = """# Websites Monitor
+        async def generate_report(self, check_results: List[Tuple[str, List[str]]]) -> str:
+            """Generate the complete monitoring report."""
+            template = self._read_markdown_file(self.config.report_template)
+            if not template:
+                template = """# Websites Monitor
 {description}
 {instructions}
 ## Monitoring Checks
@@ -212,41 +212,29 @@ class WebsiteMonitor:
 Last Updated: {timestamp}
 """
         
-        description = self._read_markdown_file('project_description.md')
-        instructions = self._read_markdown_file('usage_instructions.md')
-        table_header = self._create_table_header(self.config.websites)
-        table_rows = [self._format_check_row(name, results) for name, results in check_results]
+            description = self._read_markdown_file('project_description.md')
+            instructions = self._read_markdown_file('usage_instructions.md')
+            table_header = self._create_table_header(self.config.websites)
+            table_rows = [self._format_check_row(name, results) for name, results in check_results]
         
-        return template.format(
-            description=description,
-            instructions=instructions,
-            badge=self.config.github_workflow_badge,
-            badge_link=self.config.github_workflow_badge,
-            table_content=table_header + "\n".join(table_rows),
-            timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        )
+            return template.format(
+                description=description,
+                instructions=instructions,
+                badge=self.config.github_workflow_badge,
+                badge_link=self.config.github_workflow_badge,
+                table_content=table_header + "\n".join(table_rows),
+                timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            )
 
-        # Create table header
-        headers = ["Check Type"] + self.config.websites
-        report_parts.append("| " + " | ".join(headers) + " |\n")
-        report_parts.append("|" + "|".join(["---"] * len(headers)) + "|\n")
-
-        # Process checks concurrently
-        async with ThreadPoolExecutor(max_workers=self.config.max_workers) as executor:
-            for check_name, check_func in self.check_functions:
-                row = [check_name]
-                futures = [
-                    executor.submit(self.check_website, website, check_name, check_func)
-                    for website in self.config.websites
-                ]
-                results = [future.result() for future in as_completed(futures)]
-                row.extend(results)
-                report_parts.append("| " + " | ".join(row) + " |\n")
-
-        # Add timestamp
-        report_parts.append(f"\n---\nLast Updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-        
-        return "".join(report_parts)
+        def save_report(self, report_content: str) -> None:
+            """Save the report to file with error handling."""
+            try:
+                with open(self.config.output_file, 'w', encoding='utf-8') as f:
+                    f.write(report_content)
+                logger.info(f"Report successfully saved to {self.config.output_file}")
+            except Exception as e:
+                logger.error(f"Failed to save report: {e}")
+                raise
 
     def save_report(self, report_content: str) -> None:
         """Save the report to file with error handling."""
