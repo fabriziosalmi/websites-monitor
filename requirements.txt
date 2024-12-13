@@ -1,0 +1,6 @@
+requests
+python-whois
+dnspython
+beautifulsoup4
+selenium
+pyyaml
