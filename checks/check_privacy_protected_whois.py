@@ -1,15 +1,14 @@
 import whois
-from whois.exceptions import WhoisCommandFailed
 
 def check_privacy_protected_whois(domain):
     """
     Check if a domain's WHOIS information indicates that it is privacy-protected.
-    
+
     Args:
     - domain (str): The domain to check.
-    
+
     Returns:
-    - str: "🟢" if the domain's WHOIS information is privacy-protected, "🔴" otherwise, 
+    - str: "🟢" if the domain's WHOIS information is privacy-protected, "🔴" otherwise,
            "⚪" if an error occurred.
     """
     try:
@@ -24,7 +23,7 @@ def check_privacy_protected_whois(domain):
 
         # Fields that might contain privacy-related information
         fields_to_check = [
-            'registrar', 'tech_email', 'admin_email', 'registrant_email', 
+            'registrar', 'tech_email', 'admin_email', 'registrant_email',
             'org', 'name', 'address'
         ]
 
@@ -36,7 +35,7 @@ def check_privacy_protected_whois(domain):
 
         return "🔴"
 
-    except WhoisCommandFailed as e:
+    except whois.parser.PywhoisError as e:  # Adjusted to catch PywhoisError
         print(f"WHOIS command failed for {domain}: {e}")
         return "⚪"
     except Exception as e:
