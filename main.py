@@ -302,16 +302,34 @@ async def main():
     performance_monitor = PerformanceMonitor()
     performance_monitor.start()
     try:
+        # Load configuration
         config = load_config()
+
+        # Initialize the WebsiteMonitor
         monitor = WebsiteMonitor(config)
-        report_content = await monitor.generate_report()
-        monitor.save_report(report_content)
+
+        # Initialize the ReportGenerator
+        report_generator = monitor.ReportGenerator(config)
+
+        # Run the checks and generate the report
+        check_results = []  # Collect check results
+        for check in monitor.check_functions:
+            results = []
+            for website in config.websites:
+                result = await check.execute(website, config.timeout)
+                results.append(result)
+            check_results.append((check.name, results))
         
+        report_content = await report_generator.generate_report(check_results)
+
+        # Save the generated report
+        report_generator.save_report(report_content)
+
         if monitor.error_log:
             logger.warning("Completed with some errors. Check the log file for details.")
             sys.exit(1)
         logger.info("Monitoring completed successfully")
-        
+
     except Exception as e:
         logger.error(f"Critical error: {e}")
         sys.exit(1)
@@ -319,3 +337,4 @@ async def main():
 if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
+
