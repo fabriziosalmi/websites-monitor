@@ -23,6 +23,12 @@ jobs:
         run: |
           pip install requests python-whois dnspython beautifulsoup4 selenium pyyaml
 
+      - name: Reinstall dependencies
+        run: |
+          pip install --upgrade pip
+          pip uninstall whois -y
+          pip install python-whois
+    
       - name: Setup Chrome and Chromedriver
         uses: browser-actions/setup-chrome@v1
         with:
