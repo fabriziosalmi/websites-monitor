@@ -1,33 +1,34 @@
-def check_cdn(headers):
+import requests
+import logging
+from typing import Optional
+
+logger = logging.getLogger(__name__)
+
+def check_cdn(website: str) -> str:
     """
-    Checks the provided HTTP headers for signs of popular Content Delivery Networks (CDNs).
+    Checks if a website is using a CDN by inspecting the server header.
 
-    :param headers: Dictionary of HTTP headers.
-    :return: "🟢" if a known CDN is detected, "🔴" if no CDN is detected.
+    Args:
+        website (str): The URL of the website to check.
+
+    Returns:
+        str:
+            - "🟢" if a CDN is detected.
+            - "⚪" if no CDN is detected or an error occurs.
     """
-    # Mapping of headers to sets of possible CDN indicators
-    cdn_headers = {
-        "Server": {"cloudflare", "keycdn", "akamai", "fastly", "gcore", "maxcdn", "incapsula", "sucuri", "imperva"},
-        "X-CDN": {"stackpath", "akamai", "section-io", "cachefly"},
-        "X-Cache": {"fastly", "cloudfront", "cdn-cache", "cachefly", "squid"},
-        "X-Powered-By": {"cdn77", "edgecast", "keycdn"},
-        "CF-Cache-Status": {"hit", "miss", "expired", "revalidated"},  # Cloudflare-specific
-        "X-Cache-Status": {"hit", "miss", "stale", "updating"},
-        "X-Akamai-Transformed": {"9xx-xml", "9xx-proxy", "9xx-push"},  # Akamai-specific
-        "X-Edge-IP": {"akamai"},
-        "X-Edge-Location": {"akamai"},
-        "Via": {"akamai", "cloudflare", "fastly", "cloudfront", "section.io"},
-        "X-Proxy-Cache": {"hit", "miss"},
-        "CDN-Cache-Control": {"max-age", "no-cache", "public"},  # General CDN caching
-    }
-
-    # Convert headers to lowercase for case-insensitive comparison
-    headers_lower = {k.lower(): v.lower() for k, v in headers.items()}
-
-    # Check for CDN indicators in headers
-    for header, possible_values in cdn_headers.items():
-        header_value = headers_lower.get(header.lower(), "")
-        if any(cdn_value in header_value for cdn_value in possible_values):
-            return "🟢"
-
-    return "🔴"
+    try:
+        response = requests.get(website, stream=True, timeout=10)
+        response.raise_for_status()  # Raise an exception for bad status codes
+        if 'server' in response.headers:
+            server_header = response.headers['server'].lower()
+            if 'cloudflare' in server_header or 'akamai' in server_header or 'fastly' in server_header or 'amazon' in server_header or 'cdn' in server_header or "stackpath" in server_header:
+                logger.info(f"CDN detected for {website}.")
+                return "🟢"
+        logger.info(f"No CDN detected for {website}.")
+        return "⚪"
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error during CDN check for {website}: {e}")
+        return "⚪"
+    except Exception as e:
+        logger.error(f"An unexpected error occurred during the CDN check for {website}: {e}")
+        return "⚪"
