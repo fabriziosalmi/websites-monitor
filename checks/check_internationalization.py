@@ -1,38 +1,37 @@
+import requests
+import logging
 from bs4 import BeautifulSoup
 
-def check_internationalization(html_content: str) -> str:
+logger = logging.getLogger(__name__)
+
+def check_internationalization(website: str) -> str:
     """
-    Check if the given HTML content supports internationalization by inspecting the 'lang' attribute.
+    Checks if a website has implemented internationalization (i18n) using the lang attribute.
 
     Args:
-        html_content (str): The HTML content to be checked.
+        website (str): The URL of the website to check.
 
     Returns:
         str:
-            - "🟢" if the content supports internationalization.
-            - "🔴" if the content does not support internationalization.
-            - "⚪" if an unexpected error occurs.
+           - "🟢" if i18n is detected
+           - "⚪" if i18n is not detected or an error occurred.
     """
     try:
-        # Parse the HTML content using BeautifulSoup
-        soup = BeautifulSoup(html_content, 'html.parser')
+        response = requests.get(website, timeout = 10)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.content, "html.parser")
+        html_tag = soup.find("html")
 
-        # Check if the primary <html> tag has a 'lang' attribute
-        primary_lang = soup.html.attrs.get('lang', None)
-
-        # Find all elements with a 'lang' attribute
-        lang_tags = soup.find_all(attrs={"lang": True})
-
-        # Check for the presence of the 'lang' attribute in <html> or in any other tags
-        if primary_lang:
-            print("Primary HTML tag has a 'lang' attribute.")
-            return "🟢"
-        elif len(lang_tags) > 1:  # Check if there are other tags with 'lang' attributes
-            print(f"Found {len(lang_tags)} elements with 'lang' attribute.")
+        if html_tag and html_tag.has_attr("lang"):
+            logger.info(f"Internationalization is enabled for {website}.")
             return "🟢"
         else:
-            print("No 'lang' attribute found in primary HTML tag or other elements.")
-            return "🔴"
+           logger.info(f"Internationalization is not enabled for {website}.")
+           return "⚪"
+
+    except requests.exceptions.RequestException as e:
+         logger.error(f"An error occurred while checking internationalization for {website}: {e}")
+         return "⚪"
     except Exception as e:
-        print(f"An error occurred while checking internationalization: {e}")
-        return "⚪"
+         logger.error(f"An error occurred while checking internationalization: {e}")
+         return "⚪"
