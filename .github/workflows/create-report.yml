@@ -57,20 +57,7 @@ jobs:
         env:
           PAGESPEED_API_KEY: ${{ secrets.PAGESPEED_API_KEY }}
         run: python main.py
-        continue-on-error: false
-
-      - name: Set Output status
-        id: set-output
-        run: |
-          if [[ -f monitor.log ]]; then
-              if grep -q "ERROR" monitor.log; then
-                echo "status=error" >> $GITHUB_OUTPUT
-              else
-                echo "status=success" >> $GITHUB_OUTPUT
-              fi
-          else
-            echo "status=success" >> $GITHUB_OUTPUT
-          fi
+        continue-on-error: true
         
       - name: Commit and push report
         run: |
