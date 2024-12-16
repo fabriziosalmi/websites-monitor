@@ -29,10 +29,13 @@ def check_domain_breach(website: str) -> str:
                 return "🔴"
             logger.info(f"Domain {website} has not been found in any breaches.")
             return "🟢"
-        return "⚪"
     except requests.exceptions.RequestException as e:
-        logger.error(f"Request error occurred while fetching breach data for {website}: {e}")
-        return "⚪"
+        if e.response is not None and e.response.status_code == 401:
+            logger.error(f"Request error occurred while fetching breach data for {website}: {e}")
+            return "⚪"
+        else:
+            logger.error(f"Request error occurred while fetching breach data for {website}: {e}")
+            return "⚪"
     except json.JSONDecodeError as e:
       logger.error(f"Request error occurred while fetching breach data for {website}: {e}")
       return "⚪"
