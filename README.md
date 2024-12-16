@@ -104,13 +104,13 @@ The generated report in `README.md` includes a table with a row for each website
 
 For any issues or suggestions regarding this project, feel free to open an issue on GitHub.
 
-This project provides a framework to help you monitor the security and health of your websites in a simple and effective manner. Feel free to customize the checks and configuration to suit your specific needs and preferences.
+---
 
 
 
 
 
-This report was automatically generated on 2024-12-16 10:52:04 UTC.
+This report was automatically generated on 2024-12-16 11:02:01 UTC.
 
 | Website | Domain breach | Domain Expiration | SSL Certificate | DNS Blacklists | DomainsBlacklists | HSTS | XSS Protection | Redirect chains | Pagespeed | Load Time | Rate Limiting | CDN | Brotli | Deprecated Libraries | Client Rendering | Mixed Content | Content-Type | i18n | FLoC | AMP | Robots.txt | Sitemap | Favicon | Alt Tags | Open Graph | Semantic Markup | Ad Tracking | WHOIS Privacy | Privacy Exposure |
 |---------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
