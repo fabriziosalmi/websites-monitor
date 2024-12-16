@@ -21,20 +21,26 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests python-whois dnspython beautifulsoup4 selenium pyyaml
+          pip install requests python-whois dnspython beautifulsoup4 selenium pyyaml lxml
 
       - name: Reinstall dependencies
         run: |
           pip install --upgrade pip
           pip uninstall whois -y
           pip install python-whois
-    
+          
+      - name: Set Chrome Version
+        id: chrome_version
+        run: |
+          CHROME_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json" | jq -r '.channels.Stable.version')
+          echo "CHROME_VERSION=$CHROME_VERSION" >> $GITHUB_OUTPUT
+          
       - name: Setup Chrome and Chromedriver
         uses: browser-actions/setup-chrome@v1
         with:
-          chrome-version: 'stable'           # Use stable Chrome version
-          install-chromedriver: true         # Install matching Chromedriver
-
+          chrome-version: ${{ steps.chrome_version.outputs.CHROME_VERSION }}
+          install-chromedriver: true
+          
       - name: Verify Chrome and Chromedriver Installation
         run: |
           google-chrome --version
@@ -48,25 +54,31 @@ jobs:
 
       - name: Run Website Tests
         id: test
+        env:
+          PAGESPEED_API_KEY: ${{ secrets.PAGESPEED_API_KEY }}
         run: python main.py
         continue-on-error: false
 
       - name: Set Output status
         id: set-output
         run: |
-          if [[ -f error.log ]]; then
-            echo "status=error" >> $GITHUB_OUTPUT
+          if [[ -f monitor.log ]]; then
+              if grep -q "ERROR" monitor.log; then
+                echo "status=error" >> $GITHUB_OUTPUT
+              else
+                echo "status=success" >> $GITHUB_OUTPUT
+              fi
           else
             echo "status=success" >> $GITHUB_OUTPUT
           fi
-
+        
       - name: Commit and push report
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add README.md
           git commit -m "Add generated report" -a || echo "No changes to commit"
-          git push
+          git push || echo "No changes to push"
 
       - name: Fail if error encountered
         if: steps.set-output.outputs.status == 'error'
