@@ -87,9 +87,9 @@ class WebsiteMonitor:
             """Execute the check with timeout handling."""
             try:
                 if self.name == "Pagespeed" and asyncio.iscoroutinefunction(self.function):
-                  return await asyncio.wait_for(self.function(website, api_key=config.pagespeed_api_key), self.timeout or default_timeout)
+                  return await asyncio.wait_for(self.function(f"https://{website}", api_key=config.pagespeed_api_key), self.timeout or default_timeout)
                 elif self.name == "Pagespeed":
-                  return self.function(website, api_key=config.pagespeed_api_key)
+                  return self.function(f"https://{website}", api_key=config.pagespeed_api_key)
                 elif self.name == "Rate Limiting":
                    return self.function(f"https://{website}")
                 elif asyncio.iscoroutinefunction(self.function):
