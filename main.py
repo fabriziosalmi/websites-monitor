@@ -83,12 +83,12 @@ class WebsiteMonitor:
             self.enabled = enabled
             self.timeout = timeout
 
-        async def execute(self, website: str, default_timeout: int) -> str:
+        async def execute(self, website: str, config: Config, default_timeout: int) -> str:
             """Execute the check with timeout handling."""
             try:
                 if asyncio.iscoroutinefunction(self.function):
-                    return await asyncio.wait_for(self.function(website, api_key=self.config.pagespeed_api_key), self.timeout or default_timeout)
-                return self.function(website, api_key=self.config.pagespeed_api_key)
+                   return await asyncio.wait_for(self.function(website, api_key=config.pagespeed_api_key), self.timeout or default_timeout)
+                return self.function(website, api_key=config.pagespeed_api_key)
             except asyncio.TimeoutError:
                 logger.warning(f"Check {self.name} for {website} timed out.")
                 return "🔴"  # Timeout indicator
@@ -199,7 +199,7 @@ async def main():
         for check in monitor.check_functions:
             results = []
             for website in config.websites:
-                result = await check.execute(website, config.timeout)
+                result = await check.execute(website, config, config.timeout)
                 results.append(result)
             check_results.append((check.name, results))
 
