@@ -216,6 +216,7 @@ async def main():
         
     except Exception as e:
         logger.error(f"Critical error: {e}")
+        
 
     performance_monitor.stop()
     logger.info(f"Execution completed in {performance_monitor.get_summary()['total_duration']} seconds.")
