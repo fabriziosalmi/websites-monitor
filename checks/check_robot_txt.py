@@ -1,5 +1,8 @@
 import requests
+import logging
 from requests.exceptions import RequestException, Timeout, HTTPError
+
+logger = logging.getLogger(__name__)
 
 def check_robot_txt(website):
     """
@@ -17,7 +20,7 @@ def check_robot_txt(website):
         website = f"https://{website}"
 
     headers = {
-        "User-Agent": "RobotsTxtChecker/1.0"
+        "User-Agent": "RobotsTxtChecker/1.1"
     }
 
     try:
@@ -28,12 +31,17 @@ def check_robot_txt(website):
         # Check for presence of specific directives in the robots.txt content
         content = response.text.lower()
         if "user-agent" in content or "disallow" in content:
+            logger.info(f"Valid robots.txt found for {website}.")
             return "🟢"
+        logger.warning(f"Invalid robots.txt found for {website}.")
         return "🔴"
     
     except (Timeout, HTTPError) as e:
-        print(f"Timeout or HTTP error occurred while checking robots.txt for {website}: {e}")
+        logger.warning(f"Timeout or HTTP error occurred while checking robots.txt for {website}: {e}")
+        return "⚪"
     except RequestException as e:
-        print(f"An error occurred while checking robots.txt for {website}: {e}")
-    
-    return "⚪"
+        logger.error(f"An error occurred while checking robots.txt for {website}: {e}")
+        return "⚪"
+    except Exception as e:
+       logger.error(f"An unexpected error occurred while checking robots.txt for {website}: {e}")
+       return "⚪"
