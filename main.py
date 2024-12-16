@@ -90,6 +90,8 @@ class WebsiteMonitor:
                   return await asyncio.wait_for(self.function(website, api_key=config.pagespeed_api_key), self.timeout or default_timeout)
                 elif self.name == "Pagespeed":
                   return self.function(website, api_key=config.pagespeed_api_key)
+                elif self.name == "Rate Limiting":
+                   return self.function(f"https://{website}")
                 elif asyncio.iscoroutinefunction(self.function):
                   return await asyncio.wait_for(self.function(website), self.timeout or default_timeout)
                 else:
