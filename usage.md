@@ -104,4 +104,4 @@ The generated report in `README.md` includes a table with a row for each website
 
 For any issues or suggestions regarding this project, feel free to open an issue on GitHub.
 
-This project provides a framework to help you monitor the security and health of your websites in a simple and effective manner. Feel free to customize the checks and configuration to suit your specific needs and preferences.
+---
