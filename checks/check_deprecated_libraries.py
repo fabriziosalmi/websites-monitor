@@ -20,7 +20,7 @@ def check_deprecated_libraries(website: str) -> str:
     """
     try:
       
-        response = requests.get(website, timeout = 10)
+        response = requests.get(f"https://{website}", timeout = 10)
         response.raise_for_status()
         soup = BeautifulSoup(response.content, 'html.parser')
         scripts = soup.find_all('script', src=True)
