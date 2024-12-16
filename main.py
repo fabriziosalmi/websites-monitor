@@ -6,6 +6,8 @@ import sys
 import asyncio
 import yaml
 from dataclasses import dataclass
+import os
+
 
 # Import all check functions
 from checks.check_domain_breach import check_domain_breach
@@ -59,6 +61,7 @@ class Config:
     log_file: str = "monitor.log"
     report_template: str = "report_template.md"
     github_workflow_badge: str = "https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg"
+    pagespeed_api_key: Optional[str] = None
     
     @classmethod
     def from_dict(cls, data: dict) -> 'Config':
@@ -84,8 +87,8 @@ class WebsiteMonitor:
             """Execute the check with timeout handling."""
             try:
                 if asyncio.iscoroutinefunction(self.function):
-                    return await asyncio.wait_for(self.function(website), self.timeout or default_timeout)
-                return self.function(website)
+                    return await asyncio.wait_for(self.function(website, api_key=self.config.pagespeed_api_key), self.timeout or default_timeout)
+                return self.function(website, api_key=self.config.pagespeed_api_key)
             except asyncio.TimeoutError:
                 logger.warning(f"Check {self.name} for {website} timed out.")
                 return "🔴"  # Timeout indicator
@@ -151,6 +154,36 @@ class PerformanceMonitor:
             "total_duration": (self.end_time - self.start_time).total_seconds()
         }
 
+def generate_report(config: Config, check_results: List[Tuple[str, List[str]]]):
+    """Generates the markdown report."""
+    
+    with open(config.report_template, "r") as f:
+        report_template = f.read()
+        
+    # Initialize the report content
+    report_content = f"""{report_template}
+[![GitHub Workflow Status]({config.github_workflow_badge})]
+
+## Website Monitor Report
+
+This report was automatically generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}.
+
+| Website | {' | '.join([check_name for check_name, _ in check_results])} |
+|---------|{'|'.join(['---' for _ in check_results])}|
+"""
+
+    # Add results for each website
+    for website in config.websites:
+        row = [website]
+        for _, results in check_results:
+            result_index = config.websites.index(website)
+            row.append(str(results[result_index]))
+        report_content += " | ".join(row) + " |\n"
+        
+    
+    with open(config.output_file, "w") as f:
+        f.write(report_content)
+
 
 async def main():
     """Main execution function."""
@@ -171,7 +204,9 @@ async def main():
             check_results.append((check.name, results))
 
         logger.info("All checks completed successfully.")
-
+        
+        generate_report(config, check_results)
+        
     except Exception as e:
         logger.error(f"Critical error: {e}")
         sys.exit(1)
@@ -185,6 +220,10 @@ def load_config(config_file: str = 'config.yaml') -> Config:
     try:
         with open(config_file, 'r') as f:
             config_data = yaml.safe_load(f)
+        # Get the API key from the environment variable if set
+        api_key = os.environ.get('PAGESPEED_API_KEY')
+        if api_key:
+            config_data['pagespeed_api_key'] = api_key
         return Config.from_dict(config_data)
     except FileNotFoundError:
         logger.warning("Config file not found. Falling back to default configuration.")
