@@ -17,7 +17,7 @@ def check_internationalization(website: str) -> str:
            - "⚪" if i18n is not detected or an error occurred.
     """
     try:
-        response = requests.get(website, timeout = 10)
+        response = requests.get(f"https://{website}", timeout = 10)
         response.raise_for_status()
         soup = BeautifulSoup(response.content, "html.parser")
         html_tag = soup.find("html")
