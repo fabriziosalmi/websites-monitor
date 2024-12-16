@@ -177,9 +177,6 @@ def generate_report(config: Config, check_results: List[Tuple[str, List[str]]]):
     report_content = f"""{usage_content}
 
 {report_template}
-[![GitHub Workflow Status]({config.github_workflow_badge})]
-
-## Website Monitor Report
 
 This report was automatically generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}.
 
