@@ -28,7 +28,19 @@ def check_deprecated_libraries(website: str) -> str:
         deprecated_libraries = {
             "jquery-migrate": "1.x",
             "prototype": "1.x",
-            "modernizr": "2.x"
+            "modernizr": "2.x",
+            "dojo": "1.x",
+            "scriptaculous": "1.x",
+             "mootools": "1.x",
+            "swfobject": "2.x",
+            "yui": "2.x",
+            "ext-core": "3.x",
+            "less-js": "1.x",
+            "moment-with-locales": "2.x",
+            "underscore": "1.x",
+            "backbone": "1.x",
+            "ember": "1.x",
+            "knockout": "2.x"
         }
         
         for script in scripts:
