@@ -1,45 +1,49 @@
 import requests
+import logging
+from bs4 import BeautifulSoup
 from requests.exceptions import RequestException
 
-def check_deprecated_libraries(js_links):
+logger = logging.getLogger(__name__)
+
+def check_deprecated_libraries(website: str) -> str:
     """
-    Checks the provided JavaScript links for deprecated libraries.
+    Checks if a website is using deprecated JavaScript libraries.
 
     Args:
-        js_links (list): List of JS link URLs to check.
+        website (str): The URL of the website to check.
 
     Returns:
-        str: 
+         str:
+            - "🟡" if deprecated libraries are found.
             - "🟢" if no deprecated libraries are found.
-            - "🔴" if any deprecated library is detected.
+            - "⚪" if any errors occur during the check.
     """
-    # This dictionary contains libraries and their associated deprecated patterns.
-    # Each pattern is a string that's indicative of that library's version.
-    deprecated_libraries_patterns = {
-        "jQuery": ["jQuery v1.", "jQuery 1."],
-        "AngularJS": ["angularjs v1.", "angular.version:{full:'1."],
-        "MooTools": ["MooTools v1.", "MooTools.More v1."],
-        "Backbone.js": ["Backbone.js 0.", "Backbone.js 1.0."],
-        "Vue.js": ["Vue v0.", "Vue v1."],  # Assuming versions 0.x and 1.x are deprecated
-        "React": ["React v0."]  # Assuming version 0.x is deprecated
-    }
+    try:
+      
+        response = requests.get(website, timeout = 10)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.content, 'html.parser')
+        scripts = soup.find_all('script', src=True)
 
-    for link in js_links:
-        try:
-            # Fetch the content of the JS file
-            response = requests.get(link, timeout=10)
-            response.raise_for_status()
-            content = response.text
-
-            # Check for deprecated patterns in the content
-            for lib_name, patterns in deprecated_libraries_patterns.items():
-                if any(pattern in content for pattern in patterns):
-                    print(f"Deprecated library detected: {lib_name} in {link}")
-                    return "🔴"
-
-        except RequestException as e:
-            print(f"Error fetching content from {link}: {e}")
-            continue
-
-    print("No deprecated libraries found in the provided JS links.")
-    return "🟢"
+        deprecated_libraries = {
+            "jquery-migrate": "1.x",
+            "prototype": "1.x",
+            "modernizr": "2.x"
+        }
+        
+        for script in scripts:
+            src = script['src']
+            for library, version in deprecated_libraries.items():
+                if library in src:
+                    logger.warning(f"Deprecated library {library} version {version} found in {website}.")
+                    return "🟡"
+            
+        logger.info(f"No deprecated libraries found in the provided JS links.")
+        return "🟢"
+    
+    except RequestException as e:
+        logger.error(f"Error fetching content from {website}: {e}")
+        return "⚪"
+    except Exception as e:
+        logger.error(f"Error during deprecated library check for {website}: {e}")
+        return "⚪"
