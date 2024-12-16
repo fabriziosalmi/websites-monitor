@@ -164,13 +164,22 @@ class PerformanceMonitor:
 def generate_report(config: Config, check_results: List[Tuple[str, List[str]]]):
     """Generates the markdown report."""
     
+    try:
+        with open("usage.md", "r") as f:
+            usage_content = f.read()
+    except FileNotFoundError:
+        usage_content = "Usage instructions not found. Create a `usage.md` file in the root directory for usage instructions."
+    
     with open(config.report_template, "r") as f:
         report_template = f.read()
         
     # Initialize the report content
-    report_content = f"""{report_template}
+    report_content = f"""{usage_content}
+
+{report_template}
+[![GitHub Workflow Status]({config.github_workflow_badge})]
+
 ## Website Monitor Report
-![GitHub Workflow Status]({config.github_workflow_badge})
 
 This report was automatically generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}.
 
