@@ -17,7 +17,7 @@ def check_cdn(website: str) -> str:
             - "⚪" if no CDN is detected or an error occurs.
     """
     try:
-        response = requests.get(website, stream=True, timeout=10)
+        response = requests.get(f"https://{website}", stream=True, timeout=10)
         response.raise_for_status()  # Raise an exception for bad status codes
         if 'server' in response.headers:
             server_header = response.headers['server'].lower()
