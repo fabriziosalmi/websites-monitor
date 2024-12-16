@@ -1,49 +1,48 @@
 import requests
-import json
-from requests.exceptions import RequestException, Timeout, HTTPError
+import logging
+from requests.exceptions import RequestException, HTTPError
 
-def check_pagespeed_performances(website: str, api_key: str) -> int:
+logger = logging.getLogger(__name__)
+
+def check_pagespeed_performances(website: str, api_key: str = None) -> str:
     """
-    Check the PageSpeed performance score of the given website using Google's PageSpeed Insights API.
+    Checks the PageSpeed Insights performance score for a website.
 
     Args:
         website (str): The URL of the website to be checked.
-        api_key (str): The API key for accessing the PageSpeed Insights API.
+        api_key (str, optional): The Google PageSpeed Insights API key. Defaults to None.
 
     Returns:
-        int: The PageSpeed performance score (0-100), or 0 in case of any errors.
+        str:
+            - An integer representing the PageSpeed score if successful.
+            - "⚪" if any errors occur during the check or if no API key was provided.
     """
-    # Construct the PageSpeed API URL
-    pagespeed_url = f"https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://{website}&key={api_key}"
+    if not api_key:
+      logger.error("No API key provided for PageSpeed check.")
+      return "⚪"
     
-    headers = {
-        'User-Agent': 'PageSpeedChecker/1.0'
-    }
-
     try:
-        # Make a request to the PageSpeed Insights API
-        pagespeed_response = requests.get(pagespeed_url, headers=headers, timeout=10)
-        pagespeed_response.raise_for_status()  # Raise an exception for HTTP errors
+        pagespeed_url = f"https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url={website}&key={api_key}"
+        response = requests.get(pagespeed_url, timeout=20)
+        response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx).
+        data = response.json()
 
-        # Parse the API response JSON
-        pagespeed_data = pagespeed_response.json()
+        score = data.get("lighthouseResult", {}).get("categories", {}).get("performance", {}).get("score")
+        if score is not None:
+            logger.info(f"PageSpeed score for {website} is {int(score * 100)}.")
+            return str(int(score * 100))
+        logger.warning(f"PageSpeed score not found for {website}.")
+        return "⚪"
 
-        # Extract the performance score
-        pagespeed_score = pagespeed_data["lighthouseResult"]["categories"]["performance"]["score"] * 100
-
-        # Return the rounded score as an integer
-        print(f"PageSpeed score for {website} is {round(pagespeed_score)}.")
-        return round(pagespeed_score)
-
-    except (Timeout, HTTPError) as e:
-        print(f"Timeout or HTTP error occurred while fetching PageSpeed data for {website}: {e}")
-        return 0
-    except RequestException as e:
-        print(f"Request-related error occurred while fetching PageSpeed data for {website}: {e}")
-        return 0
-    except KeyError:
-        print(f"Error parsing PageSpeed data for {website}: The expected data structure was not found.")
-        return 0
+    except HTTPError as http_err:
+        logger.error(f"Timeout or HTTP error occurred while fetching PageSpeed data for {website}: {http_err}")
+        return "⚪"  # Grey: API error.
+    except RequestException as req_err:
+        logger.error(f"Timeout or HTTP error occurred while fetching PageSpeed data for {website}: {req_err}")
+        return "⚪"  # Grey: Request error.
+    except ValueError as json_err:
+        logger.error(f"JSON parsing error occurred while fetching PageSpeed data for {website}: {json_err}")
+        return "⚪"  # Grey: JSON parsing error.
     except Exception as e:
-        print(f"An unexpected error occurred while checking PageSpeed for {website}: {e}")
-        return 0
+        logger.error(f"An unexpected error occurred while checking PageSpeed data for {website}: {e}")
+        return "⚪"  # Grey: Unexpected error.
