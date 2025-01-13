@@ -110,9 +110,9 @@ For any issues or suggestions regarding this project, feel free to open an issue
 
 
 
-This report was automatically generated on 2025-01-12 04:06:49 UTC.
+This report was automatically generated on 2025-01-13 04:07:20 UTC.
 
 | Website | Domain breach | Domain Expiration | SSL Certificate | DNS Blacklists | DomainsBlacklists | HSTS | XSS Protection | Redirect chains | Pagespeed | Load Time | Rate Limiting | CDN | Brotli | Deprecated Libraries | Client Rendering | Mixed Content | Content-Type | i18n | FLoC | AMP | Robots.txt | Sitemap | Favicon | Alt Tags | Open Graph | Semantic Markup | Ad Tracking | WHOIS Privacy | Privacy Exposure |
 |---------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-audiolibri.org | ⚪ | 🟢 (110 days left) | 🟢 (55 days left) | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 98 | 🟢 | 🔴 | 🟢 | 🟢 | 🟡 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | ⚪ | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 |
-example.com | ⚪ | 🟢 (212 days left) | 🟢 (48 days left) | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 100 | 🟢 | 🔴 | ⚪ | 🔴 | 🟢 | 🟢 | 🟢 | 🟢 | ⚪ | 🔴 | 🔴 | ⚪ | 🔴 | 🔴 | 🟢 | 🔴 | 🔴 | 🟢 | 🔴 | 🟢 |
+audiolibri.org | ⚪ | 🟢 (109 days left) | 🟢 (54 days left) | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 99 | 🟢 | 🔴 | 🟢 | 🟢 | 🟡 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | ⚪ | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 |
+example.com | ⚪ | 🟢 (211 days left) | 🟢 (47 days left) | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 100 | 🟢 | 🔴 | ⚪ | 🔴 | 🟢 | 🟢 | 🟢 | 🟢 | ⚪ | 🔴 | 🔴 | ⚪ | 🔴 | 🔴 | 🟢 | 🔴 | 🔴 | 🟢 | 🔴 | 🟢 |
