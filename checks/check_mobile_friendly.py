@@ -17,12 +17,12 @@ def check_mobile_friendly(website: str, api_key: str) -> str:
             - "⚪" for any errors.
     """
     api_url = f"https://searchconsole.googleapis.com/v1/urlTestingTools/mobileFriendlyTest:run?key={api_key}"
-    payload = json.dumps({"url": f"https://{website}"})
+    payload = {"url": f"https://{website}"}
     headers = {'Content-Type': 'application/json'}
 
     try:
         # Make a POST request to the Google API
-        response = requests.post(api_url, headers=headers, data=payload)
+        response = requests.post(api_url, headers=headers, json=payload)
         response.raise_for_status()
 
         # Parse the response JSON
@@ -36,11 +36,8 @@ def check_mobile_friendly(website: str, api_key: str) -> str:
             print(f"Website {website} is not mobile-friendly.")
             return "🔴"
 
-    except HTTPError as e:
-        print(f"HTTP error occurred while checking mobile-friendliness for {website}: {e}")
-        return "⚪"
-    except RequestException as e:
-        print(f"Request-related error occurred while checking mobile-friendliness for {website}: {e}")
+    except (requests.HTTPError, requests.RequestException) as e:
+        print(f"Error occurred while checking mobile-friendliness for {website}: {e}")
         return "⚪"
     except KeyError:
         print(f"Unexpected response format from the API for {website}.")
