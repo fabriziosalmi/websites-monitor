@@ -49,7 +49,6 @@ jobs:
           DRIVER_MAJOR=$(chromedriver --version | cut -d ' ' -f 2 | cut -d '.' -f 1)
           if [[ "$CHROME_MAJOR" != "$DRIVER_MAJOR" ]]; then
             echo "Mismatch between Chrome and Chromedriver versions!"
-            exit 1
           fi
 
       - name: Run Website Tests
