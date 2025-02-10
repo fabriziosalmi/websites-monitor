@@ -24,19 +24,8 @@ def check_hsts(website: str) -> str:
         response.raise_for_status()  # Raise an exception for HTTP errors
 
         # Check if the 'Strict-Transport-Security' header is present
-        if 'Strict-Transport-Security' in response.headers:
-            print(f"HSTS is enabled for {website}.")
-            return "🟢"
-        else:
-            print(f"HSTS is not enabled for {website}.")
-            return "🔴"
-    
-    except (Timeout, HTTPError) as e:
-        print(f"Timeout or HTTP error occurred while checking HSTS for {website}: {e}")
-        return "⚪"
-    except RequestException as e:
-        print(f"Request-related error occurred while checking HSTS for {website}: {e}")
-        return "⚪"
-    except Exception as e:
-        print(f"An unexpected error occurred while checking HSTS for {website}: {e}")
+        return "🟢" if 'Strict-Transport-Security' in response.headers else "🔴"
+
+    except (requests.RequestException, Exception) as e:
+        print(f"An error occurred while checking HSTS for {website}: {e}")
         return "⚪"
