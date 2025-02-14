@@ -1,6 +1,6 @@
 websites:
-  - audiolibri.org
-  - example.com
+  - home.nuccy.org
+  - dogtoothtattoos.org
 output_file: README.md
 max_workers: 2
 timeout: 30
