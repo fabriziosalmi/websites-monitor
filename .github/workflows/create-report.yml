@@ -2,7 +2,7 @@ name: Create report
 
 on:
   schedule:
-    - cron: '0 10 * * *'  # Runs daily at 4 AM
+    - cron: '0 10 * * *'  # Runs daily at 10 AM
   workflow_dispatch:
 
 jobs:
