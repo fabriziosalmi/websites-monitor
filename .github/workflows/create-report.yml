@@ -7,7 +7,7 @@ on:
 
 jobs:
   create-report:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       status: ${{ steps.set-output.outputs.status }}
     steps:
