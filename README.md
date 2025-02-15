@@ -110,9 +110,9 @@ For any issues or suggestions regarding this project, feel free to open an issue
 # Websites Monitor
 
 
-This report was automatically generated on 2025-02-15 08:04:10 UTC.
+This report was automatically generated on 2025-02-15 08:15:14 UTC.
 
 | Website | Domain breach | Domain Expiration | SSL Certificate | DNS Blacklists | DomainsBlacklists | HSTS | XSS Protection | Redirect chains | Pagespeed | Load Time | Rate Limiting | CDN | Brotli | Deprecated Libraries | Client Rendering | Mixed Content | Content-Type | i18n | FLoC | AMP | Robots.txt | Sitemap | Favicon | Alt Tags | Open Graph | Semantic Markup | Ad Tracking | WHOIS Privacy | Privacy Exposure |
 |---------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 home.nuccy.org | ⚪ | 🟢 (178 days left) | 🟢 (80 days left) | 🟢 | 🟢 | 🟢 | 🟢 | 🟠 | 100 | 🟢 | 🔴 | 🟢 | 🔴 | 🟢 | 🔴 | 🟢 | 🔴 | ⚪ | 🔴 | 🔴 | 🔴 | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 |
-dogtoothtattoos.org | ⚪ | 🟢 (219 days left) | 🟢 (62 days left) | 🟢 | 🟢 | ⚪ | ⚪ | 🟢 | 85 | ⚪ | 🟢 | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🔴 | 🟢 | 🔴 | 🟢 | ⚪ | ⚪ | 🔴 | 🟢 | 🟢 | ⚪ |
+dogtoothtattoos.org | ⚪ | 🟢 (219 days left) | 🟢 (62 days left) | 🟢 | 🟢 | ⚪ | ⚪ | 🟢 | 86 | ⚪ | 🟢 | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🔴 | 🟢 | 🔴 | 🟢 | ⚪ | ⚪ | 🔴 | 🟢 | 🟢 | ⚪ |
