@@ -4,6 +4,10 @@
 
 This repository provides a framework to monitor the health and security of your websites, automatically generating a detailed report in markdown format on a daily basis. It performs various checks, including domain status, SSL certificate validity, security headers, and performance metrics, helping you keep your online presence secure and optimized.
 
+## Screenshot
+
+![screenshot](https://github.com/fabriziosalmi/websites-monitor/blob/main/screenshot.png?raw=true)
+
 ## Features
 
 -   **Automated Daily Checks:** Runs daily using GitHub Actions.
