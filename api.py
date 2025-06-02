@@ -132,7 +132,7 @@ app = FastAPI(
     
     **Total Available Checks:** 53+
     """,
-    version="1.0.0",
+    version="1.3.0",
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json"
@@ -156,6 +156,12 @@ class WebsiteRequest(BaseModel):
 class SingleCheckRequest(BaseModel):
     website: str = Field(..., description="Website URL or domain to check", example="example.com")
     timeout: Optional[int] = Field(30, description="Timeout in seconds", ge=5, le=300)
+    pagespeed_api_key: Optional[str] = Field(None, description="Optional Google PageSpeed Insights API key")
+
+class CustomMonitorRequest(BaseModel):
+    website: str = Field(..., description="Website URL or domain to monitor", example="example.com")
+    checks: List[str] = Field(..., description="List of check names to run", example=["ssl_cert", "security_headers"])
+    timeout: Optional[int] = Field(30, description="Timeout in seconds for each check", ge=5, le=300)
     pagespeed_api_key: Optional[str] = Field(None, description="Optional Google PageSpeed Insights API key")
 
 class CheckResult(BaseModel):
@@ -217,8 +223,19 @@ async def startup_event():
         # Create a minimal config as fallback
         default_config = Config(websites=["example.com"])
 
-@app.get("/", response_class=HTMLResponse, tags=["Root"])
+@app.get("/", response_class=FileResponse, tags=["Root"])
 async def root():
+    """
+    Serve the enhanced Website Monitor interface.
+    """
+    html_file_path = os.path.join(os.path.dirname(__file__), "docs", "index.html")
+    if os.path.exists(html_file_path):
+        return FileResponse(html_file_path, media_type="text/html")
+    else:
+        raise HTTPException(status_code=404, detail="Frontend interface not found")
+
+@app.get("/api", response_class=HTMLResponse, tags=["Documentation"])
+async def api_landing():
     """
     API landing page with navigation and quick start information.
     """
@@ -249,7 +266,7 @@ async def root():
                     <strong>🚀 Interactive API Docs (Swagger UI):</strong> <a href="/api/docs">/api/docs</a><span class="badge">Recommended</span><br>
                     <strong>📖 ReDoc Documentation:</strong> <a href="/api/redoc">/api/redoc</a><br>
                     <strong>📄 OpenAPI Schema:</strong> <a href="/api/openapi.json">/api/openapi.json</a><br>
-                    <strong>📁 Custom Documentation:</strong> <a href="/docs/">/docs/</a>
+                    <strong>🎨 Enhanced Interface:</strong> <a href="/">/</a>
                 </div>
             </div>
             
@@ -495,97 +512,143 @@ async def monitor_single_website(
     
     return await monitor_websites(request)
 
-@app.get("/monitor/check/{check_name}", tags=["Individual Checks"])
-async def run_specific_check(
-    check_name: str = Path(..., description="Name of the check to run"),
-    website: str = Query(..., description="Website URL or domain to check", example="example.com"),
-    timeout: Optional[int] = Query(30, description="Timeout in seconds", ge=5, le=300)
-):
+@app.post("/monitor/single", tags=["Monitoring"])
+async def monitor_single_website_custom(request: CustomMonitorRequest):
     """
-    ## Run Individual Check
+    ## Custom Single Website Monitoring
     
-    Execute a specific check on a website. Use the `/checks` endpoint to see all available checks.
+    Run selected checks on a single website with custom check selection.
+    Perfect for targeted analysis and custom workflows.
     
-    **Available Check Categories:**
-    - **Security:** ssl_cert, security_headers, xss_protection, cors_headers, etc.
-    - **Performance:** pagespeed_performances, website_load_time, cdn, brotli_compression, etc.
-    - **SEO:** sitemap, robot_txt, open_graph_protocol, alt_tags, etc.
-    - **Privacy:** cookie_policy, privacy_exposure, tracking detection, etc.
-    - **Domain:** domain_expiration, dns_blacklist, subdomain_enumeration, etc.
+    **Features:**
+    - Custom check selection from 50+ available checks
+    - Single website focus for faster analysis
+    - Custom timeout configuration
+    - Detailed results for selected checks only
     """
-    global default_config
-    monitor = WebsiteMonitor(default_config)
+    start_time = datetime.now()
     
-    # Find the requested check in WebsiteMonitor
-    target_check = None
-    for check in monitor.check_functions:
-        if check.name.lower().replace(" ", "_").replace("-", "_") == check_name.lower():
-            target_check = check
-            break
-    
-    # If not found in WebsiteMonitor, try individual check functions
-    if not target_check and check_name in CHECK_FUNCTIONS:
-        check_func = CHECK_FUNCTIONS[check_name]
-        try:
-            config = Config(websites=[website], timeout=timeout or 30)
-            
-            # Handle different function signatures
-            if check_name == "pagespeed_performances":
-                if asyncio.iscoroutinefunction(check_func):
-                    result = await asyncio.wait_for(check_func(f"https://{website}", api_key=config.pagespeed_api_key), timeout)
+    try:
+        # Create config from request
+        config = Config(
+            websites=[request.website],
+            timeout=request.timeout or 30,
+            pagespeed_api_key=request.pagespeed_api_key
+        )
+        
+        monitor = WebsiteMonitor(config)
+        
+        # Filter checks based on request
+        selected_check_functions = []
+        for check in monitor.check_functions:
+            check_slug = check.name.lower().replace(" ", "_").replace("-", "_")
+            if check_slug in request.checks:
+                selected_check_functions.append(check)
+        
+        # Also check individual check functions
+        available_individual_checks = {}
+        for check_name in request.checks:
+            if check_name in CHECK_FUNCTIONS:
+                available_individual_checks[check_name] = CHECK_FUNCTIONS[check_name]
+        
+        # Run selected checks
+        results = []
+        total_checks = 0
+        
+        # Run WebsiteMonitor checks
+        for check in selected_check_functions:
+            try:
+                result = await asyncio.wait_for(
+                    check.execute(request.website, config, config.timeout),
+                    timeout=config.timeout
+                )
+                results.append({
+                    "check_name": check.name,
+                    "website": request.website,
+                    "result": result,
+                    "status": "completed",
+                    "timestamp": datetime.now()
+                })
+                total_checks += 1
+            except Exception as e:
+                logger.error(f"Check {check.name} failed for {request.website}: {e}")
+                results.append({
+                    "check_name": check.name,
+                    "website": request.website,
+                    "result": "⚪",
+                    "status": "error",
+                    "error": str(e),
+                    "timestamp": datetime.now()
+                })
+                total_checks += 1
+        
+        # Run individual check functions
+        for check_name, check_func in available_individual_checks.items():
+            try:
+                if check_name == "pagespeed_performances":
+                    if asyncio.iscoroutinefunction(check_func):
+                        result = await asyncio.wait_for(
+                            check_func(request.website, config.pagespeed_api_key or ""),
+                            timeout=config.timeout
+                        )
+                    else:
+                        result = await asyncio.wait_for(
+                            asyncio.to_thread(check_func, request.website, config.pagespeed_api_key or ""),
+                            timeout=config.timeout
+                        )
+                elif check_name == "rate_limiting":
+                    result = await asyncio.wait_for(
+                        asyncio.to_thread(check_func, request.website, 10),
+                        timeout=config.timeout
+                    )
+                elif asyncio.iscoroutinefunction(check_func):
+                    result = await asyncio.wait_for(
+                        check_func(request.website),
+                        timeout=config.timeout
+                    )
                 else:
-                    result = check_func(f"https://{website}", api_key=config.pagespeed_api_key)
-            elif check_name == "rate_limiting":
-                result = check_func(f"https://{website}")
-            elif asyncio.iscoroutinefunction(check_func):
-                result = await asyncio.wait_for(check_func(website), timeout)
-            else:
-                result = check_func(website)
+                    result = await asyncio.wait_for(
+                        asyncio.to_thread(check_func, request.website),
+                        timeout=config.timeout
+                    )
                 
-            return {
-                "check_name": check_name.replace("_", " ").title(),
-                "website": website,
-                "result": result,
-                "timestamp": datetime.now(),
-                "status": "completed",
-                "execution_time": None
-            }
-            
-        except Exception as e:
-            logger.error(f"Individual check {check_name} failed for {website}: {e}")
-            raise HTTPException(status_code=500, detail=f"Check failed: {str(e)}")
-    
-    # If found in WebsiteMonitor, use that
-    if target_check:
-        try:
-            config = Config(websites=[website], timeout=timeout or 30)
-            start_time = datetime.now()
-            result = await target_check.execute(website, config, config.timeout)
-            end_time = datetime.now()
-            
-            return {
-                "check_name": target_check.name,
-                "website": website,
-                "result": result,
-                "timestamp": end_time,
-                "status": "completed",
-                "execution_time": (end_time - start_time).total_seconds()
-            }
-            
-        except Exception as e:
-            logger.error(f"Check {check_name} failed for {website}: {e}")
-            raise HTTPException(status_code=500, detail=f"Check failed: {str(e)}")
-    
-    # Check not found
-    available_checks = []
-    for check in monitor.check_functions:
-        available_checks.append(check.name.lower().replace(" ", "_").replace("-", "_"))
-    available_checks.extend(CHECK_FUNCTIONS.keys())
-    
-    raise HTTPException(
-        status_code=404, 
-        detail=f"Check '{check_name}' not found. Available checks: {sorted(set(available_checks))}"
-    )
+                results.append({
+                    "check_name": check_name.replace("_", " ").title(),
+                    "website": request.website,
+                    "result": result,
+                    "status": "completed",
+                    "timestamp": datetime.now()
+                })
+                total_checks += 1
+                
+            except Exception as e:
+                logger.error(f"Individual check {check_name} failed for {request.website}: {e}")
+                results.append({
+                    "check_name": check_name.replace("_", " ").title(),
+                    "website": request.website,
+                    "result": "⚪",
+                    "status": "error",
+                    "error": str(e),
+                    "timestamp": datetime.now()
+                })
+                total_checks += 1
+        
+        end_time = datetime.now()
+        execution_time = (end_time - start_time).total_seconds()
+        
+        return MonitorResponse(
+            success=True,
+            message=f"Custom monitoring completed successfully",
+            results=results,
+            execution_time=execution_time,
+            timestamp=end_time,
+            websites_checked=1,
+            checks_performed=total_checks
+        )
+        
+    except Exception as e:
+        logger.error(f"Custom monitoring failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Custom monitoring failed: {str(e)}")
 
 # Generate individual endpoints for each check function
 def create_check_endpoint(check_name: str, check_func: callable):
@@ -893,6 +956,5 @@ if __name__ == "__main__":
     print("📚 API Documentation will be available at:")
     print("   - http://localhost:8000/api/docs (Swagger UI)")
     print("   - http://localhost:8000/api/redoc (ReDoc)")
-    print("   - http://localhost:8000/docs/ (Custom Documentation)")
-    print("   - http://localhost:8000/ (API Landing Page)")
+    print("   - http://localhost:8000/ (UI)")
     uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=True)

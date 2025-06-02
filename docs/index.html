@@ -3,8 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website Monitor API - Documentation</title>
+    <title>Website Monitor - Advanced Security & Performance Analysis Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #a5b4fc;
+            --secondary-color: #8b5cf6;
+            --accent-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --info-color: #3b82f6;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-light: #94a3b8;
+            --text-white: #ffffff;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --bg-dark: #0f172a;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-gradient-light: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --border-color: #e2e8f0;
+            --border-light: #f1f5f9;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-error: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --border-radius: 0.75rem;
+            --border-radius-sm: 0.5rem;
+            --border-radius-lg: 1rem;
+            --border-radius-xl: 1.5rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --blur-sm: blur(4px);
+            --blur-md: blur(8px);
+            --blur-lg: blur(16px);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,250 +58,2286 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-primary);
+            background: var(--bg-gradient);
             min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
         }
 
-        .header {
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+            transition: var(--transition);
         }
 
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-logo i {
+            background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .header p {
-            font-size: 1.2em;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .stats {
+        .nav-links {
             display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 20px;
+            align-items: center;
+            gap: 2rem;
         }
 
-        .stat {
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-sm);
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .nav-cta {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius-sm);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-cta:hover::before {
+            left: 100%;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 120px 0 0px;
             text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%23ffffff08" points="0,1000 1000,800 1000,1000"/><polygon fill="%23ffffff04" points="0,800 1000,600 1000,800 0,1000"/></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            margin-bottom: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff, #f0f4f8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .stat-number {
-            font-size: 2em;
-            font-weight: bold;
-            color: #667eea;
+            font-size: 2.5rem;
+            font-weight: 800;
+            display: block;
+            background: linear-gradient(135deg, #ffffff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .stat-label {
-            font-size: 0.9em;
-            color: #888;
+            font-size: 0.875rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
         }
 
-        .nav-grid {
+        /* Website Analyzer Form */
+        .analyzer-section {
+            background: var(--bg-primary);
+            border-radius: var(--border-radius-lg);
+            padding: 3rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-xl);
+            backdrop-filter: blur(10px);
+            position: relative;
+            border: 1px solid var(--border-light);
+        }
+
+        .analyzer-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .analyzer-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .analyzer-title i {
+            color: var(--primary-color);
+        }
+
+        .analyzer-description {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .analyzer-form {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-tabs {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 0.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            text-align: center;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-tab.active {
+            background: var(--bg-primary);
+            color: var(--primary-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group:nth-child(2) {
+            padding-top: 2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-input-group {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1.25rem 1.5rem;
+            padding-left: 3rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--bg-primary);
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-light);
+        }
+
+        .form-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1.125rem;
+        }
+
+        .form-input:focus + .form-icon {
+            color: var(--primary-color);
+        }
+
+        .analyze-btn-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .analyze-btn {
+            flex: 1;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 1.25rem 2rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analyze-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .analyze-btn:hover::before {
+            left: 100%;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .analyze-btn:disabled::before {
+            display: none;
+        }
+
+        .secondary-btn {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .secondary-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Master Controls */
+        .master-controls {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            border: 2px solid var(--border-light);
+        }
+
+        .master-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .toggle-all-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toggle-all-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .toggle-all-btn:hover::before {
+            left: 100%;
+        }
+
+        .toggle-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .toggle-all-btn.deselect {
+            background: var(--gradient-warning);
+        }
+
+        .toggle-all-btn.deselect:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        }
+
+        .check-counter {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            background: var(--bg-primary);
+            border-radius: var(--border-radius-sm);
+            border: 2px solid var(--border-light);
+        }
+
+        #selectedCount {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        /* Check Options */
+        .check-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .check-category {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            border: 2px solid var(--border-light);
+            transition: var(--transition);
+        }
+
+        .check-category:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-md);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .category-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .category-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.875rem;
+        }
+
+        .category-icon.security { background: var(--error-color); }
+        .category-icon.performance { background: var(--warning-color); }
+        .category-icon.seo { background: var(--success-color); }
+        .category-icon.accessibility { background: var(--info-color); }
+        .category-icon.privacy { background: var(--secondary-color); }
+        .category-icon.domain { background: #0d9488; }
+        .category-icon.technical { background: #6b7280; }
+
+        .category-toggle {
+            position: relative;
+            width: 3rem;
+            height: 1.5rem;
+            background: var(--border-color);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .category-toggle.active {
+            background: var(--primary-color);
+        }
+
+        .category-toggle::after {
+            content: '';
+            position: absolute;
+            top: 0.125rem;
+            left: 0.125rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .category-toggle.active::after {
+            transform: translateX(1.5rem);
+        }
+
+        .check-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        .check-list {
+            display: none;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            padding: 16px 20px;
+            background: rgba(248, 250, 252, 0.6);
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            border-top: 1px solid var(--border-light);
+        }
+
+        .check-category.expanded .check-list {
+            display: grid;
+        }
+
+        .check-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--border-radius-sm);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+        }
+
+        .check-item:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-color);
+        }
+
+        .check-desc {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .check-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-primary);
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .check-option:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--primary-color);
+        }
+
+        .check-option input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .check-option label {
+            font-weight: 500;
+            cursor: pointer;
+            flex-grow: 1;
+        }
+
+        .check-count {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            background: var(--bg-tertiary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+        }
+
+        /* Input Feedback */
+        .input-feedback {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.875rem;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .input-feedback.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .input-feedback.valid {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .input-feedback.invalid {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        /* Button Shine Effect */
+        .btn-shine {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s;
+            pointer-events: none;
+        }
+
+        .analyze-btn:hover .btn-shine {
+            left: 100%;
+        }
+
+        /* Results Section */
+        .results-section {
+            background: var(--bg-primary);
+            border-radius: var(--border-radius-lg);
+            padding: 3rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-light);
+            display: none;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .results-title-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .results-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .results-url {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background: var(--bg-secondary);
+        }
+
+        .results-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        /* Enhanced Results Styles */
+        .results-header {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .results-title-group {
+            margin-bottom: 1rem;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .results-url {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .url-protocol {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .results-meta {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .results-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border-radius: var(--border-radius-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .action-btn.primary {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+        }
+
+        .action-btn.small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .action-btn.primary:hover {
+            background: #5a67d8;
+        }
+
+        .action-btn.secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--primary-color);
+        }
+
+        /* Enhanced Summary Styles */
+        .summary-score {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .summary-score.warning {
+            border-left-color: var(--warning-color);
+        }
+
+        .summary-score.error {
+            border-left-color: var(--error-color);
+        }
+
+        .score-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(var(--success-color) var(--score-percentage, 75%), var(--border-color) 0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: var(--bg-primary);
+            border-radius: 50%;
+        }
+
+        .score-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            z-index: 1;
+        }
+
+        .score-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            z-index: 1;
+        }
+
+        .score-description {
+            flex: 1;
+        }
+
+        .score-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .score-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .summary-item {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid var(--border-color);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .summary-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .summary-item.success .summary-icon {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .summary-item.warning .summary-icon {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .summary-item.error .summary-icon {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+        }
+
+        .summary-item.total .summary-icon {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
+        }
+
+        .summary-content {
+            text-align: left;
+        }
+
+        .summary-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .summary-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.8;
+        }
+
+        /* Enhanced Results Filter */
+        .results-filter.enhanced {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            min-width: 80px;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn {
+            padding: 0.4rem 0.8rem;
+            border: 2px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .filter-btn.active {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .filter-btn.success:hover, .filter-btn.success.active {
+            border-color: var(--success-color);
+            background: var(--success-color);
+            color: white;
+        }
+
+        .filter-btn.warning:hover, .filter-btn.warning.active {
+            border-color: var(--warning-color);
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .filter-btn.error:hover, .filter-btn.error.active {
+            border-color: var(--error-color);
+            background: var(--error-color);
+            color: white;
+        }
+
+        .filter-btn.critical:hover, .filter-btn.critical.active {
+            border-color: #dc2626;
+            background: #dc2626;
+            color: white;
+        }
+
+        .filter-btn.high:hover, .filter-btn.high.active {
+            border-color: #ea580c;
+            background: #ea580c;
+            color: white;
+        }
+
+        .filter-btn.medium:hover, .filter-btn.medium.active {
+            border-color: #d97706;
+            background: #d97706;
+            color: white;
+        }
+
+        .search-section {
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+        }
+
+        .search-input-group {
+            position: relative;
+            max-width: 300px;
+        }
+
+        .search-input-group i {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            z-index: 1;
+        }
+
+        .search-input-group input {
+            width: 100%;
+            padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .search-input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.2rem;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .clear-search:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .filter-count {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        /* Enhanced Result Cards */
+        .result-card {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 0;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+        }
+
+        .result-card.expanded {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-md);
+        }
+
+        .result-card-header {
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-primary);
+        }
+
+        .result-title-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .result-status-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+
+        .result-name-group {
+            flex: 1;
+        }
+
+        .result-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 0.3rem 0;
+            line-height: 1.3;
+        }
+
+        .result-meta-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .result-category, .result-priority {
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .result-category.security { background: rgba(239, 68, 68, 0.1); color: #dc2626; }
+        .result-category.performance { background: rgba(34, 197, 94, 0.1); color: #16a34a; }
+        .result-category.seo { background: rgba(59, 130, 246, 0.1); color: #2563eb; }
+        .result-category.privacy { background: rgba(168, 85, 247, 0.1); color: #9333ea; }
+        .result-category.accessibility { background: rgba(245, 158, 11, 0.1); color: #d97706; }
+        .result-category.domain { background: rgba(20, 184, 166, 0.1); color: #0d9488; }
+        .result-category.general { background: rgba(107, 114, 128, 0.1); color: #6b7280; }
+
+        .result-priority.critical { background: rgba(220, 38, 38, 0.1); color: #dc2626; }
+        .result-priority.high { background: rgba(234, 88, 12, 0.1); color: #ea580c; }
+        .result-priority.medium { background: rgba(217, 119, 6, 0.1); color: #d97706; }
+        .result-priority.low { background: rgba(34, 197, 94, 0.1); color: #16a34a; }
+
+        .expand-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .expand-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .result-description {
+            padding: 1.25rem;
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .result-details {
+            padding: 0 1.25rem 1.25rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-primary);
+        }
+
+        .result-details h5 {
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 1rem 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .technical-details pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem;
+            font-size: 0.8rem;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+        }
+
+        .recommendation {
+            background: rgba(34, 197, 94, 0.05);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: var(--border-radius-sm);
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        .recommendation p {
+            margin: 0.5rem 0 0 0;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .result-footer {
+            padding: 0.75rem 1.25rem;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .result-time, .result-impact {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .result-impact.high { color: var(--error-color); font-weight: 600; }
+        .result-impact.medium { color: var(--warning-color); font-weight: 500; }
+        .result-impact.low { color: var(--success-color); }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .results-header {
+                padding: 1.5rem;
+            }
+            
+            .results-title {
+                font-size: 1.3rem;
+            }
+            
+            .results-actions {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                justify-content: center;
+            }
+            
+            .filter-section {
+                gap: 0.75rem;
+            }
+            
+            .filter-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .filter-label {
+                min-width: auto;
+            }
+            
+            .summary-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .summary-score {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .score-description {
+                text-align: center;
+            }
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .result-card {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            border-left: 4px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--border-color);
+            transition: var(--transition);
+        }
+
+        .result-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+
+        .result-card.success { 
+            border-left-color: var(--success-color); 
+        }
+        .result-card.success::before { 
+            background: var(--success-color); 
+        }
+
+        .result-card.warning { 
+            border-left-color: var(--warning-color); 
+        }
+        .result-card.warning::before { 
+            background: var(--warning-color); 
+        }
+
+        .result-card.error { 
+            border-left-color: var(--error-color); 
+        }
+        .result-card.error::before { 
+            background: var(--error-color); 
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .result-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1.125rem;
+        }
+
+        .result-status {
+            font-size: 1.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .result-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .result-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .result-category {
+            background: var(--bg-tertiary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+        }
+
+        .result-time {
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            color: var(--text-secondary);
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background: var(--bg-secondary);
+            border-radius: 0.25rem;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-image: linear-gradient(
+                -45deg,
+                rgba(255, 255, 255, .2) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(255, 255, 255, .2) 50%,
+                rgba(255, 255, 255, .2) 75%,
+                transparent 75%,
+                transparent
+            );
+            background-size: 50px 50px;
+            animation: move 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes move {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        /* Features Section */
+        .features-section {
+            background: var(--bg-primary);
+            border-radius: var(--border-radius-lg);
+            padding: 3rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-light);
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .features-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .features-description {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 2rem;
         }
 
-        .nav-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 25px;
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-light);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .feature-icon {
+            width: 4rem;
+            height: 4rem;
+            margin: 0 auto 1.5rem;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            background: var(--gradient-primary);
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Documentation Links */
+        .docs-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .doc-card {
+            background: var(--bg-primary);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
             text-decoration: none;
             color: inherit;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
+            border: 2px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
         }
 
-        .nav-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-            border-color: #667eea;
+        .doc-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
         }
 
-        .nav-card h3 {
-            font-size: 1.4em;
-            margin-bottom: 10px;
-            color: #667eea;
+        .doc-card:hover::before {
+            transform: scaleX(1);
         }
 
-        .nav-card p {
-            color: #666;
-            margin-bottom: 15px;
+        .doc-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-color);
         }
 
-        .nav-card .features {
+        .doc-card-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .doc-card-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .doc-card-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .doc-card-features {
             list-style: none;
         }
 
-        .nav-card .features li {
-            padding: 5px 0;
-            color: #555;
+        .doc-card-features li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .nav-card .features li::before {
-            content: "✓ ";
-            color: #28a745;
+        .doc-card-features li::before {
+            content: "✓";
+            color: var(--success-color);
             font-weight: bold;
+            width: 1rem;
+            height: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            font-size: 0.75rem;
         }
 
-        .endpoints-section {
-            background: rgba(255, 255, 255, 0.95);
+        /* Footer */
+        .footer {
+            width: 100%;
+            text-align: center;
+            margin-top: 5rem;
+            padding: 3rem 0;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .endpoints-section h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.8em;
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        .endpoint-group {
-            margin-bottom: 25px;
+        .footer-content p {
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.6;
         }
 
-        .endpoint-group h3 {
-            color: #333;
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #667eea;
+        .footer-content a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .endpoint {
-            background: #f8f9fa;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+        .footer-content a:hover {
+            color: white;
+            transform: translateY(-1px);
         }
 
-        .endpoint-method {
-            font-weight: bold;
-            color: #fff;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            margin-right: 10px;
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
 
-        .get { background-color: #28a745; }
-        .post { background-color: #007bff; }
-        .put { background-color: #ffc107; color: #333; }
-        .delete { background-color: #dc3545; }
-
-        .endpoint-path {
-            font-family: 'Courier New', monospace;
-            background: #e9ecef;
-            padding: 2px 5px;
-            border-radius: 3px;
-            margin-right: 10px;
+        .footer-link {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .quick-start {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        .footer-link:hover {
+            color: white;
+            transform: translateY(-2px);
         }
 
-        .quick-start h2 {
-            color: #667eea;
-            margin-bottom: 20px;
+        .footer-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
         }
 
-        .code-block {
-            background: #1e1e1e;
-            color: #d4d4d4;
-            padding: 20px;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 10px 0;
-            font-family: 'Courier New', monospace;
-        }
-
-        .code-block .comment {
-            color: #6a9955;
-        }
-
-        .code-block .keyword {
-            color: #569cd6;
-        }
-
-        .code-block .string {
-            color: #ce9178;
-        }
-
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .stats {
-                flex-direction: column;
-                gap: 15px;
+            .hero-title {
+                font-size: 2.5rem;
             }
 
-            .nav-grid {
+            .hero-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .stat-item {
+                padding: 1rem;
+            }
+
+            .form-row {
                 grid-template-columns: 1fr;
             }
 
-            .header h1 {
-                font-size: 2em;
+            .analyze-btn {
+                justify-content: center;
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+
+            .check-categories {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .check-category {
+                padding: 1rem;
+            }
+
+            .category-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .category-toggle {
+                align-self: flex-end;
+            }
+
+            .check-options {
+                grid-template-columns: 1fr;
+            }
+
+            .results-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .results-summary {
+                flex-wrap: wrap;
+            }
+
+            .docs-section {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .doc-card {
+                padding: 1.5rem;
+            }
+
+            .master-toggle {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .toggle-all-btn {
+                padding: 0.875rem 1.25rem;
+                font-size: 0.9rem;
+            }
+
+            .analyze-btn-container {
+                margin-top: 2rem;
+            }
+
+            .form-input-group {
+                margin-bottom: 1rem;
+            }
+
+            .input-feedback {
+                font-size: 0.875rem;
+            }
+
+            .footer {
+                padding: 2rem 0;
+                margin-top: 3rem;
+            }
+
+            .footer-content {
+                padding: 0 15px;
+            }
+
+            .footer-content p {
+                font-size: 0.875rem;
+                line-height: 1.5;
+            }
+
+            .footer-content a {
+                gap: 0.25rem;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .result-card {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .analyzer-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .form-input {
+                padding: 1rem;
+                padding-left: 2.5rem;
+            }
+
+            .toggle-all-btn {
+                padding: 0.75rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .check-counter {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
+
+            .footer-content p {
+                font-size: 0.8rem;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .result-card {
+                padding: 0.875rem;
+            }
+
+            .doc-card {
+                padding: 1rem;
+            }
+
+            .category-title {
+                font-size: 0.875rem;
+            }
+
+            .check-item {
+                font-size: 0.875rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🔍 Website Monitor API</h1>
-            <p>Comprehensive Security, Performance & SEO Analysis Platform</p>
-            <div class="stats">
-                <div class="stat">
-                    <div class="stat-number">53+</div>
-                    <div class="stat-label">Security Checks</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number">15+</div>
-                    <div class="stat-label">Performance Tests</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number">10+</div>
-                    <div class="stat-label">SEO Validations</div>
-                </div>
-            </div>
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1 class="hero-title">
+                <i class="fas fa-shield-alt"></i>
+                Website Monitor
+            </h1>
+            <p class="hero-subtitle">
+                Comprehensive security, performance, and SEO analysis for your websites. 
+                Get detailed insights and actionable recommendations in seconds.
+            </p>
         </div>
 
-        <div class="nav-grid">
-            <a href="/api/docs" class="nav-card">
-                <h3>🚀 Interactive API Docs</h3>
-                <p>Swagger UI with live testing capabilities</p>
-                <ul class="features">
+        <!-- Website Analyzer Section -->
+        <div class="analyzer-section">
+            <div class="analyzer-header">
+                <h2 class="analyzer-title">
+                    <i class="fas fa-search"></i>
+                    Analyze Your Website
+                </h2>
+                <p class="analyzer-description">
+                    Enter your website URL below to get instant insights into security vulnerabilities, 
+                    performance issues, and optimization opportunities. Our advanced scanner performs 50+ checks in seconds.
+                </p>
+            </div>
+
+            <form class="analyzer-form" id="analyzerForm">
+                <div class="form-group">
+                    <div class="form-input-group">
+                        <i class="form-icon fas fa-globe"></i>
+                        <input 
+                            type="url" 
+                            id="websiteUrl" 
+                            class="form-input" 
+                            placeholder="https://example.com or example.com"
+                            required
+                            autocomplete="url"
+                            pattern="^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$"
+                        >
+                        <div class="input-feedback" id="urlFeedback"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-tasks"></i>
+                        Select Check Categories
+                    </label>
+                    
+                    <!-- Master Toggle for All Checks -->
+                    <div class="master-controls">
+                        <div class="master-toggle">
+                            <button type="button" class="toggle-all-btn" id="toggleAllChecks">
+                                <i class="fas fa-check-double"></i>
+                                Select All Checks (53)
+                            </button>
+                            <span class="check-counter">
+                                <span id="selectedCount">53</span> of 53 checks selected
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="check-categories">
+                        <!-- Security & Protection -->
+                        <div class="check-category" data-category="security">
+                            <div class="category-header">
+                                <div class="category-title">
+                                    <div class="category-icon security">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    Security & Protection (10)
+                                </div>
+                                <div class="category-toggle active" data-category="security"></div>
+                            </div>
+                            <div class="check-list">
+                                <div class="check-item">SSL Certificate <span class="check-desc">Validity & Configuration</span></div>
+                                <div class="check-item">SSL Cipher Strength <span class="check-desc">Encryption Quality</span></div>
+                                <div class="check-item">Security Headers <span class="check-desc">CSP, X-Frame-Options</span></div>
+                                <div class="check-item">HSTS Implementation <span class="check-desc">Force HTTPS</span></div>
+                                <div class="check-item">XSS Protection <span class="check-desc">Anti-XSS Headers</span></div>
+                                <div class="check-item">CORS Headers <span class="check-desc">Cross-Origin Policy</span></div>
+                                <div class="check-item">Mixed Content <span class="check-desc">HTTP/HTTPS Issues</span></div>
+                                <div class="check-item">Subresource Integrity <span class="check-desc">SRI Implementation</span></div>
+                                <div class="check-item">Rate Limiting <span class="check-desc">DDoS Protection</span></div>
+                                <div class="check-item">Data Leakage <span class="check-desc">Information Disclosure</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Performance & Speed -->
+                        <div class="check-category" data-category="performance">
+                            <div class="category-header">
+                                <div class="category-title">
+                                    <div class="category-icon performance">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                    </div>
+                                    Performance & Speed (8)
+                                </div>
+                                <div class="category-toggle active" data-category="performance"></div>
+                            </div>
+                            <div class="check-list">
+                                <div class="check-item">PageSpeed Insights <span class="check-desc">Core Web Vitals</span></div>
+                                <div class="check-item">Website Load Time <span class="check-desc">Total Response Time</span></div>
+                                <div class="check-item">Server Response Time <span class="check-desc">TTFB Analysis</span></div>
+                                <div class="check-item">Brotli Compression <span class="check-desc">Modern Compression</span></div>
+                                <div class="check-item">Asset Minification <span class="check-desc">CSS/JS Optimization</span></div>
+                                <div class="check-item">CDN Detection <span class="check-desc">Content Delivery Network</span></div>
+                                <div class="check-item">Redirect Chains <span class="check-desc">Multiple Redirects</span></div>
+                                <div class="check-item">HTTP Redirects <span class="check-desc">301/302 Analysis</span></div>
+                            </div>
+                        </div>
+
+                        <!-- SEO & Content -->
+                        <div class="check-category" data-category="seo">
+                            <div class="category-header">
+                                <div class="category-title">
+                                    <div class="category-icon seo">
+                                        <i class="fas fa-search-plus"></i>
+                                    </div>
+                                    SEO & Content (9)
+                                </div>
+                                <div class="category-toggle active" data-category="seo"></div>
+                            </div>
+                            <div class="check-list">
+                                <div class="check-item">XML Sitemap <span class="check-desc">Search Engine Discovery</span></div>
+                                <div class="check-item">Robots.txt <span class="check-desc">Crawling Instructions</span></div>
+                                <div class="check-item">Open Graph Protocol <span class="check-desc">Social Media Tags</span></div>
+                                <div class="check-item">Image Alt Tags <span class="check-desc">Accessibility & SEO</span></div>
+                                <div class="check-item">Semantic Markup <span class="check-desc">Structured Data</span></div>
+                                <div class="check-item">URL Canonicalization <span class="check-desc">Canonical Tags</span></div>
+                                <div class="check-item">Favicon <span class="check-desc">Site Icon</span></div>
+                                <div class="check-item">Broken Links <span class="check-desc">404 Error Detection</span></div>
+                                <div class="check-item">External Links <span class="check-desc">Outbound Link Analysis</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Domain & DNS -->
+                        <div class="check-category" data-category="domain">
+                            <div class="category-header">
+                                <div class="category-title">
+                                    <div class="category-icon domain">
+                                        <i class="fas fa-globe"></i>
+                                    </div>
+                                    Domain & DNS (7)
+                                </div>
+                                <div class="category-toggle active" data-category="domain"></div>
+                            </div>
+                            <div class="check-list">
+                                <div class="check-item">Domain Expiration <span class="check-desc">Registration Validity</span></div>
+                                <div class="check-item">DNSSEC <span class="check-desc">DNS Security Extensions</span></div>
+                                <div class="check-item">DNS Blacklist <span class="check-desc">Reputation Check</span></div>
+                                <div class="check-item">Domain Breach Check <span class="check-desc">Compromised Status</span></div>
+                                <div class="check-item">Domain Blacklists <span class="check-desc">Multiple Threat Lists</span></div>
+                                <div class="check-item">Subdomain Enumeration <span class="check-desc">Discovery Analysis</span></div>
+                                <div class="check-item">Email Domain <span class="check-desc">Mail Record Analysis</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Privacy & Tracking -->
+                        <div class="check-category" data-category="privacy">
+                            <div class="category-header">
+                                <div class="category-title">
+                                    <div class="category-icon privacy">
+                                        <i class="fas fa-user-shield"></i>
+                                    </div>
+                                    Privacy & Tracking (10)
+                                </div>
+                                <div class="category-toggle active" data-category="privacy"></div>
+                            </div>
+                            <div class="check-list">
+                                <div class="check-item">Cookie Policy <span class="check-desc">GDPR Compliance</span></div>
+                                <div class="check-item">Cookie Flags <span class="check-desc">Secure/HttpOnly Attributes</span></div>
+                                <div class="check-item">Cookie Duration <span class="check-desc">Expiration Analysis</span></div>
+                                <div class="check-item">Cookie SameSite <span class="check-desc">CSRF Protection</span></div>
+                                <div class="check-item">Ad & Tracking <span class="check-desc">Analytics Detection</span></div>
+                                <div class="check-item">FLoC Detection <span class="check-desc">Google Topics API</span></div>
+                                <div class="check-item">Privacy Exposure <span class="check-desc">Data Leak Detection</span></div>
+                                <div class="check-item">WHOIS Protection <span class="check-desc">Domain Privacy</span></div>
+                                <div class="check-item">Third-Party Requests <span class="check-desc">External Calls</span></div>
+                                <div class="check-item">Third-Party Resources <span class="check-desc">External Dependencies</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Accessibility & Mobile -->
+                        <div class="check-category" data-category="accessibility">
+                            <div class="category-header">
+                                <div class="category-title">
+                                    <div class="category-icon accessibility">
+                                        <i class="fas fa-universal-access"></i>
+                                    </div>
+                                    Accessibility & Mobile (5)
+                                </div>
+                                <div class="category-toggle active" data-category="accessibility"></div>
+                            </div>
+                            <div class="check-list">
+                                <div class="check-item">Accessibility Score <span class="check-desc">WCAG Compliance</span></div>
+                                <div class="check-item">Mobile Friendly <span class="check-desc">Responsive Design</span></div>
+                                <div class="check-item">AMP Compatibility <span class="check-desc">Mobile Pages</span></div>
+                                <div class="check-item">Internationalization <span class="check-desc">i18n Support</span></div>
+                                <div class="check-item">Browser Compatibility <span class="check-desc">Cross-Browser Support</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Technical & Infrastructure -->
+                        <div class="check-category" data-category="technical">
+                            <div class="category-header">
+                                <div class="category-title">
+                                    <div class="category-icon technical">
+                                        <i class="fas fa-cogs"></i>
+                                    </div>
+                                    Technical & Infrastructure (4)
+                                </div>
+                                <div class="category-toggle active" data-category="technical"></div>
+                            </div>
+                            <div class="check-list">
+                                <div class="check-item">Content-Type Headers <span class="check-desc">MIME Type Analysis</span></div>
+                                <div class="check-item">CMS Detection <span class="check-desc">Platform Identification</span></div>
+                                <div class="check-item">Client-Side Rendering <span class="check-desc">JavaScript Framework</span></div>
+                                <div class="check-item">Deprecated Libraries <span class="check-desc">Outdated Dependencies</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analyze-btn-container">
+                    <button type="submit" class="analyze-btn" id="analyzeBtn">
+                        <i class="fas fa-rocket"></i>
+                        <span>Start Analysis</span>
+                        <div class="btn-shine"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h3 class="results-title">Analysis Results</h3>
+                <div class="results-summary" id="resultsSummary"></div>
+            </div>
+            <div class="results-grid" id="resultsGrid"></div>
+        </div>
+
+        <!-- Documentation Links -->
+        <div class="docs-section">
+            <a href="/api/docs" class="doc-card">
+                <div class="doc-card-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3 class="doc-card-title">Interactive API Docs</h3>
+                <p class="doc-card-description">
+                    Swagger UI with live testing capabilities and comprehensive API exploration.
+                </p>
+                <ul class="doc-card-features">
                     <li>Test all endpoints interactively</li>
                     <li>View request/response schemas</li>
                     <li>Authentication support</li>
@@ -263,10 +2345,15 @@
                 </ul>
             </a>
 
-            <a href="/api/redoc" class="nav-card">
-                <h3>📖 ReDoc Documentation</h3>
-                <p>Clean, comprehensive API reference</p>
-                <ul class="features">
+            <a href="/api/redoc" class="doc-card">
+                <div class="doc-card-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h3 class="doc-card-title">ReDoc Documentation</h3>
+                <p class="doc-card-description">
+                    Clean, comprehensive API reference with beautiful formatting.
+                </p>
+                <ul class="doc-card-features">
                     <li>Beautiful, readable format</li>
                     <li>Complete endpoint documentation</li>
                     <li>Code examples in multiple languages</li>
@@ -274,133 +2361,1028 @@
                 </ul>
             </a>
 
-            <a href="swagger.html" class="nav-card">
-                <h3>🎨 Custom Swagger UI</h3>
-                <p>Enhanced documentation interface</p>
-                <ul class="features">
-                    <li>Custom styling and branding</li>
-                    <li>Advanced filtering options</li>
-                    <li>Enhanced code examples</li>
-                    <li>Additional helper tools</li>
-                </ul>
-            </a>
-
-            <a href="/api/openapi.json" class="nav-card">
-                <h3>⚙️ OpenAPI Schema</h3>
-                <p>Raw API specification for integration</p>
-                <ul class="features">
-                    <li>Machine-readable API spec</li>
-                    <li>Client code generation</li>
-                    <li>Third-party tool integration</li>
-                    <li>API validation schemas</li>
+            <a href="https://hub.docker.com/r/fabriziosalmi/website-monitor" class="doc-card" target="_blank">
+                <div class="doc-card-icon">
+                    <i class="fab fa-docker"></i>
+                </div>
+                <h3 class="doc-card-title">Docker Hub</h3>
+                <p class="doc-card-description">
+                    Ready-to-use Docker image for quick deployment and containerized usage.
+                </p>
+                <ul class="doc-card-features">
+                    <li>Pre-built Docker image</li>
+                    <li>Easy deployment</li>
+                    <li>Container orchestration ready</li>
+                    <li>Production optimized</li>
                 </ul>
             </a>
         </div>
+    </div>
 
-        <div class="endpoints-section">
-            <h2>🎯 Key API Endpoints</h2>
-            
-            <div class="endpoint-group">
-                <h3>Core Monitoring</h3>
-                <div class="endpoint">
-                    <span class="endpoint-method post">POST</span>
-                    <span class="endpoint-path">/monitor</span>
-                    Run comprehensive checks on multiple websites
-                </div>
-                <div class="endpoint">
-                    <span class="endpoint-method get">GET</span>
-                    <span class="endpoint-path">/monitor/single</span>
-                    Quick single website analysis
-                </div>
-                <div class="endpoint">
-                    <span class="endpoint-method get">GET</span>
-                    <span class="endpoint-path">/checks</span>
-                    List all available security & performance checks
-                </div>
-            </div>
-
-            <div class="endpoint-group">
-                <h3>Individual Checks (53+ Available)</h3>
-                <div class="endpoint">
-                    <span class="endpoint-method get">GET</span>
-                    <span class="endpoint-path">/check/ssl_cert</span>
-                    SSL certificate validation and analysis
-                </div>
-                <div class="endpoint">
-                    <span class="endpoint-method get">GET</span>
-                    <span class="endpoint-path">/check/pagespeed_performances</span>
-                    Google PageSpeed Insights integration
-                </div>
-                <div class="endpoint">
-                    <span class="endpoint-method get">GET</span>
-                    <span class="endpoint-path">/check/security_headers</span>
-                    Security headers compliance check
-                </div>
-                <div class="endpoint">
-                    <span class="endpoint-method get">GET</span>
-                    <span class="endpoint-path">/check/accessibility</span>
-                    Accessibility compliance validation
-                </div>
-            </div>
-
-            <div class="endpoint-group">
-                <h3>Advanced Features</h3>
-                <div class="endpoint">
-                    <span class="endpoint-method post">POST</span>
-                    <span class="endpoint-path">/monitor/async</span>
-                    Background monitoring with task tracking
-                </div>
-                <div class="endpoint">
-                    <span class="endpoint-method post">POST</span>
-                    <span class="endpoint-path">/generate-report</span>
-                    Generate comprehensive monitoring reports
-                </div>
-                <div class="endpoint">
-                    <span class="endpoint-method get">GET</span>
-                    <span class="endpoint-path">/health</span>
-                    API health status and system information
-                </div>
-            </div>
-        </div>
-
-        <div class="quick-start">
-            <h2>⚡ Quick Start Examples</h2>
-            
-            <h3>Single Website Check</h3>
-            <div class="code-block">
-<span class="comment"># Check a single website with all available tests</span>
-<span class="keyword">curl</span> <span class="string">"http://localhost:8000/monitor/single?website=example.com"</span>
-            </div>
-
-            <h3>Specific Security Check</h3>
-            <div class="code-block">
-<span class="comment"># Run SSL certificate check only</span>
-<span class="keyword">curl</span> <span class="string">"http://localhost:8000/check/ssl_cert?website=example.com"</span>
-            </div>
-
-            <h3>Batch Monitoring</h3>
-            <div class="code-block">
-<span class="comment"># Monitor multiple websites</span>
-<span class="keyword">curl</span> -X <span class="string">POST</span> <span class="string">"http://localhost:8000/monitor"</span> \
-  -H <span class="string">"Content-Type: application/json"</span> \
-  -d <span class="string">'{"websites":["example.com","google.com"]}'</span>
-            </div>
-
-            <h3>Generate Report</h3>
-            <div class="code-block">
-<span class="comment"># Generate comprehensive HTML report</span>
-<span class="keyword">curl</span> -X <span class="string">POST</span> <span class="string">"http://localhost:8000/generate-report"</span> \
-  -H <span class="string">"Content-Type: application/json"</span> \
-  -d <span class="string">'{"websites":["example.com"],"output_format":"html"}'</span>
-            </div>
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-content">
+            <p>
+                Made with ❤️ by 
+                <a href="https://github.com/fabriziosalmi" target="_blank">Fabrizio Salmi</a>
+                • 
+                <a href="https://github.com/fabriziosalmi/websites-monitor" target="_blank">
+                    <i class="fab fa-github"></i> View on GitHub
+                </a>
+            </p>
         </div>
     </div>
-    
-    <div style="text-align: center; margin-top: 40px; padding: 20px; border-top: 1px solid #e9ecef; color: #6c757d;">
-        <p>Made with ❤️ by <a href="https://github.com/fabriziosalmi" target="_blank" style="color: #4a90e2; text-decoration: none;">Fabrizio Salmi</a> • 
-        <a href="https://github.com/fabriziosalmi/websites-monitor" target="_blank" style="color: #4a90e2; text-decoration: none;">
-            <img src="https://img.shields.io/badge/source-GitHub-181717?logo=github" alt="GitHub" style="vertical-align: middle;">
-        </a></p>
-    </div>
+
+    <script>
+        // Enhanced Website analyzer functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const analyzerForm = document.getElementById('analyzerForm');
+            const websiteUrlInput = document.getElementById('websiteUrl');
+            const urlFeedback = document.getElementById('urlFeedback');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const resultsSection = document.getElementById('resultsSection');
+            const resultsGrid = document.getElementById('resultsGrid');
+            const resultsSummary = document.getElementById('resultsSummary');
+
+            // URL validation and feedback
+            function validateURL(url) {
+                try {
+                    // Add protocol if missing
+                    if (!url.match(/^https?:\/\//)) {
+                        url = 'https://' + url;
+                    }
+                    
+                    const urlObj = new URL(url);
+                    return {
+                        isValid: true,
+                        normalizedUrl: urlObj.href,
+                        message: `✓ Valid URL: ${urlObj.hostname}`
+                    };
+                } catch (e) {
+                    return {
+                        isValid: false,
+                        normalizedUrl: url,
+                        message: '✗ Please enter a valid URL (e.g., example.com or https://example.com)'
+                    };
+                }
+            }
+
+            // Real-time URL validation (without auto-replacing input value)
+            let validationTimeout;
+            websiteUrlInput.addEventListener('input', function() {
+                const url = this.value.trim();
+                
+                // Clear previous timeout to debounce validation
+                clearTimeout(validationTimeout);
+                
+                if (url === '') {
+                    urlFeedback.classList.remove('show', 'valid', 'invalid');
+                    return;
+                }
+
+                // Debounce validation to improve performance
+                validationTimeout = setTimeout(() => {
+                    const validation = validateURL(url);
+                    urlFeedback.textContent = validation.message;
+                    urlFeedback.classList.add('show');
+                    urlFeedback.classList.remove('valid', 'invalid');
+                    urlFeedback.classList.add(validation.isValid ? 'valid' : 'invalid');
+                }, 300); // Wait 300ms after user stops typing
+
+                // Don't auto-replace the input value while typing
+                // This prevents cursor jumping and maintains user input
+            });
+
+            // Normalize URL when user finishes typing (on blur)
+            let blurTimeout;
+            websiteUrlInput.addEventListener('blur', function() {
+                // Clear any existing timeout to prevent conflicts
+                clearTimeout(blurTimeout);
+                
+                blurTimeout = setTimeout(() => {
+                    const url = this.value.trim();
+                    
+                    if (url === '') return;
+
+                    const validation = validateURL(url);
+                    if (validation.isValid) {
+                        this.value = validation.normalizedUrl;
+                    }
+                }, 100); // Small delay to ensure smooth UX
+            });
+
+            // Category toggle functionality
+            document.querySelectorAll('.category-toggle').forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    updateSelectedChecksCount();
+                });
+            });
+
+            // Master toggle functionality
+            const masterToggle = document.getElementById('toggleAllChecks');
+            if (masterToggle) {
+                masterToggle.addEventListener('click', function() {
+                    const activeCategories = document.querySelectorAll('.category-toggle.active');
+                    const allCategories = document.querySelectorAll('.category-toggle');
+                    const isAllActive = activeCategories.length === allCategories.length;
+                    
+                    // Toggle all category toggles
+                    document.querySelectorAll('.category-toggle').forEach(toggle => {
+                        if (isAllActive) {
+                            toggle.classList.remove('active');
+                        } else {
+                            toggle.classList.add('active');
+                        }
+                    });
+                    
+                    updateSelectedChecksCount();
+                });
+            }
+
+            // Function to update selected checks count
+            function updateSelectedChecksCount() {
+                const activeCategories = document.querySelectorAll('.category-toggle.active');
+                let totalChecks = 0;
+                
+                activeCategories.forEach(toggle => {
+                    const category = toggle.closest('.check-category');
+                    const categoryName = category.dataset.category;
+                    const checksCount = getCategoryCheckCount(categoryName);
+                    totalChecks += checksCount;
+                });
+                
+                // Update master toggle text
+                const masterToggleBtn = document.getElementById('toggleAllChecks');
+                const selectedCountElement = document.getElementById('selectedCount');
+                
+                if (masterToggleBtn) {
+                    const allCategories = document.querySelectorAll('.category-toggle');
+                    const isAllSelected = activeCategories.length === allCategories.length;
+                    const buttonText = isAllSelected ? 'Deselect All Checks' : 'Select All Checks';
+                    masterToggleBtn.innerHTML = `<i class="fas fa-check-double"></i> ${buttonText} (53)`;
+                }
+                
+                if (selectedCountElement) {
+                    selectedCountElement.textContent = totalChecks;
+                }
+            }
+
+            // Function to get check count for each category
+            function getCategoryCheckCount(category) {
+                const counts = {
+                    'security': 10,
+                    'performance': 8,
+                    'seo': 9,
+                    'domain': 7,
+                    'privacy': 10,
+                    'accessibility': 5,
+                    'technical': 4
+                };
+                return counts[category] || 0;
+            }
+
+            // Function to get actual check names for each category
+            function getCategoryChecks(category) {
+                const categoryChecks = {
+                    'security': [
+                        'ssl_cert',
+                        'ssl_cipher_strength',
+                        'security_headers',
+                        'hsts',
+                        'xss_protection',
+                        'cors_headers',
+                        'mixed_content',
+                        'subresource_integrity',
+                        'rate_limiting',
+                        'data_leakage'
+                    ],
+                    'performance': [
+                        'pagespeed_performances',
+                        'website_load_time',
+                        'server_response_time',
+                        'brotli_compression',
+                        'asset_minification',
+                        'cdn',
+                        'redirect_chains',
+                        'redirects'
+                    ],
+                    'seo': [
+                        'sitemap',
+                        'robot_txt',
+                        'open_graph_protocol',
+                        'alt_tags',
+                        'semantic_markup',
+                        'url_canonicalization',
+                        'favicon',
+                        'broken_links',
+                        'external_links'
+                    ],
+                    'domain': [
+                        'domain_expiration',
+                        'dnssec',
+                        'dns_blacklist',
+                        'domain_breach',
+                        'domainsblacklists_blacklist',
+                        'subdomain_enumeration',
+                        'email_domain'
+                    ],
+                    'privacy': [
+                        'cookie_policy',
+                        'cookie_flags',
+                        'cookie_duration',
+                        'cookie_samesite_attribute',
+                        'ad_and_tracking',
+                        'floc',
+                        'privacy_exposure',
+                        'privacy_protected_whois',
+                        'third_party_requests',
+                        'third_party_resources'
+                    ],
+                    'accessibility': [
+                        'accessibility',
+                        'mobile_friendly',
+                        'amp_compatibility',
+                        'internationalization',
+                        'browser_compatibility'
+                    ],
+                    'technical': [
+                        'content_type_headers',
+                        'cms_used',
+                        'clientside_rendering',
+                        'deprecated_libraries'
+                    ]
+                };
+                return categoryChecks[category] || [];
+            }
+
+            // Enhanced form submission
+            analyzerForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const websiteUrl = websiteUrlInput.value.trim();
+                
+                // Validate URL before submission
+                const validation = validateURL(websiteUrl);
+                if (!validation.isValid) {
+                    urlFeedback.textContent = validation.message;
+                    urlFeedback.classList.add('show', 'invalid');
+                    urlFeedback.classList.remove('valid');
+                    websiteUrlInput.focus();
+                    return;
+                }
+                
+                // Use normalized URL for analysis
+                const normalizedUrl = validation.normalizedUrl;
+                websiteUrlInput.value = normalizedUrl; // Update input with normalized URL
+                
+                // Disable form and show loading
+                analyzeBtn.disabled = true;
+                analyzeBtn.innerHTML = '<div class="spinner"></div> Analyzing...';
+                
+                // Show results section with loading
+                resultsSection.style.display = 'block';
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+                resultsGrid.innerHTML = '<div class="loading"><div class="spinner"></div> Running comprehensive analysis...</div>';
+                resultsSummary.innerHTML = '';
+                
+                try {
+                    // Get selected checks from active categories
+                    const selectedChecks = [];
+                    const activeCategories = document.querySelectorAll('.category-toggle.active');
+                    
+                    activeCategories.forEach(toggle => {
+                        const category = toggle.closest('.check-category');
+                        const categoryName = category.dataset.category;
+                        const categoryChecks = getCategoryChecks(categoryName);
+                        selectedChecks.push(...categoryChecks);
+                    });
+
+                    if (selectedChecks.length === 0) {
+                        throw new Error('Please select at least one category to analyze');
+                    }
+                    
+                    // Make API call to analyze website
+                    const response = await fetch('/monitor/single', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            website: normalizedUrl,
+                            checks: selectedChecks
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const results = await response.json();
+                    displayResults(results, validation.normalizedUrl);
+                    
+                } catch (error) {
+                    console.error('Analysis failed:', error);
+                    resultsGrid.innerHTML = `
+                        <div class="result-card error">
+                            <div class="result-header">
+                                <span class="result-name">Analysis Failed</span>
+                                <span class="result-status">❌</span>
+                            </div>
+                            <div class="result-description">
+                                Unable to analyze the website. Please check the URL and try again.
+                                Error: ${error.message}
+                            </div>
+                        </div>
+                    `;
+                } finally {
+                    // Re-enable form
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.innerHTML = '<i class="fas fa-rocket"></i> <span>Start Analysis</span> <div class="btn-shine"></div>';
+                }
+            });
+
+            // Enhanced results display
+            function displayResults(data, websiteUrl) {
+                let passCount = 0;
+                let warnCount = 0;
+                let failCount = 0;
+                let totalChecks = 0;
+                
+                // Clear previous results
+                resultsGrid.innerHTML = '';
+                
+                // Remove any existing headers and filters
+                const existingHeader = document.querySelector('.results-header');
+                const existingFilter = document.querySelector('.results-filter');
+                if (existingHeader) existingHeader.remove();
+                if (existingFilter) existingFilter.remove();
+                
+                // Parse API response format
+                const results = data.results || data;
+                const executionTime = data.execution_time || 0;
+                const timestamp = data.timestamp || new Date().toISOString();
+                
+                // Create enhanced results header
+                const resultsHeader = document.createElement('div');
+                resultsHeader.className = 'results-header';
+                resultsHeader.innerHTML = `
+                    <div class="results-title-group">
+                        <h3 class="results-title">
+                            <i class="fas fa-shield-alt"></i>
+                            Security & Performance Analysis
+                        </h3>
+                        <div class="results-url">
+                            <i class="fas fa-globe"></i>
+                            <span>${new URL(websiteUrl).hostname}</span>
+                            <span class="url-protocol">${new URL(websiteUrl).protocol}</span>
+                        </div>
+                        <div class="results-meta">
+                            <span class="execution-time">
+                                <i class="fas fa-clock"></i>
+                                Completed in ${executionTime.toFixed(2)}s
+                            </span>
+                            <span class="timestamp">
+                                <i class="fas fa-calendar"></i>
+                                ${new Date(timestamp).toLocaleString()}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="results-actions">
+                        <button class="action-btn secondary" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print Report
+                        </button>
+                        <button class="action-btn secondary" onclick="exportResults()">
+                            <i class="fas fa-download"></i> Export JSON
+                        </button>
+                        <button class="action-btn primary" onclick="shareResults()">
+                            <i class="fas fa-share"></i> Share Results
+                        </button>
+                    </div>
+                `;
+                
+                resultsSection.insertBefore(resultsHeader, resultsGrid);
+                
+                // Process results with enhanced parsing
+                if (Array.isArray(results)) {
+                    results.forEach(resultItem => {
+                        if (resultItem.results) {
+                            // Handle grouped results format
+                            resultItem.results.forEach(checkResult => {
+                                const status = getEnhancedStatusFromResult(checkResult);
+                                const card = createEnhancedResultCard(resultItem.check_name, checkResult, status);
+                                resultsGrid.appendChild(card);
+                                updateCounts(status);
+                                totalChecks++;
+                            });
+                        } else {
+                            // Handle individual result format
+                            const status = getEnhancedStatusFromResult(resultItem);
+                            const card = createEnhancedResultCard(resultItem.check_name, resultItem, status);
+                            resultsGrid.appendChild(card);
+                            updateCounts(status);
+                            totalChecks++;
+                        }
+                    });
+                } else {
+                    // Handle object format
+                    Object.entries(results).forEach(([checkName, result]) => {
+                        const status = getEnhancedStatusFromResult(result);
+                        const card = createEnhancedResultCard(checkName, result, status);
+                        resultsGrid.appendChild(card);
+                        updateCounts(status);
+                        totalChecks++;
+                    });
+                }
+                
+                function updateCounts(status) {
+                    if (status === 'success') passCount++;
+                    else if (status === 'warning') warnCount++;
+                    else if (status === 'error') failCount++;
+                }
+                
+                // Calculate security score
+                const securityScore = Math.round((passCount / totalChecks) * 100) || 0;
+                const scoreColor = securityScore >= 80 ? 'success' : securityScore >= 60 ? 'warning' : 'error';
+                
+                // Update enhanced summary
+                resultsSummary.innerHTML = `
+                    <div class="summary-score ${scoreColor}">
+                        <div class="score-circle">
+                            <div class="score-number">${securityScore}</div>
+                            <div class="score-label">Score</div>
+                        </div>
+                        <div class="score-description">
+                            <div class="score-title">${getScoreTitle(securityScore)}</div>
+                            <div class="score-subtitle">${getScoreDescription(securityScore)}</div>
+                        </div>
+                    </div>
+                    <div class="summary-stats">
+                        <div class="summary-item success">
+                            <div class="summary-icon">✓</div>
+                            <div class="summary-content">
+                                <div class="summary-number">${passCount}</div>
+                                <div class="summary-label">Passed</div>
+                            </div>
+                        </div>
+                        <div class="summary-item warning">
+                            <div class="summary-icon">⚠</div>
+                            <div class="summary-content">
+                                <div class="summary-number">${warnCount}</div>
+                                <div class="summary-label">Warnings</div>
+                            </div>
+                        </div>
+                        <div class="summary-item error">
+                            <div class="summary-icon">✗</div>
+                            <div class="summary-content">
+                                <div class="summary-number">${failCount}</div>
+                                <div class="summary-label">Failed</div>
+                            </div>
+                        </div>
+                        <div class="summary-item total">
+                            <div class="summary-icon">#</div>
+                            <div class="summary-content">
+                                <div class="summary-number">${totalChecks}</div>
+                                <div class="summary-label">Total</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Add enhanced results filtering and search
+                addEnhancedFiltering();
+                
+                // Add scroll animation
+                resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            function addEnhancedFiltering() {
+                const filterContainer = document.createElement('div');
+                filterContainer.className = 'results-filter enhanced';
+                filterContainer.innerHTML = `
+                    <div class="filter-section">
+                        <div class="filter-group">
+                            <label class="filter-label">Status:</label>
+                            <button class="filter-btn active" data-filter="all" data-type="status">All</button>
+                            <button class="filter-btn success" data-filter="success" data-type="status">Passed</button>
+                            <button class="filter-btn warning" data-filter="warning" data-type="status">Warnings</button>
+                            <button class="filter-btn error" data-filter="error" data-type="status">Failed</button>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Category:</label>
+                            <button class="filter-btn active" data-filter="all" data-type="category">All</button>
+                            <button class="filter-btn" data-filter="security" data-type="category">Security</button>
+                            <button class="filter-btn" data-filter="performance" data-type="category">Performance</button>
+                            <button class="filter-btn" data-filter="seo" data-type="category">SEO</button>
+                            <button class="filter-btn" data-filter="privacy" data-type="category">Privacy</button>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Priority:</label>
+                            <button class="filter-btn active" data-filter="all" data-type="priority">All</button>
+                            <button class="filter-btn critical" data-filter="critical" data-type="priority">Critical</button>
+                            <button class="filter-btn high" data-filter="high" data-type="priority">High</button>
+                            <button class="filter-btn medium" data-filter="medium" data-type="priority">Medium</button>
+                        </div>
+                    </div>
+                    
+                    <div class="search-section">
+                        <div class="search-input-group">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="resultsSearch" placeholder="Search checks..." />
+                            <button class="clear-search" onclick="clearSearch()" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                resultsGrid.parentNode.insertBefore(filterContainer, resultsGrid);
+
+                // Filter functionality
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const filterType = this.dataset.type;
+                        const filterValue = this.dataset.filter;
+                        
+                        // Update active state within the same filter group
+                        const filterGroup = this.closest('.filter-group');
+                        filterGroup.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        applyFilters();
+                    });
+                });
+                
+                // Search functionality
+                const searchInput = document.getElementById('resultsSearch');
+                const clearButton = document.querySelector('.clear-search');
+                
+                searchInput.addEventListener('input', function() {
+                    clearButton.style.display = this.value ? 'block' : 'none';
+                    applyFilters();
+                });
+                
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        this.value = '';
+                        clearButton.style.display = 'none';
+                        applyFilters();
+                    }
+                });
+            }
+            
+            function applyFilters() {
+                const statusFilter = document.querySelector('.filter-btn[data-type="status"].active')?.dataset.filter || 'all';
+                const categoryFilter = document.querySelector('.filter-btn[data-type="category"].active')?.dataset.filter || 'all';
+                const priorityFilter = document.querySelector('.filter-btn[data-type="priority"].active')?.dataset.filter || 'all';
+                const searchTerm = document.getElementById('resultsSearch')?.value.toLowerCase() || '';
+                
+                let visibleCount = 0;
+                
+                document.querySelectorAll('.result-card').forEach(card => {
+                    const cardStatus = card.classList.contains('success') ? 'success' : 
+                                     card.classList.contains('warning') ? 'warning' : 'error';
+                    const cardCategory = card.querySelector('.result-category')?.textContent.toLowerCase() || '';
+                    const cardPriority = card.querySelector('.result-priority')?.textContent.toLowerCase() || '';
+                    const cardName = card.querySelector('.result-name')?.textContent.toLowerCase() || '';
+                    const cardDescription = card.querySelector('.result-description')?.textContent.toLowerCase() || '';
+                    
+                    const statusMatch = statusFilter === 'all' || cardStatus === statusFilter;
+                    const categoryMatch = categoryFilter === 'all' || cardCategory === categoryFilter;
+                    const priorityMatch = priorityFilter === 'all' || cardPriority === priorityFilter;
+                    const searchMatch = searchTerm === '' || cardName.includes(searchTerm) || cardDescription.includes(searchTerm);
+                    
+                    if (statusMatch && categoryMatch && priorityMatch && searchMatch) {
+                        card.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Update visible count
+                updateFilterCount(visibleCount);
+            }
+            
+            function updateFilterCount(count) {
+                const total = document.querySelectorAll('.result-card').length;
+                let countDisplay = document.querySelector('.filter-count');
+                
+                if (!countDisplay) {
+                    countDisplay = document.createElement('div');
+                    countDisplay.className = 'filter-count';
+                    document.querySelector('.results-filter').appendChild(countDisplay);
+                }
+                
+                countDisplay.textContent = `Showing ${count} of ${total} checks`;
+            }
+            
+            function clearSearch() {
+                document.getElementById('resultsSearch').value = '';
+                document.querySelector('.clear-search').style.display = 'none';
+                applyFilters();
+            }
+            
+            // Toggle result details
+            window.toggleResultDetails = function(button) {
+                const card = button.closest('.result-card');
+                const details = card.querySelector('.result-details');
+                const icon = button.querySelector('i');
+                
+                if (details.style.display === 'none' || !details.style.display) {
+                    details.style.display = 'block';
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                    card.classList.add('expanded');
+                } else {
+                    details.style.display = 'none';
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                    card.classList.remove('expanded');
+                }
+            };
+            
+            // Learn more functionality
+            window.learnMore = function(checkName) {
+                const learnMoreUrls = {
+                    'ssl_cert': 'https://letsencrypt.org/',
+                    'security_headers': 'https://securityheaders.com/',
+                    'hsts': 'https://hstspreload.org/',
+                    'xss_protection': 'https://owasp.org/www-community/attacks/xss/',
+                    'pagespeed': 'https://developers.google.com/speed/pagespeed/insights/',
+                    'sitemap': 'https://developers.google.com/search/docs/advanced/sitemaps/overview',
+                    'robots': 'https://developers.google.com/search/docs/advanced/robots/intro',
+                    'mobile_friendly': 'https://developers.google.com/search/mobile-sites/',
+                    'accessibility': 'https://www.w3.org/WAI/WCAG21/quickref/'
+                };
+                
+                const url = learnMoreUrls[checkName] || `https://web.dev/learn/`;
+                window.open(url, '_blank');
+            };
+            
+            // Retry specific check
+            window.retryCheck = function(checkName) {
+                // This would implement retry functionality
+                console.log(`Retrying check: ${checkName}`);
+                // Could make an API call to retry just this specific check
+            };
+            
+            // Share results functionality
+            window.shareResults = function() {
+                const websiteUrl = document.querySelector('.results-url span')?.textContent || '';
+                const score = document.querySelector('.score-number')?.textContent || '0';
+                const total = document.querySelectorAll('.result-card').length;
+                const passed = document.querySelectorAll('.result-card.success').length;
+                
+                const shareText = `Website Security Analysis for ${websiteUrl}\n` +
+                                `Security Score: ${score}/100\n` +
+                                `Checks Passed: ${passed}/${total}\n` +
+                                `Analyzed with Website Monitor\n` +
+                                window.location.href;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Website Security Analysis Results',
+                        text: shareText,
+                        url: window.location.href
+                    });
+                } else {
+                    // Fallback: copy to clipboard
+                    navigator.clipboard.writeText(shareText).then(() => {
+                        alert('Results copied to clipboard!');
+                    });
+                }
+            };
+            
+            function getEnhancedStatusFromResult(result) {
+                try {
+                    // Handle different result formats
+                    let resultStr = '';
+                    
+                    if (typeof result === 'string') {
+                        resultStr = result;
+                    } else if (typeof result === 'object' && result !== null) {
+                        if (result.result) {
+                            resultStr = typeof result.result === 'string' ? result.result : String(result.result);
+                        } else if (result.status) {
+                            resultStr = String(result.status);
+                        } else {
+                            resultStr = JSON.stringify(result);
+                        }
+                    } else {
+                        resultStr = String(result || '');
+                    }
+                    
+                    // Safely convert to string and check status indicators
+                    const safeStr = String(resultStr);
+                    const lowerStr = safeStr.toLowerCase();
+                    
+                    if (safeStr.includes('🟢') || lowerStr.includes('pass') || lowerStr.includes('valid') || lowerStr.includes('success')) return 'success';
+                    if (safeStr.includes('🟡') || safeStr.includes('🟠') || lowerStr.includes('warn') || lowerStr.includes('warning')) return 'warning';
+                    if (safeStr.includes('🔴') || lowerStr.includes('fail') || lowerStr.includes('error') || lowerStr.includes('invalid')) return 'error';
+                    if (safeStr.includes('⚪') || lowerStr.includes('timeout') || lowerStr.includes('not found')) return 'error';
+                    
+                    // Handle status field specifically
+                    if (typeof result === 'object' && result !== null) {
+                        if (result.status === 'completed' && result.result) {
+                            return getEnhancedStatusFromResult(result.result);
+                        }
+                        if (result.status === 'error') return 'error';
+                    }
+                    
+                    return 'warning'; // Default for unclear results
+                } catch (e) {
+                    console.warn('Error processing result status:', e);
+                    return 'error';
+                }
+            }
+            
+            function createEnhancedResultCard(checkName, result, status) {
+                const card = document.createElement('div');
+                card.className = `result-card ${status}`;
+                card.setAttribute('data-check', checkName);
+                
+                const statusIcon = {
+                    success: { icon: '✓', color: '#10b981' },
+                    warning: { icon: '⚠', color: '#f59e0b' },
+                    error: { icon: '✗', color: '#ef4444' }
+                }[status] || { icon: '?', color: '#6b7280' };
+                
+                const checkTitle = formatCheckName(checkName);
+                const category = getEnhancedCategoryFromCheck(checkName);
+                const priority = getPriorityFromCheck(checkName, status);
+                const recommendation = getRecommendation(checkName, status);
+                
+                // Extract clean description - handle different result formats safely
+                let description = '';
+                let technicalDetails = '';
+                
+                try {
+                    if (typeof result === 'object' && result !== null) {
+                        if (result.result) {
+                            if (typeof result.result === 'string') {
+                                description = result.result.replace(/[🟢🟡🟠🔴⚪]/g, '').trim();
+                            } else {
+                                // Convert non-string result to string before processing
+                                const resultStr = String(result.result);
+                                description = resultStr.replace(/[🟢🟡🟠🔴⚪]/g, '').trim();
+                            }
+                        } else if (result.status) {
+                            description = String(result.status).replace(/[🟢🟡🟠🔴⚪]/g, '').trim();
+                        } else {
+                            description = JSON.stringify(result, null, 2);
+                        }
+                        technicalDetails = String(result.error || result.details || '');
+                    } else if (typeof result === 'string') {
+                        description = result.replace(/[🟢🟡🟠🔴⚪]/g, '').trim();
+                    } else {
+                        description = String(result || 'No result data available');
+                    }
+                } catch (e) {
+                    console.warn('Error processing result for', checkName, ':', e);
+                    description = 'Error processing result data';
+                    technicalDetails = String(result);
+                }
+                
+                // Ensure description is not empty
+                if (!description || description.trim() === '') {
+                    description = 'Check completed';
+                }
+                
+                card.innerHTML = `
+                    <div class="result-card-header">
+                        <div class="result-title-group">
+                            <div class="result-status-icon" style="color: ${statusIcon.color}">
+                                ${statusIcon.icon}
+                            </div>
+                            <div class="result-name-group">
+                                <h4 class="result-name">${checkTitle}</h4>
+                                <div class="result-meta-tags">
+                                    <span class="result-category ${category.toLowerCase()}">${category}</span>
+                                    <span class="result-priority ${priority.toLowerCase()}">${priority}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="expand-btn" onclick="toggleResultDetails(this)" aria-label="Toggle details">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="result-description">
+                        ${description}
+                    </div>
+                    
+                    <div class="result-details" style="display: none;">
+                        ${technicalDetails ? `
+                            <div class="technical-details">
+                                <h5>Technical Details</h5>
+                                <pre><code>${technicalDetails}</code></pre>
+                            </div>
+                        ` : ''}
+                        
+                        ${recommendation ? `
+                            <div class="recommendation">
+                                <h5>💡 Recommendation</h5>
+                                <p>${recommendation}</p>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="result-actions">
+                            <button class="action-btn small" onclick="learnMore('${checkName}')">
+                                <i class="fas fa-info-circle"></i> Learn More
+                            </button>
+                            <button class="action-btn small" onclick="retryCheck('${checkName}')">
+                                <i class="fas fa-redo"></i> Retry Check
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="result-footer">
+                        <span class="result-time">
+                            <i class="fas fa-clock"></i>
+                            ${new Date().toLocaleTimeString()}
+                        </span>
+                        <span class="result-impact ${getImpactLevel(checkName, status)}">
+                            Impact: ${getImpactLevel(checkName, status)}
+                        </span>
+                    </div>
+                `;
+                
+                return card;
+            }
+            
+            function formatCheckName(checkName) {
+                return checkName
+                    .replace(/_/g, ' ')
+                    .replace(/\b\w/g, l => l.toUpperCase())
+                    .replace(/Ssl/g, 'SSL')
+                    .replace(/Xss/g, 'XSS')
+                    .replace(/Cms/g, 'CMS')
+                    .replace(/Cdn/g, 'CDN')
+                    .replace(/Dns/g, 'DNS')
+                    .replace(/Seo/g, 'SEO')
+                    .replace(/Amp/g, 'AMP')
+                    .replace(/Cors/g, 'CORS')
+                    .replace(/Hsts/g, 'HSTS');
+            }
+            
+            function getEnhancedCategoryFromCheck(checkName) {
+                const checkLower = checkName.toLowerCase();
+                
+                if (['ssl', 'security', 'hsts', 'xss', 'cors', 'breach', 'blacklist', 'cipher', 'headers'].some(k => checkLower.includes(k))) 
+                    return 'Security';
+                if (['pagespeed', 'load', 'performance', 'cdn', 'brotli', 'minification', 'compression', 'speed'].some(k => checkLower.includes(k))) 
+                    return 'Performance';
+                if (['seo', 'sitemap', 'robot', 'opengraph', 'alt', 'semantic', 'meta'].some(k => checkLower.includes(k))) 
+                    return 'SEO';
+                if (['accessibility', 'mobile', 'internationalization', 'i18n', 'friendly'].some(k => checkLower.includes(k))) 
+                    return 'Accessibility';
+                if (['privacy', 'cookie', 'tracking', 'floc', 'whois', 'exposure'].some(k => checkLower.includes(k))) 
+                    return 'Privacy';
+                if (['domain', 'dns', 'subdomain', 'email', 'expiration'].some(k => checkLower.includes(k))) 
+                    return 'Domain';
+                
+                return 'General';
+            }
+            
+            function getPriorityFromCheck(checkName, status) {
+                const checkLower = checkName.toLowerCase();
+                const criticalChecks = ['ssl', 'security_headers', 'xss', 'breach', 'blacklist'];
+                const highChecks = ['hsts', 'cors', 'privacy', 'cookie', 'performance'];
+                
+                if (status === 'error') {
+                    if (criticalChecks.some(k => checkLower.includes(k))) return 'Critical';
+                    if (highChecks.some(k => checkLower.includes(k))) return 'High';
+                    return 'Medium';
+                }
+                
+                if (status === 'warning') return 'Medium';
+                return 'Low';
+            }
+            
+            function getImpactLevel(checkName, status) {
+                const checkLower = checkName.toLowerCase();
+                
+                if (status === 'error') {
+                    if (['ssl', 'security', 'breach', 'blacklist'].some(k => checkLower.includes(k))) return 'high';
+                    if (['performance', 'speed', 'load'].some(k => checkLower.includes(k))) return 'medium';
+                    return 'low';
+                }
+                
+                return status === 'warning' ? 'medium' : 'low';
+            }
+            
+            function getRecommendation(checkName, status) {
+                const checkLower = checkName.toLowerCase();
+                const recommendations = {
+                    'ssl': 'Ensure your SSL certificate is valid and properly configured. Consider using Let\'s Encrypt for free SSL certificates.',
+                    'security_headers': 'Implement security headers like Content-Security-Policy, X-Frame-Options, and X-Content-Type-Options.',
+                    'hsts': 'Enable HTTP Strict Transport Security (HSTS) to force HTTPS connections.',
+                    'xss': 'Implement XSS protection headers and validate all user inputs.',
+                    'pagespeed': 'Optimize images, minify CSS/JS, enable compression, and use a CDN.',
+                    'sitemap': 'Create and submit an XML sitemap to help search engines index your site.',
+                    'robots': 'Add a robots.txt file to guide search engine crawlers.',
+                    'mobile': 'Ensure your website is mobile-responsive and passes Google\'s mobile-friendly test.',
+                    'accessibility': 'Follow WCAG guidelines to make your site accessible to all users.',
+                    'privacy': 'Implement a privacy policy and ensure GDPR compliance if applicable.',
+                    'cookie': 'Properly configure cookie flags (Secure, HttpOnly, SameSite) for security.'
+                };
+                
+                if (status === 'success') return null;
+                
+                for (const [key, rec] of Object.entries(recommendations)) {
+                    if (checkLower.includes(key)) return rec;
+                }
+                
+                return 'Review the check results and follow security best practices for this area.';
+            }
+            
+            function getScoreTitle(score) {
+                if (score >= 90) return 'Excellent Security';
+                if (score >= 80) return 'Good Security';
+                if (score >= 70) return 'Fair Security';
+                if (score >= 60) return 'Poor Security';
+                return 'Critical Issues';
+            }
+            
+            function getScoreDescription(score) {
+                if (score >= 90) return 'Your website demonstrates excellent security practices';
+                if (score >= 80) return 'Good security with minor improvements needed';
+                if (score >= 70) return 'Adequate security but several issues to address';
+                if (score >= 60) return 'Security concerns that should be addressed soon';
+                return 'Critical security issues require immediate attention';
+            }
+
+            // Export functionality
+            window.exportResults = function() {
+                const results = [];
+                document.querySelectorAll('.result-card').forEach(card => {
+                    const name = card.querySelector('.result-name').textContent;
+                    const status = card.querySelector('.result-status').textContent;
+                    const description = card.querySelector('.result-description').textContent;
+                    const category = card.querySelector('.result-category').textContent;
+                    
+                    results.push({ name, status, description, category });
+                });
+
+                const dataStr = JSON.stringify(results, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `website-analysis-${new Date().toISOString().slice(0, 10)}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+            };
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Ctrl/Cmd + Enter to submit form
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    if (websiteUrlInput.value.trim()) {
+                        analyzerForm.dispatchEvent(new Event('submit'));
+                    }
+                }
+
+                // Escape to clear results
+                if (e.key === 'Escape' && resultsSection.style.display === 'block') {
+                    resultsSection.style.display = 'none';
+                }
+            });
+
+            // Auto-focus URL input on page load
+            websiteUrlInput.focus();
+            
+            // Initialize selected checks count
+            updateSelectedChecksCount();
+            
+            // Smooth scrolling for navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Navbar scroll effect
+            const navbar = document.querySelector('.navbar');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 100) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
