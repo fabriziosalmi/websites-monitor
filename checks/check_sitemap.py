@@ -34,20 +34,23 @@ def check_sitemap(website):
     }
 
     try:
+        session = requests.Session()
+        session.headers.update(headers)
+        
         # Iterate through common sitemap paths
         for path in sitemap_paths:
-            response = requests.get(f"{website}{path}", headers=headers, timeout=10)
-            
-            # Check for a successful response
-            if response.status_code == 200 and '<urlset' in response.text.lower():
-                return "🟢"
+            try:
+                response = session.get(f"{website}{path}", timeout=10)
+                # Check for a successful response
+                if response.status_code == 200 and '<urlset' in response.text.lower():
+                    return "🟢"
+            except (Timeout, HTTPError):
+                # Move to the next path on specific errors
+                continue
         
         # If no sitemaps are found after checking all paths
         return "🔴"
     
-    except (Timeout, HTTPError) as e:
-        print(f"Timeout or HTTP error occurred while checking the sitemap for {website}: {e}")
-        return "🔴"
     except RequestException as e:
         print(f"Request-related error occurred while checking the sitemap for {website}: {e}")
         return "🔴"

@@ -1,0 +1,63 @@
+# Docker ignore file to reduce build context size
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Environment files
+.env
+.env.local
+.env.example
+
+# Logs
+*.log
+logs/
+monitor.log
+
+# Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.coverage
+.tox/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Reports (will be mounted as volume)
+README.md.backup
+reports/
+
+# Documentation
+docs/
+*.md
+
+# Tests
+tests/
+test_*.py
+
+# Node modules (if any)
+node_modules/
+npm-debug.log*
+
+# Backup files
+*.backup
+*.bak
+*.tmp

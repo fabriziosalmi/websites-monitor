@@ -55,7 +55,7 @@ logger = logging.getLogger(__name__)
 class Config:
     """Configuration class to store all settings."""
     websites: List[str]
-    output_file: str = "README.md"
+    output_file: str = "report.md"
     max_workers: int = 4
     timeout: int = 30
     log_file: str = "monitor.log"
