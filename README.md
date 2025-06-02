@@ -4,104 +4,162 @@
 
 This repository provides a framework to monitor the health and security of your websites, automatically generating a detailed report in markdown format on a daily basis. It performs various checks, including domain status, SSL certificate validity, security headers, and performance metrics, helping you keep your online presence secure and optimized.
 
+## Quick Start with Docker
+
+The easiest way to get started is using the pre-built Docker image from Docker Hub:
+
+```bash
+# Pull and run the latest image
+docker pull fabriziosalmi/website-monitor:latest
+docker run -it fabriziosalmi/website-monitor:latest
+```
+
+### Docker Environment Variables
+
+You can configure the tool using environment variables:
+
+```bash
+docker run -it \
+  -e GOOGLE_API_KEY=your_google_api_key \
+  -e GITHUB_TOKEN=your_github_token \
+  fabriziosalmi/website-monitor:latest
+```
+
+### Docker with Configuration File
+
+Mount your configuration file to customize settings:
+
+```bash
+docker run -it \
+  -v /path/to/your/config.yaml:/app/config.yaml \
+  fabriziosalmi/website-monitor:latest
+```
+
 ## Features
 
--   **Automated Daily Checks:** Runs daily using GitHub Actions.
--   **Comprehensive Analysis:** Performs a range of checks, including:
-    -   Domain breach detection
-    -   Domain expiration check
-    -   SSL certificate validation
-    -   DNS blacklist check (with smart policy filtering)
-    -   HSTS header check
-    -   XSS protection check
-    -   Redirect chain check
-    -   PageSpeed performance score
-    -   Website load time
-    -   Rate limiting check
-    -   CDN detection
-    -   Brotli compression check
-    -   Deprecated libraries check
-    -   Client-side rendering check
-    -    Mixed content check
-    -   Content-Type check
-    -    Internationalization check
-    -   FLoC check
-    -    AMP check
-    -   Robots.txt check
-    -   Sitemap check
-    -   Favicon check
-    -   Alt tag check
-    -   Open Graph check
-    -   Semantic Markup check
-    -   Ad Tracking check
-    -   WHOIS privacy check
-    -   Privacy exposure check
--   **Clear Report:** Generates a markdown-formatted report with results in a table, easily viewable on GitHub.
--   **Customizable:** Easily extendable to incorporate new checks or modify existing ones.
--   **Smart Filtering:** DNS blacklist checks now distinguish between actual threats and policy listings (shared hosting).
+The tool performs comprehensive website analysis including:
 
-## How to Use
+### Security Checks
 
-### Initial Setup
+-   **SSL/TLS Certificate validation** - Checks certificate validity, expiration, and configuration
+-   **HSTS (HTTP Strict Transport Security)** - Verifies proper HSTS implementation
+-   **Mixed Content Detection** - Identifies insecure HTTP resources on HTTPS sites
+-   **CORS Headers Analysis** - Evaluates Cross-Origin Resource Sharing configuration
+-   **Cookie Security** - Checks SameSite attributes and security flags
+-   **FLoC Opt-out** - Verifies Google's Federated Learning of Cohorts opt-out
 
-1.  **Fork This Repository:** Start by forking this repository to your GitHub account.
-2.  **Configure Websites:**
-    *   Edit the `config.yaml` file.
-    *   Add the websites you want to monitor, one per line, under the `websites:` section.
-        ```yaml
-        websites:
-          - audiolibri.org
-          - example.com
-        ```
-3.  **Enable GitHub Actions (If Not Already Enabled):**
-    *   Navigate to the "Actions" tab in your repository.
-    *   If GitHub Actions are not enabled, enable them for your forked repository, and make sure you give write permissions.
-4.  **Set the PageSpeed API Key Secret:**
-    *   Obtain a Google PageSpeed Insights API key if you want to use the PageSpeed test.
-    *   Navigate to "Settings" -> "Secrets and variables" -> "Actions" in your GitHub repository.
-    *   Add a new repository secret named `PAGESPEED_API_KEY` and paste your API key as the value.
-5.  **Create the `report_template.md` File:**
-    *   Create a new file called `report_template.md` in the root of your repository if it doesn't exist.
-    *   Add a default template to generate the report, for example:
-    ```markdown
-    # Websites Monitor
+### Domain & DNS Checks
+
+-   **Domain Expiration** - Monitors domain registration expiration dates
+-   **DNSSEC Validation** - Checks DNS Security Extensions implementation
+-   **DNS Blacklist Scanning** - Verifies domain against known malicious lists
+-   **SPF Records** - Validates Sender Policy Framework for email security
+
+### Content & Performance
+
+-   **Mobile-Friendly Testing** - Uses Google's Mobile-Friendly Test API
+-   **Favicon Detection** - Checks for valid favicon implementation
+-   **External Link Validation** - Verifies all external links are accessible
+-   **Deprecated Libraries** - Identifies outdated JavaScript libraries with security risks
+
+### Data Security
+
+-   **Data Leakage Detection** - Scans GitHub for potential credential leaks
+-   **Domain Breach History** - Checks against Have I Been Pwned database
+-   **Internationalization** - Verifies proper i18n implementation
+
+## Manual Installation
+
+If you prefer to run without Docker:
+
+### Prerequisites
+
+-   Python 3.8+
+-   Required Python packages (see requirements.txt)
+
+### Installation
+
+```bash
+git clone https://github.com/fabriziosalmi/websites-monitor.git
+cd websites-monitor
+pip install -r requirements.txt
+```
+
+### Configuration
+
+1.  Copy the example configuration:
+
+    ```bash
+    cp config.yaml.example config.yaml
     ```
-6.  **Commit All Changes:**
-    *   Commit and push the changes to your forked repository to trigger the initial report generation.
 
-### How the Monitoring Works
+2.  Edit `config.yaml` with your settings:
 
--   **Daily Execution:** The `create-report.yml` GitHub Action workflow is scheduled to run daily.
--   **Website Checks:** The workflow executes the `main.py` script, which performs all the checks on the websites specified in `config.yaml`.
--   **Report Generation:** The `main.py` script automatically generates the report in the `README.md` file using the `report_template.md` as a base.
--   **Automatic Updates:** The `README.md` file will be automatically updated with the latest check results after each successful run of the workflow.
+    ```yaml
+    api_keys:
+      google_api_key: "your_google_api_key_here"
+      github_token: "your_github_token_here"
 
-## Configuration Options
+    websites:
+      - "example.com"
+      - "anotherdomain.com"
 
-The `config.yaml` file allows for various configurations:
+    checks:
+      mobile_friendly: true
+      ssl_certificate: true
+      # ... other checks
+    ```
 
--   `websites`: List of URLs to monitor.
--   `output_file`: The output filename of the generated report, defaults to `README.md`.
--   `max_workers`: Number of concurrent tasks when performing the checks.
--   `timeout`: Default timeout in seconds for the checks.
--   `report_template`: The filename of the report template, defaults to `report_template.md`
--   `github_workflow_badge`: The GitHub workflow badge url
--    `pagespeed_api_key`: The Google PageSpeed Insights API key (set as a GitHub Secret).
+### Usage
 
-## Customizing Checks
+Run the monitoring tool:
 
-You can modify existing checks or add new ones by editing the files in the `checks` directory and then adding the check to the `WebsiteMonitor` class in `main.py`. Ensure your new check functions follow the same format, returning an emoji indicating status (🟢, 🔴, or ⚪).
+```bash
+python main.py
+```
 
-## Understanding the Output
+## API Keys Setup
 
-The generated report in `README.md` includes a table with a row for each website, and the results for each check in each column.
+### Google Mobile-Friendly Test API
 
--  🟢: The check is successful.
--  🔴: The check failed.
--  🟡: The check returned a warning or requires attention.
--  ⚪: An error occurred during the check, or the check was not completed.
+1.  Go to [Google Cloud Console](https://console.cloud.google.com/)
+2.  Create a new project or select existing one
+3.  Enable the "Search Console API"
+4.  Create credentials (API Key)
+5.  Add the API key to your configuration
 
-**Note:** DNS blacklist checks now intelligently filter policy listings (PBL) which are common for shared hosting and don't indicate actual security threats.
+### GitHub Token (for data leakage detection)
+
+1.  Go to GitHub Settings > Developer settings > Personal access tokens
+2.  Generate a new token with `public_repo` scope
+3.  Add the token to your configuration
+
+### Have I Been Pwned API (optional)
+
+For enhanced breach detection, you can obtain an API key from [Have I Been Pwned](https://haveibeenpwned.com/API/Key)
+
+## Output Format
+
+The tool provides color-coded results for each check:
+
+-   🟢 **Green**: Check passed, no issues found
+-   🟡 **Yellow**: Warning, minor issues or suboptimal configuration
+-   🟠 **Orange**: Moderate issues requiring attention
+-   🔴 **Red**: Critical issues requiring immediate attention
+-   ⚪ **White**: Check failed due to errors or unavailable
+
+## Example Output
+
+```
+Website Security Analysis for example.com
+========================================
+✅ SSL Certificate: 🟢 (Valid until 2024-12-31)
+✅ HSTS Headers: 🟢 (Strong configuration)
+✅ Mixed Content: 🟢 (No mixed content found)
+⚠️  Mobile Friendly: 🟡 (Minor responsive issues)
+❌ DNSSEC: 🔴 (Not configured)
+✅ External Links: 🟢 (All links valid)
+```
 
 ## Support
 
@@ -109,9 +167,25 @@ For any issues or suggestions regarding this project, feel free to open an issue
 
 ---
 
-This report was automatically generated on 2025-01-02 21:22:38 UTC.
+This report was automatically generated on 2025-06-02 21:27:21 UTC.
 
 | Website | Domain breach | Domain Expiration | SSL Certificate | DNS Blacklists | DomainsBlacklists | HSTS | XSS Protection | Redirect chains | Pagespeed | Load Time | Rate Limiting | CDN | Brotli | Deprecated Libraries | Client Rendering | Mixed Content | Content-Type | i18n | FLoC | AMP | Robots.txt | Sitemap | Favicon | Alt Tags | Open Graph | Semantic Markup | Ad Tracking | WHOIS Privacy | Privacy Exposure |
 |---------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-audiolibri.org | 🟢 | 🟢 (333 days left) | 🟠 (16 days left) | 🟢 | ⚪ | 🔴 | 🔴 | 🟢 | ⚪ | 🟢 | 🔴 | 🟢 | 🔴 | 🟢 | 🟠 | 🟢 | 🟢 | 🟡 | 🔴 | 🔴 | ⚪ | 🔴 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🔴 |
-example.com | 🟢 | 🟡 (71 days left) | 🟢 (227 days left) | 🟢 | ⚪ | 🔴 | 🔴 | 🟢 | ⚪ | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 | 🔴 | ⚪ | 🔴 | 🔴 | ⚪ | 🔴 | 🔴 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 |
+audiolibri.org | 🟢 | 🟢 (333 days left) | 🟠 (16 days left) | 🔴 | 🟢 | 🔴 | 🔴 | 🟢 | ⚪ | 🟢 | 🔴 | 🟢 | 🔴 | 🟢 | 🟠 | 🟢 | 🟢 | 🟡 | 🔴 | 🔴 | ⚪ | 🔴 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🔴 |
+example.com | 🟢 | 🟡 (71 days left) | 🟢 (227 days left) | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | ⚪ | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 | 🔴 | ⚪ | 🔴 | 🔴 | ⚪ | 🔴 | 🔴 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 |
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Security
+
+If you discover any security vulnerabilities, please report them responsibly by emailing the maintainers rather than opening a public issue.
+
+## Contributing
+
+1.  Fork the repository
+2.  Create a feature branch
+3.  Make your changes
+4.  Add tests if applicable
+5.  Submit a pull request
