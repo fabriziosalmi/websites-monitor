@@ -312,13 +312,3 @@ For issues or suggestions:
 
 *This comprehensive monitoring framework provides everything you need to keep your websites secure, fast, and compliant. Whether you prefer the interactive web interface, automated GitHub Actions, or API integration - Website Monitor has you covered.*
 
----
-
-## 📊 Latest Monitoring Report
-
-This report was automatically generated on 2025-06-02 23:24:19 UTC.
-
-| Website | SSL Certificate | SSL Cipher Strength | Security Headers | HSTS | XSS Protection | CORS Headers | Mixed Content | Subresource Integrity | Rate Limiting | Data Leakage | Pagespeed | Website Load Time | Server Response Time | Brotli Compression | Asset Minification | CDN | Redirect Chains | Redirects | Sitemap | Robots.txt | Open Graph Protocol | Alt Tags | Semantic Markup | URL Canonicalization | Favicon | Broken Links | External Links | Domain Expiration | DNSSEC | DNS Blacklist | Domain Breach | Domains Blacklists | Subdomain Enumeration | Email Domain | Cookie Policy | Cookie Flags | Cookie Duration | Cookie SameSite | Ad & Tracking | FLoC Detection | Privacy Exposure | WHOIS Protection | Third-Party Requests | Third-Party Resources | Accessibility | Mobile Friendly | AMP Compatibility | Internationalization | Browser Compatibility | Content-Type Headers | CMS Detection | Client-Side Rendering | Deprecated Libraries |
-|---------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-audiolibri.org | 🟠 (16 days left) | 🟢 | 🔴 | 🔴 | 🔴 | 🟡 | 🟢 | ('🔴', 0) | 🔴 | ⚪ | ⚪ | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | ⚪ | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | 🔴 | 🟢 (333 days left) | ⚪ | 🔴 | 🟢 | 🟢 | ('🟢', []) | ⚪ | 🔴 | 🟢 | 🟢 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 | ⚪ | ⚪ | 🔴 | 🟡 | 🟢 | 🟢 | 🟢 (Magento) | 🟠 | 🟢 |
-example.com | 🟢 (227 days left) | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | ('🟢', 0) | 🔴 | ⚪ | ⚪ | 🟢 | 🟢 | 🔴 | ⚪ | 🔴 | 🟢 | 🔴 | 🔴 | ⚪ | 🔴 | 🟢 | 🔴 | 🔴 | 🔴 | 🟢 | 🟢 | 🟡 (71 days left) | ⚪ | 🔴 | 🟢 | 🟢 | ('🟠', ['https://www.example.com']) | ⚪ | 🔴 | 🟢 | 🟢 | 🟢 | 🟢 | 🔴 | 🟢 | 🟢 | 🟢 | 🟢 | ⚪ | ⚪ | 🔴 | ⚪ | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 |
