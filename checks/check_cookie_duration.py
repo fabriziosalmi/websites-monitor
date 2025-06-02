@@ -32,23 +32,18 @@ def check_cookie_duration(website):
         max_duration_seconds = 604800  # 7 days in seconds
 
         for cookie in response.cookies:
-            # Check if 'max-age' attribute exists for the cookie
-            max_age = cookie.get('max-age')
-            if max_age and int(max_age) > max_duration_seconds:
-                long_duration_cookies += 1
-                continue
-
-            # Check if 'expires' attribute exists for the cookie
-            expires = cookie.get('expires')
-            if expires:
+            # Check if cookie has expiration (session cookies don't have expiration)
+            if cookie.expires:
                 try:
-                    # Parse the 'expires' date and calculate the difference from the current time
-                    expires_datetime = datetime.strptime(expires, "%a, %d-%b-%Y %H:%M:%S %Z")
-                    delta = expires_datetime - datetime.utcnow()
+                    # Convert expires timestamp to datetime and calculate duration
+                    expires_datetime = datetime.fromtimestamp(cookie.expires)
+                    delta = expires_datetime - datetime.now()
                     if delta.total_seconds() > max_duration_seconds:
                         long_duration_cookies += 1
-                except ValueError as e:
-                    print(f"Error parsing the expiration date of a cookie: {e}")
+                        print(f"Cookie '{cookie.name}' has long duration: {delta.days} days")
+                except (ValueError, OSError) as e:
+                    print(f"Error parsing cookie expiration for '{cookie.name}': {e}")
+                    continue
 
         # Return based on the count of long-duration cookies
         if long_duration_cookies > 0:
@@ -57,11 +52,8 @@ def check_cookie_duration(website):
         print(f"All cookies have an acceptable duration on {website}.")
         return "🟢"
 
-    except (Timeout, HTTPError) as e:
-        print(f"Timeout or HTTP error occurred while checking cookie duration for {website}: {e}")
-        return "⚪"
-    except RequestException as e:
-        print(f"Request-related error occurred while checking cookie duration for {website}: {e}")
+    except (Timeout, HTTPError, RequestException) as e:
+        print(f"Request error occurred while checking cookie duration for {website}: {e}")
         return "⚪"
     except Exception as e:
         print(f"An unexpected error occurred while checking cookie duration for {website}: {e}")

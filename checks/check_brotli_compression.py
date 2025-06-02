@@ -36,48 +36,38 @@ def check_brotli_compression(website):
             print(f"Brotli compression is not enabled for {website}.")
             return "🔴"
 
-    except (Timeout, HTTPError) as e:
-        print(f"Timeout or HTTP error occurred while checking Brotli compression for {website}: {e}")
-        # Fallback to another method in case of network-related errors
-
-    except RequestException as e:
-        print(f"Request-related error occurred while checking Brotli compression for {website}: {e}")
-        # Fallback to another method in case of network-related errors
-
-    try:
+    except (Timeout, HTTPError, RequestException) as e:
+        print(f"Request error occurred while checking Brotli compression for {website}: {e}")
+        
         # Method 2: Alternative Check via Content-Length Comparison (Fallback)
-        headers_gzip = {
-            "Accept-Encoding": "gzip, deflate",
-            "User-Agent": "BrotliCompressionChecker/1.0"
-        }
-        headers_brotli = {
-            "Accept-Encoding": "br",
-            "User-Agent": "BrotliCompressionChecker/1.0"
-        }
+        try:
+            headers_gzip = {
+                "Accept-Encoding": "gzip, deflate",
+                "User-Agent": "BrotliCompressionChecker/1.0"
+            }
+            headers_brotli = {
+                "Accept-Encoding": "br",
+                "User-Agent": "BrotliCompressionChecker/1.0"
+            }
 
-        # Request with Gzip/Deflate encoding
-        response_gzip = requests.get(website, headers=headers_gzip, timeout=10)
-        response_gzip.raise_for_status()
-        gzip_length = len(response_gzip.content)
+            # Request with Gzip/Deflate encoding
+            response_gzip = requests.get(website, headers=headers_gzip, timeout=10)
+            response_gzip.raise_for_status()
+            
+            # Request with Brotli encoding
+            response_brotli = requests.get(website, headers=headers_brotli, timeout=10)
+            response_brotli.raise_for_status()
 
-        # Request with Brotli encoding
-        response_brotli = requests.get(website, headers=headers_brotli, timeout=10)
-        response_brotli.raise_for_status()
-        brotli_length = len(response_brotli.content)
+            # Check if Brotli encoding is actually used in response
+            if 'br' in response_brotli.headers.get('Content-Encoding', ''):
+                print(f"Brotli compression is enabled for {website} (fallback method).")
+                return "🟢"
+            else:
+                print(f"Brotli compression is not enabled for {website} (fallback method).")
+                return "🔴"
 
-        # Compare content lengths to determine compression
-        if brotli_length < gzip_length:
-            print(f"Brotli compression appears to be enabled for {website} (Brotli size: {brotli_length} < Gzip size: {gzip_length}).")
-            return "🟢"
-        else:
-            print(f"Brotli compression does not appear to be enabled for {website} (Brotli size: {brotli_length} >= Gzip size: {gzip_length}).")
-            return "🔴"
-
-    except (Timeout, HTTPError) as e:
-        print(f"Error during content length comparison for {website}: {e}")
-
-    except Exception as e:
-        print(f"An unexpected error occurred while checking Brotli compression for {website}: {e}")
-        return "⚪"
+        except Exception as e:
+            print(f"Error during fallback Brotli check for {website}: {e}")
+            return "⚪"
 
     return "⚪"

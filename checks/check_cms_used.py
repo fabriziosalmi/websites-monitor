@@ -45,7 +45,7 @@ def check_cms_used(website):
                 print(f"Detected CMS: {cms} for {website}.")
                 return f"🟢 ({cms})"
         
-        # Method 2: Additional heuristic checks with BeautifulSoup (Fallback)
+        # Method 2: Additional heuristic checks with BeautifulSoup
         soup = BeautifulSoup(content, 'html.parser')
 
         # Check for meta tags or generator information that might indicate a CMS
@@ -60,11 +60,8 @@ def check_cms_used(website):
         print(f"No CMS detected for {website}.")
         return "🔴"
 
-    except (Timeout, HTTPError) as e:
-        print(f"Timeout or HTTP error occurred while checking CMS for {website}: {e}")
-        return "⚪"
-    except RequestException as e:
-        print(f"Request-related error occurred while checking CMS for {website}: {e}")
+    except (Timeout, HTTPError, RequestException) as e:
+        print(f"Request error occurred while checking CMS for {website}: {e}")
         return "⚪"
     except Exception as e:
         print(f"An unexpected error occurred while checking CMS for {website}: {e}")

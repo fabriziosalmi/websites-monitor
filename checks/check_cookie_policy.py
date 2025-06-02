@@ -45,31 +45,30 @@ def check_cookie_policy(website):
             print(f"Cookie policy text found on the page for {website}.")
             return "🟢"
 
-        # Method 2: Check for common cookie policy URLs (Fallback)
-        # Common paths where cookie policies are found
-        common_paths = ["/cookie-policy", "/cookies", "/privacy-policy", "/legal/cookies", "/legal/privacy-policy"]
-        for path in common_paths:
-            try:
-                policy_response = requests.get(f"{website.rstrip('/')}{path}", headers=headers, timeout=5)
-                if policy_response.status_code == 200:
-                    print(f"Cookie policy found at {website.rstrip('/')}{path}.")
-                    return "🟢"
-            except (Timeout, HTTPError) as e:
-                print(f"Timeout or HTTP error occurred while checking {website.rstrip('/')}{path}: {e}")
-                continue
-            except RequestException as e:
-                print(f"Request-related error occurred while checking {website.rstrip('/')}{path}: {e}")
-                continue
-
         print(f"No cookie policy found for {website}.")
-        return "🔴"  # No cookie policy found
+        return "🔴"
 
-    except (Timeout, HTTPError) as e:
-        print(f"Timeout or HTTP error occurred while checking cookie policy for {website}: {e}")
-        return "⚪"
-    except RequestException as e:
-        print(f"Request-related error occurred while checking cookie policy for {website}: {e}")
-        return "⚪"
+    except (Timeout, HTTPError, RequestException) as e:
+        print(f"Request error occurred while checking cookie policy for {website}: {e}")
+        
+        # Method 2: Check for common cookie policy URLs (Fallback)
+        try:
+            common_paths = ["/cookie-policy", "/cookies", "/privacy-policy", "/legal/cookies", "/legal/privacy-policy"]
+            for path in common_paths:
+                try:
+                    policy_response = requests.get(f"{website.rstrip('/')}{path}", headers=headers, timeout=5)
+                    if policy_response.status_code == 200:
+                        print(f"Cookie policy found at {website.rstrip('/')}{path}.")
+                        return "🟢"
+                except (Timeout, HTTPError, RequestException):
+                    continue
+
+            print(f"No cookie policy found for {website} (fallback method).")
+            return "🔴"
+
+        except Exception as e:
+            print(f"Error during fallback cookie policy check for {website}: {e}")
+            return "⚪"
     except Exception as e:
         print(f"An unexpected error occurred while checking cookie policy for {website}: {e}")
         return "⚪"

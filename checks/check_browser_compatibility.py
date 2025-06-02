@@ -13,44 +13,55 @@ def check_browser_compatibility(website):
             - "🟢" if the website is compatible with all tested browsers
             - "🔴" if the website is not compatible with any browser or if an error occurs
     """
-    options = webdriver.ChromeOptions()
-    options.headless = True  # Run in headless mode for better performance
+    # Ensure the website starts with 'http://' or 'https://'
+    if not website.startswith(('http://', 'https://')):
+        website = f"https://{website}"
 
     # List of drivers to test compatibility
-    driver_classes = [
-        (webdriver.Chrome, webdriver.ChromeOptions),
-        (webdriver.Firefox, webdriver.FirefoxOptions),
-        (webdriver.Safari, None)  # Safari does not require options for headless mode
+    driver_configs = [
+        ("Chrome", webdriver.Chrome, webdriver.ChromeOptions),
+        ("Firefox", webdriver.Firefox, webdriver.FirefoxOptions),
     ]
 
-    try:
-        for driver_class, options_class in driver_classes:
-            try:
-                # Set up options for each driver
-                if options_class:
-                    browser_options = options_class()
-                    browser_options.headless = True
-                    driver = driver_class(options=browser_options)
-                else:
-                    driver = driver_class()
+    compatible_browsers = 0
+    total_browsers = len(driver_configs)
 
-                driver.get(website)
+    for browser_name, driver_class, options_class in driver_configs:
+        driver = None
+        try:
+            # Set up options for each driver
+            browser_options = options_class()
+            browser_options.add_argument('--headless')  # Run in headless mode
+            browser_options.add_argument('--no-sandbox')
+            browser_options.add_argument('--disable-dev-shm-usage')
+            
+            driver = driver_class(options=browser_options)
+            driver.set_page_load_timeout(10)  # Set timeout for page load
+            
+            driver.get(website)
 
-                # Basic check: Ensure that the page has a title element
-                if 'title' not in driver.page_source.lower():
+            # Basic check: Ensure that the page loads successfully and has content
+            if driver.title and len(driver.page_source) > 100:
+                print(f"Website {website} is compatible with {browser_name}.")
+                compatible_browsers += 1
+            else:
+                print(f"Compatibility issue found with {browser_name} for {website}.")
+
+        except WebDriverException as e:
+            print(f"Error occurred while testing {browser_name} for {website}: {e}")
+        except Exception as e:
+            print(f"Unexpected error with {browser_name} for {website}: {e}")
+        finally:
+            if driver:
+                try:
                     driver.quit()
-                    print(f"Compatibility issue found with {driver.name} for {website}.")
-                    return "🔴"
+                except:
+                    pass  # Ignore cleanup errors
 
-                driver.quit()
-
-            except WebDriverException as e:
-                print(f"Error occurred while testing {driver_class.__name__} for {website}: {e}")
-                continue  # Continue to the next browser if one fails
-
-        print(f"Website {website} is compatible with all tested browsers.")
+    # Determine result based on browser compatibility
+    if compatible_browsers == total_browsers:
         return "🟢"
-
-    except Exception as e:
-        print(f"An unexpected error occurred while checking browser compatibility for {website}: {e}")
+    elif compatible_browsers > 0:
+        return "🟠"  # Partially compatible
+    else:
         return "🔴"

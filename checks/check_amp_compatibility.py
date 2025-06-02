@@ -1,15 +1,31 @@
+import requests
+from requests.exceptions import RequestException, Timeout, HTTPError
 from bs4 import BeautifulSoup
 from bs4 import FeatureNotFound
 
-def check_amp_compatibility(html_content):
+def check_amp_compatibility(website):
     """
-    Check if the provided HTML content has AMP compatibility.
+    Check if the website has AMP compatibility.
+
+    Args:
+        website (str): URL of the website to be checked.
 
     Returns:
-        "🟢" if AMP compatible
-        "🔴" if not AMP compatible
+        str: "🟢" if AMP compatible, "🔴" if not AMP compatible, "⚪" if error occurs
     """
+    # Ensure the website starts with 'http://' or 'https://'
+    if not website.startswith(('http://', 'https://')):
+        website = f"https://{website}"
+
+    headers = {
+        'User-Agent': 'AMPChecker/1.0'
+    }
+
     try:
+        response = requests.get(website, headers=headers, timeout=10)
+        response.raise_for_status()
+        html_content = response.text
+
         # Prefer lxml parser for better performance, fallback to html.parser
         try:
             soup = BeautifulSoup(html_content, 'lxml')
@@ -31,6 +47,9 @@ def check_amp_compatibility(html_content):
 
         return "🔴"
     
-    except (FeatureNotFound, Exception) as e:
-        print(f"An error occurred while checking AMP compatibility: {e}")
-        return "🔴"
+    except (Timeout, HTTPError, RequestException) as e:
+        print(f"Request error occurred while checking AMP compatibility for {website}: {e}")
+        return "⚪"
+    except Exception as e:
+        print(f"An error occurred while checking AMP compatibility for {website}: {e}")
+        return "⚪"

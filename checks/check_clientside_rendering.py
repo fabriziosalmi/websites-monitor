@@ -34,10 +34,17 @@ def check_clientside_rendering(website, threshold=10):
 
         num_scripts = len(scripts)
 
-        # Method 2: Additional check for specific JavaScript libraries and frameworks (Fallback)
+        # Method 2: Additional check for specific JavaScript libraries and frameworks
         # Check for common client-side frameworks that are heavy on client-side rendering
         frameworks = ['react', 'angular', 'vue', 'next', 'nuxt', 'svelte', 'ember', 'backbone']
-        framework_detected = any(framework in str(script.get('src', '')).lower() or framework in (script.string or '').lower() for script in scripts for framework in frameworks)
+        framework_detected = False
+        
+        for script in scripts:
+            src = script.get('src', '').lower()
+            content = (script.string or '').lower()
+            if any(framework in src or framework in content for framework in frameworks):
+                framework_detected = True
+                break
 
         # Determine result based on number of script tags and framework detection
         if num_scripts > threshold or framework_detected:
@@ -50,11 +57,8 @@ def check_clientside_rendering(website, threshold=10):
             print(f"Minimal client-side rendering detected for {website}.")
             return "🟢"
 
-    except (Timeout, HTTPError) as e:
-        print(f"Timeout or HTTP error occurred while checking client-side rendering for {website}: {e}")
-        return "⚪"
-    except RequestException as e:
-        print(f"Request-related error occurred while checking client-side rendering for {website}: {e}")
+    except (Timeout, HTTPError, RequestException) as e:
+        print(f"Request error occurred while checking client-side rendering for {website}: {e}")
         return "⚪"
     except Exception as e:
         print(f"An unexpected error occurred while checking client-side rendering for {website}: {e}")

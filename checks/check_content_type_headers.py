@@ -37,11 +37,8 @@ def check_content_type_headers(website):
             print(f"Content-Type is not properly set for {website}.")
             return "🔴"
 
-    except (Timeout, HTTPError) as e:
-        print(f"Timeout or HTTP error occurred while checking Content-Type headers for {website}: {e}")
-        return "⚪"
-    except RequestException as e:
-        print(f"Request-related error occurred while checking Content-Type headers for {website}: {e}")
+    except (Timeout, HTTPError, RequestException) as e:
+        print(f"Request error occurred while checking Content-Type headers for {website}: {e}")
         return "⚪"
     except Exception as e:
         print(f"An unexpected error occurred while checking Content-Type headers for {website}: {e}")

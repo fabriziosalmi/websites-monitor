@@ -1,5 +1,10 @@
 import requests
+import logging
 from requests.exceptions import RequestException, Timeout, HTTPError
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def check_security_headers(website: str) -> str:
     """
@@ -15,70 +20,97 @@ def check_security_headers(website: str) -> str:
             - "🔴" if some recommended headers are missing.
             - "⚪" for any errors.
     """
-    # Ensure the website starts with 'http://' or 'https://'
+    # Input validation and URL normalization
+    if not website or not isinstance(website, str):
+        logger.error(f"Invalid website input: {website}")
+        return "⚪"
+    
+    website = website.strip()
     if not website.startswith(('http://', 'https://')):
         website = f"https://{website}"
 
     headers = {
-        'User-Agent': 'SecurityHeaderChecker/1.0'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     }
 
-    # Recommended security headers and their expected values
-    recommended_headers = {
-        'X-Content-Type-Options': "nosniff",
-        'X-XSS-Protection': "1; mode=block",
-        'Strict-Transport-Security': None,  # Expected to be present, value not strictly defined here
-        'Content-Security-Policy': None,    # Expected to be present, value depends on the site's policy
-        'Referrer-Policy': None,            # Expected to be present, value depends on the site's policy
-        'Permissions-Policy': None          # Expected to be present, value depends on the site's policy
+    # Enhanced recommended security headers with scoring
+    security_headers = {
+        'X-Content-Type-Options': {'expected': 'nosniff', 'weight': 2},
+        'X-XSS-Protection': {'expected': '1; mode=block', 'weight': 2},
+        'Strict-Transport-Security': {'expected': None, 'weight': 3},
+        'Content-Security-Policy': {'expected': None, 'weight': 3},
+        'Referrer-Policy': {'expected': None, 'weight': 1},
+        'Permissions-Policy': {'expected': None, 'weight': 1},
+        'X-Frame-Options': {'expected': ['DENY', 'SAMEORIGIN'], 'weight': 2}
     }
 
     try:
-        # Make a request to the website
-        response = requests.get(website, headers=headers, timeout=10)
+        # Make request with proper error handling
+        response = requests.get(website, headers=headers, timeout=15)
         response.raise_for_status()
 
-        # Retrieve headers from the response
-        headers_found = 0
-        headers_partially_implemented = 0
+        # Analyze security headers
+        total_score = 0
+        max_score = sum(header_info['weight'] for header_info in security_headers.values())
+        issues = []
 
-        # Check each recommended header for presence and correct value
-        for header, ideal_value in recommended_headers.items():
-            value = response.headers.get(header)
-            if value:
-                headers_found += 1
-                if ideal_value and value != ideal_value:
-                    print(f"Header '{header}' is present but has a non-ideal value: {value}")
-                    headers_partially_implemented += 1
+        for header, config in security_headers.items():
+            header_value = response.headers.get(header)
+            expected = config['expected']
+            weight = config['weight']
+            
+            if header_value:
+                if expected is None:
+                    # Header present, that's good enough
+                    total_score += weight
+                    logger.debug(f"Security header {header} present: {header_value}")
+                elif isinstance(expected, list):
+                    # Check if value is in expected list
+                    if any(exp in header_value for exp in expected):
+                        total_score += weight
+                    else:
+                        issues.append(f"{header} has unexpected value: {header_value}")
+                        total_score += weight * 0.5  # Partial credit
+                elif expected.lower() in header_value.lower():
+                    total_score += weight
+                else:
+                    issues.append(f"{header} has non-ideal value: {header_value} (expected: {expected})")
+                    total_score += weight * 0.5  # Partial credit
             else:
-                print(f"Missing recommended security header: {header}")
+                issues.append(f"Missing security header: {header}")
 
-        # Check for revealing headers that might disclose sensitive information
-        revealing_headers = {'Server', 'X-Powered-By', 'X-AspNet-Version'}
-        revealing_present = revealing_headers.intersection(response.headers)
+        # Check for information disclosure headers
+        revealing_headers = {
+            'Server', 'X-Powered-By', 'X-AspNet-Version', 'X-Generator'
+        }
+        found_revealing = revealing_headers.intersection(response.headers.keys())
+        
+        if found_revealing:
+            issues.append(f"Information disclosure headers found: {', '.join(found_revealing)}")
+            total_score -= 1  # Penalty for revealing headers
 
-        if revealing_present:
-            headers_partially_implemented += 1
-            print(f"Revealing headers present: {', '.join(revealing_present)}")
+        # Calculate security score percentage
+        security_score = max(0, total_score / max_score)
+        
+        logger.info(f"Security headers analysis for {website}: {security_score:.2f} score ({total_score}/{max_score})")
+        
+        if issues:
+            logger.warning(f"Security issues found: {issues}")
 
-        # Determine the result based on the header checks
-        if headers_found == len(recommended_headers):
-            if headers_partially_implemented == 0:
-                print(f"All recommended security headers are properly implemented for {website}.")
-                return "🟢"
-            else:
-                print(f"Some headers are not ideally implemented for {website}.")
-                return "🟠"
+        # Determine result based on security score
+        if security_score >= 0.9:
+            return "🟢"
+        elif security_score >= 0.6:
+            return "🟠"
         else:
-            print(f"Some recommended headers are missing for {website}.")
             return "🔴"
 
     except (Timeout, HTTPError) as e:
-        print(f"Timeout or HTTP error occurred while checking security headers for {website}: {e}")
+        logger.warning(f"HTTP/Timeout error for {website}: {e}")
         return "⚪"
     except RequestException as e:
-        print(f"Request-related error occurred while checking security headers for {website}: {e}")
+        logger.warning(f"Request error for {website}: {e}")
         return "⚪"
     except Exception as e:
-        print(f"An unexpected error occurred while checking security headers for {website}: {e}")
+        logger.error(f"Unexpected error for {website}: {e}")
         return "⚪"

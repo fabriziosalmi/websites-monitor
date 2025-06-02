@@ -1,3 +1,4 @@
+import re
 import requests
 from requests.exceptions import RequestException, Timeout, HTTPError
 from bs4 import BeautifulSoup
@@ -48,34 +49,28 @@ def check_alt_tags(website):
         else:
             return "🟢"
 
-    except (Timeout, HTTPError) as e:
-        print(f"Timeout or HTTP error occurred while checking alt tags for {website}: {e}")
-        # Fallback to alternative method in case of network-related errors
-
-    except RequestException as e:
-        print(f"Request-related error occurred while checking alt tags for {website}: {e}")
-        # Fallback to alternative method in case of network-related errors
-
-    try:
+    except (Timeout, HTTPError, RequestException) as e:
+        print(f"Request error occurred while checking alt tags for {website}: {e}")
+        
         # Method 2: Alternative Heuristic Check via Meta Tags (Fallback)
-        # Checking the website's meta tags for accessibility information
-        response = requests.get(website, headers=headers, timeout=10)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        try:
+            # Try to get the response again for fallback analysis
+            response = requests.get(website, headers=headers, timeout=10)
+            response.raise_for_status()
+            soup = BeautifulSoup(response.text, 'html.parser')
 
-        # Look for meta tags that could indicate a focus on accessibility
-        accessibility_tags = soup.find_all('meta', {'name': re.compile(r'(description|keywords|viewport)', re.IGNORECASE)})
+            # Look for meta tags that could indicate a focus on accessibility
+            accessibility_tags = soup.find_all('meta', {'name': re.compile(r'(description|keywords|viewport)', re.IGNORECASE)})
 
-        # Heuristic: If the website uses meta tags commonly associated with accessibility
-        if accessibility_tags:
-            print(f"Some meta tags found that might indicate a focus on accessibility on {website}.")
-            return "🟠"
+            # Heuristic: If the website uses meta tags commonly associated with accessibility
+            if accessibility_tags:
+                print(f"Some meta tags found that might indicate a focus on accessibility on {website}.")
+                return "🟠"
 
-        return "🔴"  # Assume no focus on accessibility if no relevant meta tags found
+            return "🔴"  # Assume no focus on accessibility if no relevant meta tags found
 
-    except (Timeout, HTTPError) as e:
-        print(f"Error during heuristic check for alt tags for {website}: {e}")
-
-    except Exception as e:
-        print(f"An unexpected error occurred while checking alt tags for {website}: {e}")
+        except Exception as e:
+            print(f"Error during heuristic check for alt tags for {website}: {e}")
+            return "⚪"
 
     return "⚪"

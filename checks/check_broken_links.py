@@ -28,6 +28,7 @@ def check_broken_links(website):
     checked_links = set()  # To avoid checking the same URL twice
     broken_link_count = 0
     total_links = 0
+    max_links_to_check = 20  # Limit to avoid excessive requests
 
     try:
         # Method 1: Direct HTML content analysis using BeautifulSoup
@@ -38,7 +39,7 @@ def check_broken_links(website):
         # Find all anchor tags with href attributes
         links = soup.find_all('a', href=True)
 
-        for link in links:
+        for link in links[:max_links_to_check]:  # Limit number of links to check
             href = link.get('href')
             
             # Skip anchor links, JavaScript calls, and mailto links
@@ -56,16 +57,13 @@ def check_broken_links(website):
 
             try:
                 # Check the status of the link
-                link_response = requests.get(full_url, headers=headers, allow_redirects=True, timeout=10)
+                link_response = requests.get(full_url, headers=headers, allow_redirects=True, timeout=5)
                 if 400 <= link_response.status_code < 600:
                     print(f"Broken link found: {full_url} (Status: {link_response.status_code})")
                     broken_link_count += 1
 
-            except (Timeout, HTTPError) as e:
-                print(f"Timeout or HTTP error while checking link: {full_url}: {e}")
-                broken_link_count += 1
-            except RequestException as e:
-                print(f"Request-related error while checking link: {full_url}: {e}")
+            except (Timeout, HTTPError, RequestException) as e:
+                print(f"Error while checking link: {full_url}: {e}")
                 broken_link_count += 1
 
             total_links += 1
@@ -81,16 +79,9 @@ def check_broken_links(website):
         else:
             return "🔴"
 
-    except (Timeout, HTTPError) as e:
-        print(f"Timeout or HTTP error occurred while checking broken links for {website}: {e}")
-        # Fallback to another method in case of network-related errors
-
-    except RequestException as e:
-        print(f"Request-related error occurred while checking broken links for {website}: {e}")
-        # Fallback to another method in case of network-related errors
-
+    except (Timeout, HTTPError, RequestException) as e:
+        print(f"Request error occurred while checking broken links for {website}: {e}")
+        return "⚪"
     except Exception as e:
         print(f"An unexpected error occurred while checking broken links for {website}: {e}")
         return "⚪"
-
-    return "⚪"
