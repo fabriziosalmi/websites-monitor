@@ -1,6 +1,6 @@
 # Website Monitor
 
-[![GitHub Workflow Status](https://github.com/mikeofree/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/mikeofree/websites-monitor/actions/workflows/create-report.yml)
+[![GitHub Workflow Status](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml)
 
 This repository provides a framework to monitor the health and security of your websites, automatically generating a detailed report in markdown format on a daily basis. It performs various checks, including domain status, SSL certificate validity, security headers, and performance metrics, helping you keep your online presence secure and optimized.
 
@@ -110,9 +110,14 @@ For any issues or suggestions regarding this project, feel free to open an issue
 # Websites Monitor
 
 
-This report was automatically generated on 2025-07-12 02:34:41 UTC.
+This report was automatically generated on 2025-07-12 02:43:54 UTC.
 
 | Website | Domain breach | Domain Expiration | SSL Certificate | DNS Blacklists | DomainsBlacklists | HSTS | XSS Protection | Redirect chains | Pagespeed | Load Time | Rate Limiting | CDN | Brotli | Deprecated Libraries | Client Rendering | Mixed Content | Content-Type | i18n | FLoC | AMP | Robots.txt | Sitemap | Favicon | Alt Tags | Open Graph | Semantic Markup | Ad Tracking | WHOIS Privacy | Privacy Exposure |
 |---------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-home.nuccy.org | ⚪ | 🟢 (31 days left) | 🟢 (52 days left) | 🟢 | 🟢 | ⚪ | ⚪ | 🟢 | 81 | ⚪ | 🟢 | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🔴 | ⚪ | 🔴 | ⚪ | ⚪ | ⚪ | 🔴 | 🟢 | 🟢 | ⚪ |
-jellyfin.nuccy.org | ⚪ | 🟢 (31 days left) | 🟢 (52 days left) | 🟢 | 🟢 | ⚪ | ⚪ | 🟢 | 91 | ⚪ | 🟢 | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🔴 | 🟢 | 🔴 | ⚪ | ⚪ | ⚪ | 🔴 | 🟢 | 🟢 | ⚪ |
+home.nuccy.org | ⚪ | 🟢 (31 days left) | 🟢 (52 days left) | 🟢 | 🟢 | ⚪ | ⚪ | 🟢 | ⚪ | ⚪ | 🟢 | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🔴 | ⚪ | 🔴 | ⚪ | ⚪ | ⚪ | 🔴 | 🟢 | 🟢 | ⚪ |
+jellyfin.nuccy.org | ⚪ | 🟢 (31 days left) | 🟢 (52 days left) | 🟢 | 🟢 | ⚪ | ⚪ | 🟢 | 93 | ⚪ | 🟢 | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🔴 | 🟢 | 🔴 | ⚪ | ⚪ | ⚪ | 🔴 | 🟢 | 🟢 | ⚪ |
+redding-rancheria.com | ⚪ | 🟢 (1359 days left) | 🟢 (125 days left) | 🟢 | 🟢 | 🟢 | 🟢 | 🟠 | ⚪ | 🟢 | 🔴 | ⚪ | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | ⚪ | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 |
+reddingrancheria-nsn.gov | ⚪ | 🟢 (278 days left) | 🟢 (44 days left) | 🟢 | 🟢 | 🟢 | 🟢 | 🟠 | ⚪ | 🟢 | 🔴 | ⚪ | 🟢 | 🟢 | 🟢 | 🟢 | 🟢 | ⚪ | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 |
+mail.redding-rancheria.com | ⚪ | 🟢 (1359 days left) | 🟢 (256 days left) | 🟢 | 🟢 | 🔴 | 🔴 | 🔴 | 99 | 🟢 | 🔴 | ⚪ | 🔴 | 🟢 | 🟢 | 🟢 | 🟢 | ⚪ | 🔴 | 🔴 | 🔴 | 🔴 | 🟢 | 🟠 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 |
+vpn.redding-rancheria.com | ⚪ | 🟢 (1359 days left) | 🔴 | 🟢 | 🟢 | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🔴 | ⚪ | 🔴 | ⚪ | ⚪ | ⚪ | 🔴 | ⚪ | 🟢 | ⚪ |
+duo.redding-rancheria.com | ⚪ | 🟢 (1359 days left) | 🔴 | 🟢 | 🟢 | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🔴 | ⚪ | 🔴 | ⚪ | ⚪ | ⚪ | 🔴 | ⚪ | 🟢 | ⚪ |
