@@ -1,6 +1,11 @@
 websites:
   - home.nuccy.org
   - jellyfin.nuccy.org
+  - redding-rancheria.com
+  - reddingrancheria-nsn.gov
+  - mail.redding-rancheria.com
+  - vpn.redding-rancheria.com
+  - duo.redding-rancheria.com
 output_file: README.md
 max_workers: 2
 timeout: 30
