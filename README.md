@@ -110,11 +110,11 @@ For any issues or suggestions regarding this project, feel free to open an issue
 # Websites Monitor
 
 
-This report was automatically generated on 2025-07-21 10:06:40 UTC.
+This report was automatically generated on 2025-07-22 10:06:42 UTC.
 
 | Website | Domain breach | Domain Expiration | SSL Certificate | DNS Blacklists | DomainsBlacklists | HSTS | XSS Protection | Redirect chains | Pagespeed | Load Time | Rate Limiting | CDN | Brotli | Deprecated Libraries | Client Rendering | Mixed Content | Content-Type | i18n | FLoC | AMP | Robots.txt | Sitemap | Favicon | Alt Tags | Open Graph | Semantic Markup | Ad Tracking | WHOIS Privacy | Privacy Exposure |
 |---------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-home.nuccy.org | ⚪ | 🟢 (387 days left) | 🟢 (43 days left) | 🟢 | 🟢 | ⚪ | ⚪ | 🟢 | 83 | ⚪ | 🟢 | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🔴 | ⚪ | 🔴 | ⚪ | ⚪ | ⚪ | 🔴 | 🟢 | 🟢 | ⚪ |
-jellyfin.nuccy.org | ⚪ | 🟢 (387 days left) | 🟢 (43 days left) | 🟢 | 🟢 | ⚪ | ⚪ | 🟢 | 91 | ⚪ | 🟢 | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🔴 | 🟢 | 🔴 | ⚪ | ⚪ | ⚪ | 🔴 | 🟢 | 🟢 | ⚪ |
-redding-rancheria.com | ⚪ | 🟢 (1349 days left) | 🟢 (116 days left) | 🟢 | 🟢 | 🟢 | 🟢 | 🟠 | ⚪ | 🟢 | 🔴 | ⚪ | 🔴 | 🟡 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 | 🟠 | 🔴 | 🔴 | 🟡 | 🟢 | 🟢 |
-reddingrancheria-nsn.gov | ⚪ | 🟢 (269 days left) | 🟢 (35 days left) | 🟢 | 🟢 | 🟢 | 🟢 | 🟠 | ⚪ | 🟢 | 🔴 | ⚪ | 🔴 | 🟡 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 | 🟠 | 🔴 | 🔴 | 🟡 | 🟢 | 🟢 |
+home.nuccy.org | ⚪ | 🟢 (386 days left) | 🟢 (42 days left) | 🟢 | 🟢 | ⚪ | ⚪ | 🟢 | 78 | ⚪ | 🟢 | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🔴 | ⚪ | 🔴 | ⚪ | ⚪ | ⚪ | 🔴 | 🟢 | 🟢 | ⚪ |
+jellyfin.nuccy.org | ⚪ | 🟢 (386 days left) | 🟢 (42 days left) | 🟢 | 🟢 | ⚪ | ⚪ | 🟢 | 93 | ⚪ | 🟢 | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | 🔴 | 🟢 | 🔴 | ⚪ | ⚪ | ⚪ | 🔴 | 🟢 | 🟢 | ⚪ |
+redding-rancheria.com | ⚪ | 🟢 (1348 days left) | 🟢 (115 days left) | 🟢 | 🟢 | 🟢 | 🟢 | 🟠 | ⚪ | 🟢 | 🔴 | ⚪ | 🔴 | 🟡 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 | 🟠 | 🔴 | 🔴 | 🟡 | 🟢 | 🟢 |
+reddingrancheria-nsn.gov | ⚪ | 🟢 (268 days left) | 🟢 (34 days left) | 🟢 | 🟢 | 🟢 | 🟢 | 🟠 | ⚪ | 🟢 | 🔴 | ⚪ | 🔴 | 🟡 | 🔴 | 🔴 | 🟢 | 🟢 | 🔴 | 🔴 | 🟢 | 🟢 | 🟢 | 🟠 | 🔴 | 🔴 | 🟡 | 🟢 | 🟢 |
