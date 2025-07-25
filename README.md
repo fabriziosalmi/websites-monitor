@@ -1,6 +1,6 @@
 # Website Monitor
 
-[![GitHub Workflow Status](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml)
+[![GitHub Workflow Status](https://github.com/mikeofree/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/mikeofree/websites-monitor/actions/workflows/create-report.yml)
 
 This repository provides a framework to monitor the health and security of your websites, automatically generating a detailed report in markdown format on a daily basis. It performs various checks, including domain status, SSL certificate validity, security headers, and performance metrics, helping you keep your online presence secure and optimized.
 
