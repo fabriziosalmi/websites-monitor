@@ -3,6 +3,16 @@ websites:
   - jellyfin.nuccy.org
   - redding-rancheria.com
   - reddingrancheria-nsn.gov
+  - rrths.org
+  - stillwaterpowwow.com
+  - churncreekhealthcare.com
+  - alertus.reddingrancheria-nsn.gov
+  - intranet.redding-rancheria.com
+  - docstar.redding-rancheria.com
+  - timeclock.redding-rancheria.com
+  - vpn.redding-rancheria.com
+  - sma.redding-rancheria.com
+  - mail.redding-rancheria.com
 output_file: README.md
 max_workers: 2
 timeout: 30
