@@ -1,6 +1,7 @@
 # Website Monitor
 
 [![GitHub Workflow Status](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffabriziosalmi%2Fwebsites-monitor.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffabriziosalmi%2Fwebsites-monitor?ref=badge_shield)
 
 A comprehensive website monitoring framework with both automated daily checks and a powerful web interface. Monitor the health, security, performance, and compliance of your websites with 53+ different checks organized into logical categories.
 
@@ -301,6 +302,9 @@ docker run -e PAGESPEED_API_KEY=your_key fabriziosalmi/websites-monitor
 
 This project is open source. See the license file for details.
 
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffabriziosalmi%2Fwebsites-monitor.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffabriziosalmi%2Fwebsites-monitor?ref=badge_large)
+
 ## 💬 Support
 
 For issues or suggestions:
@@ -311,4 +315,3 @@ For issues or suggestions:
 ---
 
 *This comprehensive monitoring framework provides everything you need to keep your websites secure, fast, and compliant. Whether you prefer the interactive web interface, automated GitHub Actions, or API integration - Website Monitor has you covered.*
-
