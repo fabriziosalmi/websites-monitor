@@ -1,8 +1,21 @@
 # Website Monitor
 
 [![GitHub Workflow Status](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)](https://hub.docker.com/r/fabriziosalmi/websites-monitor)
 
 A comprehensive website monitoring framework with both automated daily checks and a powerful web interface. Monitor the health, security, performance, and compliance of your websites with 53+ different checks organized into logical categories.
+
+## 📑 Quick Links
+
+- [🚀 Quick Start](#-quick-start) - Get up and running in minutes
+- [✨ Features](#-features) - What Website Monitor can do
+- [📖 How to Use](#-how-to-use) - Detailed usage instructions
+- [🐳 Docker Deployment](docs/DOCKER.md) - Docker setup guide
+- [🤝 Contributing](CONTRIBUTING.md) - How to contribute
+- [📚 API Documentation](#-api-documentation) - API reference
+- [🔧 Troubleshooting](#-troubleshooting) - Common issues and solutions
 
 ## Screenshot
 
@@ -195,33 +208,67 @@ Before using Website Monitor, ensure you have:
 
 ### 🔄 GitHub Actions Setup
 
-1. **Fork This Repository**: Start by forking this repository to your GitHub account.
+Automate website monitoring with GitHub Actions that runs checks daily and commits results to your repository.
 
-2. **Configure Websites**:
-   - Edit the `config.yaml` file
-   - Add the websites you want to monitor:
+#### Step-by-Step Guide:
+
+1. **Fork This Repository**: 
+   - Click the "Fork" button at the top of this page
+   - This creates your own copy of the repository
+
+2. **Configure Websites to Monitor**:
+   - Edit `config.yaml` in your fork
+   - Add your websites under the `websites:` section:
    ```yaml
    websites:
-     - audiolibri.org
+     - yourwebsite.com
      - example.com
    ```
+   - **Note**: Don't include `http://` or `https://` - just the domain
 
 3. **Enable GitHub Actions**:
-   - Navigate to the "Actions" tab in your repository
-   - Enable GitHub Actions with write permissions
+   - Go to the "Actions" tab in your repository
+   - Click "I understand my workflows, go ahead and enable them"
+   - Ensure Actions have write permissions:
+     - Settings → Actions → General → Workflow permissions
+     - Select "Read and write permissions"
 
-4. **Set API Key Secret** (Optional):
-   - Get a Google PageSpeed Insights API key
-   - Add it as a repository secret named `PAGESPEED_API_KEY`
+4. **Set PageSpeed API Key** (Optional but Recommended):
+   - Get a free API key from [Google PageSpeed Insights](https://developers.google.com/speed/docs/insights/v5/get-started)
+   - In your repository: Settings → Secrets and variables → Actions
+   - Click "New repository secret"
+   - Name: `PAGESPEED_API_KEY`
+   - Value: Your API key
+   - Click "Add secret"
 
-5. **Create Report Template**:
-   - Create `report_template.md` in the root directory
-   - Add your desired report template content
+5. **Customize Report Template** (Optional):
+   - Edit `report_template.md` to customize the report format
+   - The default template is minimal; you can add your own headers and sections
 
-6. **Commit Changes**:
-   - Commit and push to trigger the initial report generation
+6. **Trigger First Run**:
+   - Make any commit to trigger the workflow
+   - Or go to Actions → Create report → Run workflow
+   - Results will be committed to `README.md` (or your configured `output_file`)
+
+#### Scheduling
+
+By default, the workflow runs daily at 4 AM UTC. To change the schedule:
+
+Edit `.github/workflows/create-report.yml`:
+```yaml
+on:
+  schedule:
+    - cron: '0 4 * * *'  # Change this cron expression
+```
+
+Common cron examples:
+- `'0 */6 * * *'` - Every 6 hours
+- `'0 0 * * 1'` - Every Monday at midnight
+- `'0 12 * * *'` - Daily at noon
 
 ### 🛠️ API Usage
+
+The Website Monitor provides a comprehensive REST API for programmatic access to all monitoring functions.
 
 #### Available Endpoints:
 
@@ -232,7 +279,8 @@ Before using Website Monitor, ensure you have:
 - `GET /health` - Health check endpoint
 - `GET /checks` - List all available checks
 
-#### Example API Call:
+#### Basic Example - Single Website Check:
+
 ```bash
 curl -X POST "http://localhost:8000/monitor" \
      -H "Content-Type: application/json" \
@@ -240,6 +288,70 @@ curl -X POST "http://localhost:8000/monitor" \
        "url": "example.com",
        "checks": ["ssl_cert", "security_headers", "pagespeed_performances"]
      }'
+```
+
+#### Response Format:
+
+```json
+{
+  "url": "example.com",
+  "timestamp": "2024-11-15T19:30:00Z",
+  "results": {
+    "ssl_cert": "🟢 Valid until 2025-12-31",
+    "security_headers": "🟢 All security headers present",
+    "pagespeed_performances": "🟢 Score: 95/100"
+  },
+  "summary": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0,
+    "errors": 0
+  }
+}
+```
+
+#### Advanced Example - Multiple Websites:
+
+```bash
+curl -X POST "http://localhost:8000/monitor" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "websites": ["example.com", "google.com"],
+       "checks": ["ssl_cert", "hsts", "xss_protection"],
+       "timeout": 60
+     }'
+```
+
+#### Check All Security Features:
+
+```bash
+curl -X POST "http://localhost:8000/monitor" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "url": "example.com",
+       "categories": ["security"]
+     }'
+```
+
+#### List Available Checks:
+
+```bash
+curl http://localhost:8000/checks
+```
+
+#### Health Check:
+
+```bash
+curl http://localhost:8000/health
+```
+
+Expected response:
+```json
+{
+  "status": "healthy",
+  "version": "1.3.0",
+  "checks_available": 53
+}
 ```
 
 ## ⚙️ Configuration Options
@@ -264,22 +376,63 @@ The `config.yaml` file supports:
 ## 📊 Understanding Results
 
 ### Status Indicators:
-- 🟢 **Success**: Check passed successfully
-- 🔴 **Failed**: Check failed or issue detected
-- 🟡 **Warning**: Check completed with warnings
-- ⚪ **Error**: Check could not be completed
 
-### Web Interface:
-- Real-time results display
-- Detailed explanations for each check
-- Category-based organization
-- Mobile-friendly responsive design
+All checks return one of four status indicators:
 
-### GitHub Reports:
-- Automatic markdown table generation
-- Daily updates via GitHub Actions
-- Historical tracking through git commits
-- Badge integration for status overview
+| Emoji | Status | Meaning |
+|-------|--------|---------|
+| 🟢 | **Success** | Check passed - no issues detected |
+| 🔴 | **Failed** | Check failed - issue found that needs attention |
+| 🟡 | **Warning** | Check completed with warnings - review recommended |
+| ⚪ | **Error** | Check could not be completed due to technical error |
+
+### Result Formats
+
+#### Web Interface:
+- **Real-time Display**: Results appear as checks complete
+- **Color Coding**: Visual indicators match the emoji status
+- **Detailed Explanations**: Each result includes specific details
+- **Category Organization**: Results grouped by check category
+- **Mobile Responsive**: Works on all devices
+
+#### API Response:
+```json
+{
+  "url": "example.com",
+  "results": {
+    "ssl_cert": "🟢 Valid until 2025-12-31",
+    "security_headers": "🔴 Missing: X-Frame-Options, X-Content-Type-Options",
+    "hsts": "🟢 Max-age: 31536000",
+    "pagespeed": "🟡 Score: 72/100 - Could be improved"
+  }
+}
+```
+
+#### GitHub Reports:
+- **Markdown Tables**: Easy-to-read tabular format
+- **Automatic Updates**: Updated daily via GitHub Actions
+- **Historical Tracking**: Track changes over time through git commits
+- **Badge Integration**: Status badges for quick overview
+
+### Interpreting Specific Results
+
+**Security Checks** (🛡️):
+- 🟢 means your security measures are properly configured
+- 🔴 indicates missing or misconfigured security features
+- Fix these immediately to protect your users
+
+**Performance Checks** (⚡):
+- 🟢 indicates good performance
+- 🟡 suggests optimization opportunities
+- 🔴 means significant performance issues that affect user experience
+
+**SEO Checks** (🎯):
+- 🟢 means search engines can properly index your site
+- 🔴 indicates missing elements that harm search rankings
+
+**Accessibility Checks** (📱):
+- 🟢 means your site is accessible to all users
+- 🔴 indicates barriers that prevent some users from accessing your content
 
 ## 🛡️ Security Features
 
@@ -362,6 +515,78 @@ For more help, check:
 - [GitHub Issues](https://github.com/fabriziosalmi/websites-monitor/issues)
 - [Documentation](docs/DOCKER.md)
 - API docs at http://localhost:8000/api/docs
+
+## ❓ Frequently Asked Questions (FAQ)
+
+### General Questions
+
+**Q: How many websites can I monitor?**  
+A: There's no hard limit, but for performance reasons, we recommend monitoring 10-50 websites. For larger deployments, consider adjusting `max_workers` in config.yaml or running multiple instances.
+
+**Q: How long does each check take?**  
+A: Individual checks typically take 1-5 seconds. A full scan of all 53 checks usually completes in 30-60 seconds per website, depending on network conditions and website response times.
+
+**Q: Do I need all the dependencies for just the API?**  
+A: For the web API, you need `requests`, `beautifulsoup4`, `dnspython`, `python-whois`, `fastapi`, `uvicorn`, and `pydantic`. Selenium and Chrome are only needed for certain advanced checks.
+
+### Configuration Questions
+
+**Q: Can I run only specific checks?**  
+A: Yes! When using the API, specify the checks you want:
+```bash
+curl -X POST "http://localhost:8000/monitor" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "example.com", "checks": ["ssl_cert", "security_headers"]}'
+```
+
+**Q: How do I disable a specific check?**  
+A: Remove it from the checks list when calling the API, or modify the `WebsiteMonitor` class in `main.py` to exclude it from default checks.
+
+**Q: Can I customize the timeout for slow websites?**  
+A: Yes, edit `config.yaml`:
+```yaml
+timeout: 60  # Increase from default 30 seconds
+```
+
+### API Questions
+
+**Q: Can I use the API without the web interface?**  
+A: Yes! Just call the API endpoints directly. The web interface is optional.
+
+**Q: Is there rate limiting on the API?**  
+A: There's no built-in rate limiting. For production use, consider adding nginx or another reverse proxy with rate limiting.
+
+**Q: Can I get results in JSON format?**  
+A: Yes, all API endpoints return JSON by default. The web interface is just a user-friendly view of the JSON data.
+
+### GitHub Actions Questions
+
+**Q: Why isn't my workflow running?**  
+A: Check that:
+- GitHub Actions is enabled in your repository
+- The workflow file is in `.github/workflows/`
+- Actions have write permissions (Settings → Actions → General)
+
+**Q: The workflow fails with "No changes to commit"**  
+A: This is normal if the results haven't changed since the last run. It's not an error.
+
+**Q: Can I trigger the workflow manually?**  
+A: Yes! Go to Actions → Create report → Run workflow.
+
+### Docker Questions
+
+**Q: Do I need Docker to use Website Monitor?**  
+A: No, Docker is optional. You can run it directly with Python, but Docker simplifies deployment.
+
+**Q: Can I use docker-compose for production?**  
+A: Yes! Use `docker-compose --profile production up -d` for the full production stack with nginx, Redis, and PostgreSQL.
+
+**Q: How do I update the Docker image?**  
+A: Pull the latest image:
+```bash
+docker pull fabriziosalmi/websites-monitor
+docker-compose up -d
+```
 
 ## 📚 API Documentation
 
