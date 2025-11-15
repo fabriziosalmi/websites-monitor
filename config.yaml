@@ -4,3 +4,5 @@ websites:
 output_file: README.md
 max_workers: 2
 timeout: 30
+report_template: report_template.md
+github_workflow_badge: https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg

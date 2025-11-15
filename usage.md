@@ -1,8 +1,19 @@
-# Website Monitor
+# Website Monitor - Usage Guide
 
 [![GitHub Workflow Status](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml)
 
-This repository provides a framework to monitor the health and security of your websites, automatically generating a detailed report in markdown format on a daily basis. It performs various checks, including domain status, SSL certificate validity, security headers, and performance metrics, helping you keep your online presence secure and optimized.
+This guide provides detailed instructions for using the Website Monitor framework to monitor website health, security, and performance. The framework performs comprehensive checks and generates detailed reports in markdown format.
+
+## 📋 Prerequisites
+
+Before getting started, ensure you have:
+
+- **Python 3.11+**: The framework requires Python 3.11 or higher
+- **pip**: Python package manager for installing dependencies
+- **Git**: For cloning the repository and managing versions
+- **Chrome/Chromium** (optional): Some checks use browser automation
+- **Docker** (optional): For containerized deployment
+- **Google PageSpeed API Key** (optional): For PageSpeed performance checks
 
 ## Features
 
@@ -79,13 +90,29 @@ This repository provides a framework to monitor the health and security of your 
 
 The `config.yaml` file allows for various configurations:
 
--   `websites`: List of URLs to monitor.
--   `output_file`: The output filename of the generated report, defaults to `README.md`.
--   `max_workers`: Number of concurrent tasks when performing the checks.
--   `timeout`: Default timeout in seconds for the checks.
--   `report_template`: The filename of the report template, defaults to `report_template.md`
--   `github_workflow_badge`: The GitHub workflow badge url
--    `pagespeed_api_key`: The Google PageSpeed Insights API key (set as a GitHub Secret).
+- `websites`: List of URLs to monitor (required)
+- `output_file`: The output filename of the generated report (default: `report.md`)
+- `max_workers`: Number of concurrent tasks when performing the checks (default: 4)
+- `timeout`: Default timeout in seconds for the checks (default: 30)
+- `report_template`: The filename of the report template (default: `report_template.md`)
+- `github_workflow_badge`: The GitHub workflow badge URL
+- `pagespeed_api_key`: Google PageSpeed Insights API key (can also be set as environment variable `PAGESPEED_API_KEY`)
+
+### Example Configuration
+
+```yaml
+websites:
+  - audiolibri.org
+  - example.com
+  - mywebsite.com
+output_file: report.md
+max_workers: 2
+timeout: 30
+report_template: report_template.md
+github_workflow_badge: https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg
+```
+
+**Note**: When using GitHub Actions, you can override the `output_file` to `README.md` to update your repository's README automatically.
 
 ## Customizing Checks
 
