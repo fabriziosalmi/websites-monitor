@@ -91,7 +91,7 @@ Before getting started, ensure you have:
 The `config.yaml` file allows for various configurations:
 
 - `websites`: List of URLs to monitor (required)
-- `output_file`: The output filename of the generated report (default: `README.md`)
+- `output_file`: The output filename of the generated report (default: `report.md`)
 - `max_workers`: Number of concurrent tasks when performing the checks (default: 4)
 - `timeout`: Default timeout in seconds for the checks (default: 30)
 - `report_template`: The filename of the report template (default: `report_template.md`)
@@ -105,12 +105,14 @@ websites:
   - audiolibri.org
   - example.com
   - mywebsite.com
-output_file: README.md
+output_file: report.md
 max_workers: 2
 timeout: 30
 report_template: report_template.md
 github_workflow_badge: https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg
 ```
+
+**Note**: When using GitHub Actions, you can override the `output_file` to `README.md` to update your repository's README automatically.
 
 ## Customizing Checks
 

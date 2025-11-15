@@ -246,13 +246,13 @@ curl -X POST "http://localhost:8000/monitor" \
 
 The `config.yaml` file supports:
 
-- `websites`: List of URLs to monitor
-- `output_file`: Report filename (default: `README.md`)
-- `max_workers`: Concurrent tasks for checks
-- `timeout`: Default timeout in seconds
+- `websites`: List of URLs to monitor (required)
+- `output_file`: Report filename (default: `report.md`)
+- `max_workers`: Concurrent tasks for checks (default: 4)
+- `timeout`: Default timeout in seconds (default: 30)
 - `report_template`: Template filename (default: `report_template.md`)
 - `github_workflow_badge`: Workflow badge URL
-- `pagespeed_api_key`: Google PageSpeed API key
+- `pagespeed_api_key`: Google PageSpeed API key (can also be set via environment variable)
 
 ## 🔧 Customizing Checks
 
@@ -304,7 +304,7 @@ The `config.yaml` file supports:
 
 The project includes full Docker support for easy deployment:
 
-```dockerfile
+```bash
 # Available on Docker Hub
 docker pull fabriziosalmi/websites-monitor
 
@@ -314,6 +314,54 @@ docker run -p 3000:8000 fabriziosalmi/websites-monitor
 # Run with environment variables
 docker run -e PAGESPEED_API_KEY=your_key fabriziosalmi/websites-monitor
 ```
+
+For detailed Docker setup instructions, see [docs/DOCKER.md](docs/DOCKER.md).
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### Port Already in Use
+```bash
+# Check what's using port 8000
+lsof -i :8000
+
+# Or use a different port
+python api.py --port 8001
+```
+
+#### Chrome/ChromeDriver Issues
+```bash
+# Install Chrome dependencies on Linux
+sudo apt-get update
+sudo apt-get install -y chromium-browser chromium-chromedriver
+
+# Or use Docker which handles this automatically
+docker-compose up
+```
+
+#### Import Errors
+```bash
+# Reinstall dependencies
+pip install --upgrade -r requirements.txt
+pip install fastapi uvicorn[standard] pydantic
+```
+
+#### PageSpeed API Errors
+- Ensure your `PAGESPEED_API_KEY` is set correctly in `.env` or as an environment variable
+- Verify the API key is valid at https://developers.google.com/speed/docs/insights/v5/get-started
+- Check your API quota hasn't been exceeded
+
+#### Timeout Errors
+```yaml
+# Increase timeout in config.yaml
+timeout: 60  # Increase from default 30 seconds
+```
+
+For more help, check:
+- [GitHub Issues](https://github.com/fabriziosalmi/websites-monitor/issues)
+- [Documentation](docs/DOCKER.md)
+- API docs at http://localhost:8000/api/docs
 
 ## 📚 API Documentation
 
@@ -325,6 +373,37 @@ docker run -e PAGESPEED_API_KEY=your_key fabriziosalmi/websites-monitor
 - REST API endpoints for all monitoring functions
 - JSON response format for easy integration
 - Comprehensive error handling and status codes
+
+## 📁 Project Structure
+
+```
+websites-monitor/
+├── api.py                 # FastAPI web server and REST API
+├── main.py               # Core monitoring logic and check orchestration
+├── scheduler.py          # Scheduled monitoring service
+├── config.yaml           # Configuration file for websites and settings
+├── requirements.txt      # Python dependencies
+├── Dockerfile            # Docker image definition
+├── docker-compose.yml    # Docker Compose configuration
+├── checks/               # Individual check implementations
+│   ├── check_ssl_cert.py
+│   ├── check_security_headers.py
+│   └── ... (53 check files)
+├── docs/                 # Additional documentation
+│   └── DOCKER.md        # Docker deployment guide
+├── .env.example         # Environment variables template
+├── CONTRIBUTING.md      # Contribution guidelines
+└── README.md            # This file
+```
+
+### Key Components
+
+- **`api.py`**: Web interface and RESTful API endpoints
+- **`main.py`**: Core monitoring engine that orchestrates all checks
+- **`scheduler.py`**: Background service for periodic monitoring
+- **`checks/`**: Modular check implementations - each file contains one check
+- **`config.yaml`**: Website list and monitoring configuration
+- **`.env`**: Environment variables (API keys, secrets)
 
 ## 🤝 Contributing
 
@@ -354,7 +433,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed instructions.
 
 ## 📄 License
 
-This project is open source. See the license file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 💬 Support
 
