@@ -16,6 +16,7 @@ A comprehensive website monitoring framework with both automated daily checks an
 - [🤝 Contributing](CONTRIBUTING.md) - How to contribute
 - [📚 API Documentation](#-api-documentation) - API reference
 - [🔧 Troubleshooting](#-troubleshooting) - Common issues and solutions
+- [📝 Changelog](CHANGELOG.md) - Version history and changes
 
 ## Screenshot
 
@@ -368,10 +369,135 @@ The `config.yaml` file supports:
 
 ## 🔧 Customizing Checks
 
-1. **Add New Checks**: Create new check functions in the `checks` directory
-2. **Modify Existing**: Edit files in `checks/` directory
-3. **Update Categories**: Modify the category organization in `main.py`
-4. **Check Format**: Ensure functions return status emojis (🟢, 🔴, 🟡, ⚪)
+You can customize which checks run and add new checks to extend the monitoring capabilities.
+
+### Adding New Checks
+
+1. **Create a Check File**: Create a new file in the `checks/` directory following the naming pattern `check_<feature>.py`
+
+2. **Implement the Check Function**: Follow this template:
+   ```python
+   def check_<feature>(url: str, timeout: int = 30) -> str:
+       """
+       Description of what this check does.
+       
+       Args:
+           url: Website URL to check
+           timeout: Request timeout in seconds
+       
+       Returns:
+           Status emoji with description
+       """
+       try:
+           # Your check logic here
+           return "🟢 Check passed"
+       except Exception as e:
+           return f"⚪ Error: {str(e)}"
+   ```
+
+3. **Register the Check**: Add imports to `main.py` and `api.py`
+
+4. **Update Documentation**: Add the check to README.md in the appropriate category
+
+For detailed instructions, see [CONTRIBUTING.md](CONTRIBUTING.md#adding-new-checks).
+
+### Available Check Categories
+
+All 53 checks are organized into these categories:
+
+#### 🛡️ Security & Protection (10 checks)
+| Check | Description |
+|-------|-------------|
+| `ssl_cert` | Validates SSL/TLS certificate validity and expiration |
+| `ssl_cipher_strength` | Analyzes SSL/TLS cipher strength and configuration |
+| `security_headers` | Checks for essential security headers |
+| `hsts` | Verifies HTTP Strict Transport Security |
+| `xss_protection` | Checks XSS protection headers |
+| `cors_headers` | Analyzes CORS configuration |
+| `mixed_content` | Detects mixed HTTP/HTTPS content |
+| `subresource_integrity` | Checks SRI implementation |
+| `rate_limiting` | Tests for rate limiting |
+| `data_leakage` | Scans for potential data leaks |
+
+#### ⚡ Performance & Speed (8 checks)
+| Check | Description |
+|-------|-------------|
+| `pagespeed_performances` | Google PageSpeed Insights score |
+| `website_load_time` | Measures total page load time |
+| `server_response_time` | Measures server response latency |
+| `brotli_compression` | Checks for Brotli compression |
+| `asset_minification` | Verifies CSS/JS minification |
+| `cdn` | Detects CDN usage |
+| `redirect_chains` | Analyzes redirect chains |
+| `redirects` | Checks redirect optimization |
+
+#### 🎯 SEO & Content (9 checks)
+| Check | Description |
+|-------|-------------|
+| `sitemap` | Validates sitemap.xml existence |
+| `robot_txt` | Checks robots.txt configuration |
+| `open_graph_protocol` | Validates Open Graph meta tags |
+| `alt_tags` | Checks image alt attributes |
+| `semantic_markup` | Analyzes HTML5 semantic elements |
+| `url_canonicalization` | Checks canonical URLs |
+| `favicon` | Verifies favicon presence |
+| `broken_links` | Detects broken internal links |
+| `external_links` | Analyzes external link quality |
+
+#### 🌍 Domain & DNS (7 checks)
+| Check | Description |
+|-------|-------------|
+| `domain_expiration` | Monitors domain expiration date |
+| `dnssec` | Validates DNSSEC configuration |
+| `dns_blacklist` | Checks DNS blacklists |
+| `domain_breach` | Checks breach databases |
+| `domainsblacklists_blacklist` | Additional blacklist verification |
+| `subdomain_enumeration` | Discovers subdomains |
+| `email_domain` | Validates email domain configuration |
+
+#### 🔒 Privacy & Tracking (10 checks)
+| Check | Description |
+|-------|-------------|
+| `cookie_policy` | Checks cookie policy compliance |
+| `cookie_flags` | Validates secure cookie flags |
+| `cookie_duration` | Analyzes cookie expiration |
+| `cookie_samesite_attribute` | Checks SameSite attributes |
+| `ad_and_tracking` | Detects advertising trackers |
+| `floc` | Checks FLoC opt-out |
+| `privacy_exposure` | Scans for privacy issues |
+| `privacy_protected_whois` | Verifies WHOIS privacy |
+| `third_party_requests` | Monitors third-party requests |
+| `third_party_resources` | Analyzes third-party resources |
+
+#### 📱 Accessibility & Mobile (5 checks)
+| Check | Description |
+|-------|-------------|
+| `accessibility` | WCAG accessibility compliance |
+| `mobile_friendly` | Mobile-friendliness testing |
+| `amp_compatibility` | AMP page validation |
+| `internationalization` | i18n support verification |
+| `browser_compatibility` | Cross-browser compatibility |
+
+#### 🔧 Technical & Infrastructure (4 checks)
+| Check | Description |
+|-------|-------------|
+| `content_type_headers` | Validates Content-Type headers |
+| `cms_used` | Detects CMS platform |
+| `clientside_rendering` | Checks for CSR implementation |
+| `deprecated_libraries` | Scans for outdated libraries |
+
+### Check Format Reference
+
+Each check returns a status string in the format:
+```
+<emoji> <detailed_message>
+```
+
+Examples:
+- `🟢 Valid until 2025-12-31` (SSL certificate)
+- `🔴 Missing: X-Frame-Options, X-Content-Type-Options` (Security headers)
+- `🟡 Score: 72/100 - Could be improved` (PageSpeed)
+- `⚪ Error: Connection timeout` (Any check failure)
 
 ## 📊 Understanding Results
 
@@ -656,18 +782,102 @@ To add a new monitoring check:
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed instructions.
 
+## 🎯 Best Practices
+
+### For Monitoring Multiple Websites
+
+**Optimize Performance:**
+```yaml
+# config.yaml
+max_workers: 4  # Adjust based on your system resources
+timeout: 45     # Increase for slow websites
+```
+
+**Selective Checking:**  
+Instead of running all 53 checks, focus on the most important ones for your use case:
+```bash
+# Security-focused monitoring
+curl -X POST "http://localhost:8000/monitor" \
+  -d '{"url": "example.com", "categories": ["security"]}'
+
+# Performance-focused monitoring  
+curl -X POST "http://localhost:8000/monitor" \
+  -d '{"url": "example.com", "categories": ["performance"]}'
+```
+
+### For GitHub Actions
+
+**Optimize Workflow:**
+- Run critical checks daily, comprehensive checks weekly
+- Use caching for dependencies
+- Set appropriate timeout values
+- Monitor Actions usage limits
+
+**Example schedule:**
+```yaml
+# Daily critical checks
+- cron: '0 4 * * *'
+
+# Weekly comprehensive scan
+- cron: '0 4 * * 0'
+```
+
+### For Production Deployment
+
+**Security:**
+- Use environment variables for sensitive data
+- Enable SSL/TLS for API endpoints
+- Implement rate limiting
+- Use Docker secrets for production credentials
+
+**Performance:**
+- Deploy behind a reverse proxy (nginx)
+- Enable caching with Redis
+- Use PostgreSQL for persistent storage
+- Scale API service horizontally with multiple containers
+
+**Monitoring:**
+- Set up health check monitoring
+- Configure log aggregation
+- Track API response times
+- Monitor system resources
+
+See [docs/DOCKER.md](docs/DOCKER.md) for production deployment details.
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 💬 Support
+## 🙏 Acknowledgments
 
-For issues or suggestions:
-- Open a GitHub issue at https://github.com/fabriziosalmi/websites-monitor/issues
-- Check the API documentation at `/api/docs`
-- Review existing issues and discussions
+Website Monitor uses several excellent open-source projects:
+
+- [FastAPI](https://fastapi.tiangolo.com/) - Modern web framework for building APIs
+- [Selenium](https://www.selenium.dev/) - Browser automation
+- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/) - HTML parsing
+- [python-whois](https://pypi.org/project/python-whois/) - WHOIS lookups
+- [dnspython](https://www.dnspython.org/) - DNS toolkit
+- [Docker](https://www.docker.com/) - Containerization platform
+
+Special thanks to all [contributors](https://github.com/fabriziosalmi/websites-monitor/graphs/contributors) who help improve this project!
+
+## 📞 Support & Contact
+
+- **Issues**: [GitHub Issues](https://github.com/fabriziosalmi/websites-monitor/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/fabriziosalmi/websites-monitor/discussions)
+- **Documentation**: This README and [docs/](docs/)
+- **Changelog**: [CHANGELOG.md](CHANGELOG.md)
 
 ---
 
-*This comprehensive monitoring framework provides everything you need to keep your websites secure, fast, and compliant. Whether you prefer the interactive web interface, automated GitHub Actions, or API integration - Website Monitor has you covered.*
+<div align="center">
+
+**[⬆ Back to Top](#website-monitor)**
+
+Made with ❤️ by [Fabrizio Salmi](https://github.com/fabriziosalmi)
+
+[![GitHub stars](https://img.shields.io/github/stars/fabriziosalmi/websites-monitor?style=social)](https://github.com/fabriziosalmi/websites-monitor/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/fabriziosalmi/websites-monitor?style=social)](https://github.com/fabriziosalmi/websites-monitor/network/members)
+
+</div>
 
