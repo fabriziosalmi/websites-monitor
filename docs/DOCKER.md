@@ -121,9 +121,9 @@ volumes:
 After starting the services:
 
 - **🏠 API Homepage**: http://localhost:8000/
-- **📚 Interactive Docs**: http://localhost:8000/api/docs
+- **📚 Interactive Docs (Swagger)**: http://localhost:8000/api/docs
+- **📖 API Reference (ReDoc)**: http://localhost:8000/api/redoc
 - **📊 Health Check**: http://localhost:8000/health
-- **🎨 Custom Docs**: http://localhost:8000/docs/
 
 With Nginx (production):
 - **🌍 Main Site**: http://localhost/
@@ -373,7 +373,7 @@ For Docker-related issues:
 - Restart services: `docker-compose restart [service-name]`
 
 For application issues:
-- API docs: http://localhost:8000/docs
+- API docs: http://localhost:8000/api/docs
 - Health check: http://localhost:8000/health
 - GitHub issues: https://github.com/fabriziosalmi/websites-monitor/issues
 

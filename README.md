@@ -118,12 +118,48 @@ Organized into 7 logical categories:
 - **GitHub Actions**: Automated daily monitoring
 
 ### 📚 **Documentation & API**
-- Swagger UI at `/docs` for interactive API testing
-- ReDoc documentation at `/redoc` for detailed API reference
+- Swagger UI at `/api/docs` for interactive API testing
+- ReDoc documentation at `/api/redoc` for detailed API reference
 - Comprehensive API endpoints for all monitoring functions
 - Docker support for easy deployment
 
 ## 📖 How to Use
+
+### 📋 Prerequisites
+
+Before using Website Monitor, ensure you have:
+
+- **Python**: Version 3.11 or higher
+- **pip**: Python package manager
+- **Git**: For cloning the repository
+- **Chrome/Chromium**: Required for some checks (automatically managed in Docker)
+- **Optional**: Docker and Docker Compose for containerized deployment
+
+### 💻 Local Installation
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/fabriziosalmi/websites-monitor.git
+   cd websites-monitor
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   pip install fastapi uvicorn[standard] pydantic
+   ```
+
+3. **Configure (Optional)**:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your settings (e.g., PAGESPEED_API_KEY)
+   ```
+
+4. **Run the Web Interface**:
+   ```bash
+   python api.py
+   ```
+   Then open `http://localhost:8000` in your browser.
 
 ### 🌐 Web Interface Usage
 
@@ -190,18 +226,19 @@ Organized into 7 logical categories:
 #### Available Endpoints:
 
 - `GET /` - Web interface
-- `POST /check` - Run checks on a website
-- `GET /docs` - Swagger UI documentation
-- `GET /redoc` - ReDoc API documentation
+- `POST /monitor` - Run checks on a website
+- `GET /api/docs` - Swagger UI documentation
+- `GET /api/redoc` - ReDoc API documentation
 - `GET /health` - Health check endpoint
+- `GET /checks` - List all available checks
 
 #### Example API Call:
 ```bash
-curl -X POST "http://localhost:8000/check" \
+curl -X POST "http://localhost:8000/monitor" \
      -H "Content-Type: application/json" \
      -d '{
        "url": "example.com",
-       "checks": ["ssl_certificate", "security_headers", "performance"]
+       "checks": ["ssl_cert", "security_headers", "pagespeed_performances"]
      }'
 ```
 
@@ -281,8 +318,8 @@ docker run -e PAGESPEED_API_KEY=your_key fabriziosalmi/websites-monitor
 ## 📚 API Documentation
 
 ### Interactive Documentation:
-- **Swagger UI**: Visit `/docs` for interactive API testing
-- **ReDoc**: Visit `/redoc` for detailed API reference
+- **Swagger UI**: Visit `/api/docs` for interactive API testing
+- **ReDoc**: Visit `/api/redoc` for detailed API reference
 
 ### Integration Examples:
 - REST API endpoints for all monitoring functions
@@ -291,11 +328,29 @@ docker run -e PAGESPEED_API_KEY=your_key fabriziosalmi/websites-monitor
 
 ## 🤝 Contributing
 
+We welcome contributions! To get started:
+
 1. Fork the repository
-2. Create a feature branch
-3. Add new checks in the `checks/` directory
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests and ensure everything works
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to your branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+For detailed guidelines, please see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### Adding New Checks
+
+To add a new monitoring check:
+
+1. Create a new check file in the `checks/` directory
+2. Follow the existing check format (return 🟢, 🔴, 🟡, or ⚪)
+3. Register the check in `main.py` and `api.py`
 4. Update documentation
 5. Submit a pull request
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed instructions.
 
 ## 📄 License
 
@@ -304,8 +359,8 @@ This project is open source. See the license file for details.
 ## 💬 Support
 
 For issues or suggestions:
-- Open a GitHub issue
-- Check the documentation at `/docs`
+- Open a GitHub issue at https://github.com/fabriziosalmi/websites-monitor/issues
+- Check the API documentation at `/api/docs`
 - Review existing issues and discussions
 
 ---
