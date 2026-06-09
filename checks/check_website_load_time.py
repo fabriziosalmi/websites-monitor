@@ -92,7 +92,7 @@ def check_website_load_time(website: str, num_attempts: int = 3) -> str:
 
     except Timeout:
         logger.warning(f"Timeout occurred while checking load time for {website}")
-        return "🔴"  # Timeout is effectively a slow load time
+        return "⚪"  # Timeout is effectively an error/unavailable state
     except HTTPError as e:
         logger.warning(f"HTTP error for {website}: {e}")
         return "⚪"
