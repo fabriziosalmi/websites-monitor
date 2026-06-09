@@ -13,6 +13,10 @@ def check_browser_compatibility(website):
             - "🟢" if the website is compatible with all tested browsers
             - "🔴" if the website is not compatible with any browser or if an error occurs
     """
+    # Guard against empty or whitespace-only input
+    if not website or not website.strip():
+        return "🔴"
+
     # Ensure the website starts with 'http://' or 'https://'
     if not website.startswith(('http://', 'https://')):
         website = f"https://{website}"
