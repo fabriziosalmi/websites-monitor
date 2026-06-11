@@ -4,9 +4,9 @@ import requests
 import logging
 from requests.exceptions import RequestException, Timeout, HTTPError
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure module logger without altering global logging configuration
 logger = logging.getLogger(__name__)
+
 
 def check_website_load_time(website: str, num_attempts: int = 3) -> str:
     """
