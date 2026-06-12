@@ -2,6 +2,7 @@ import time
 import statistics
 import requests
 import logging
+from urllib.parse import urlparse
 from requests.exceptions import RequestException, Timeout, HTTPError
 
 # Configure module logger without altering global logging configuration
@@ -29,8 +30,26 @@ def check_website_load_time(website: str, num_attempts: int = 3) -> str:
         return "⚪"
     
     website = website.strip()
+    if not website:
+        logger.error("Empty website string after stripping")
+        return "⚪"
+
+    # Normalize URL with scheme
     if not website.startswith(('http://', 'https://')):
         website = f"https://{website}"
+
+    # Validate URL structure
+    try:
+        parsed = urlparse(website)
+        if not parsed.scheme or not parsed.netloc:
+            logger.error(f"Invalid URL structure: {website}")
+            return "⚪"
+        if parsed.scheme not in ('http', 'https'):
+            logger.error(f"Unsupported scheme in URL: {website}")
+            return "⚪"
+    except Exception as e:
+        logger.error(f"Failed to parse URL {website}: {e}")
+        return "⚪"
 
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
