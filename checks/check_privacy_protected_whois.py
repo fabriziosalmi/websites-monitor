@@ -6,6 +6,21 @@ from whois.parser import PywhoisError
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+def _normalize_field_value(value):
+    """
+    Normalize a WHOIS field value to a lowercase string for privacy checking.
+    Handles strings, lists, dicts, and None values robustly.
+    """
+    if value is None:
+        return ''
+    if isinstance(value, str):
+        return value.lower()
+    if isinstance(value, list):
+        return ' '.join(str(v).lower() for v in value if v is not None)
+    if isinstance(value, dict):
+        return ' '.join(f"{k} {v}" for k, v in value.items() if v is not None)
+    return str(value).lower()
+
 def check_privacy_protected_whois(domain: str) -> str:
     """
     Check if a domain's WHOIS information indicates that it is privacy-protected with enhanced detection.
@@ -59,7 +74,7 @@ def check_privacy_protected_whois(domain: str) -> str:
             
             if field_value:
                 total_checks += 1
-                field_str = str(field_value).lower()
+                field_str = _normalize_field_value(field_value)
                 
                 if any(indicator in field_str for indicator in privacy_indicators):
                     privacy_score += 1
@@ -73,7 +88,8 @@ def check_privacy_protected_whois(domain: str) -> str:
             
             for field in critical_fields:
                 value = whois_data.get(field, '')
-                if not value or 'redacted' in str(value).lower() or 'withheld' in str(value).lower():
+                normalized = _normalize_field_value(value)
+                if not normalized or 'redacted' in normalized or 'withheld' in normalized:
                     redacted_count += 1
 
             if redacted_count >= 2:
