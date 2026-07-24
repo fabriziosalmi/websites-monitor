@@ -4,3 +4,4 @@ tests/
 *.log
 codeflash.yaml
 .venv
+.DS_Store
