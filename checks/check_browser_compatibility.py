@@ -1,5 +1,7 @@
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 def check_browser_compatibility(website):
     """
@@ -23,8 +25,8 @@ def check_browser_compatibility(website):
 
     # List of drivers to test compatibility
     driver_configs = [
-        ("Chrome", webdriver.Chrome, webdriver.ChromeOptions),
-        ("Firefox", webdriver.Firefox, webdriver.FirefoxOptions),
+        ("Chrome", webdriver.Chrome, ChromeOptions),
+        ("Firefox", webdriver.Firefox, FirefoxOptions),
     ]
 
     compatible_browsers = 0
