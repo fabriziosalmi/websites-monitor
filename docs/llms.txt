@@ -1,0 +1,47 @@
+# Website Monitor
+
+> Advanced Security, Performance, SEO, and Compliance Analysis Platform.
+
+Website Monitor is an automated open-source web platform monitoring suite created by Fabrizio Salmi. It runs 53+ technical audits via GitHub Actions, CLI, or FastAPI REST service to inspect website security, TLS configuration, performance metrics (Core Web Vitals), SEO, accessibility, and privacy compliance.
+
+## Platform Capabilities
+
+### 1. Security & Cryptography (10 Checks)
+- SSL/TLS Certificate validity, expiration date, and issuer chain.
+- SSL Cipher Suite strength and modern protocol enforcement (TLS 1.2 / TLS 1.3).
+- HTTP Security Headers: Content-Security-Policy (CSP), X-Frame-Options, X-Content-Type-Options.
+- Strict-Transport-Security (HSTS) implementation and preload verification.
+- Cross-Origin Resource Sharing (CORS) policy and wildcard checks.
+- Mixed content detection (HTTP subresources on HTTPS origins).
+- Subresource Integrity (SRI) validation on external CDN scripts.
+- Rate limiting and DDoS protection detection.
+- Data leakage and sensitive header exposure prevention.
+
+### 2. Performance & Web Vitals (8 Checks)
+- Google PageSpeed Insights & Core Web Vitals (LCP, INP, CLS).
+- Total page load time and Time To First Byte (TTFB).
+- Modern compression detection (Brotli / Gzip).
+- CSS and JavaScript asset minification verification.
+- CDN presence detection (Cloudflare, Fastly, CloudFront, Akamai).
+- Redirect chain and 301/302 hop analysis.
+
+### 3. SEO & Discoverability (8 Checks)
+- XML Sitemap discovery and schema compliance.
+- robots.txt directive parsing and crawler declarations.
+- Title and meta description optimization audits.
+- Canonical URL alignment and hreflang validation.
+- OpenGraph and Twitter Card social preview tags.
+- Schema.org structured data (JSON-LD) extraction and validation.
+
+### 4. Privacy, Legal & Accessibility (27 Checks)
+- Cookie banner and GDPR compliance indicators.
+- Privacy policy and RFC 9116 security.txt declaration.
+- Web accessibility (WCAG 2.1) contrast and ARIA attribute scans.
+
+## Integration & Deployment
+
+- **Web Dashboard**: https://fabriziosalmi.github.io/websites-monitor/
+- **API Swagger UI**: https://fabriziosalmi.github.io/websites-monitor/swagger.html
+- **Docker Image**: `docker pull fabriziosalmi/website-monitor:latest`
+- **GitHub Repository**: https://github.com/fabriziosalmi/websites-monitor
+- **Automated Runs**: GitHub Actions workflow cron scheduling with multi-format report exports (HTML, JSON, Markdown).
