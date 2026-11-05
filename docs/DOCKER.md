@@ -69,6 +69,17 @@ docker inspect -f '{{.State.Health.Status}}' website-monitor-api
 
 The API container has a health check on `GET /health`. The scheduler has none: if its process stops, the container stops and Docker restarts it.
 
+## Command line and MCP server
+
+The image has the `websites-monitor` command (the same as `python -m websites_monitor`):
+
+```bash
+docker exec website-monitor-api websites-monitor scan example.com --checks ssl_cert,hsts
+docker exec website-monitor-api websites-monitor report example.com --format markdown
+```
+
+An MCP client can run the MCP server inside the container over stdio with `docker exec -i website-monitor-api websites-monitor mcp`; see the MCP section of the README for the client configuration.
+
 ## Prebuilt image
 
 Each push to `main` publishes `ghcr.io/fabriziosalmi/websites-monitor:latest` for linux/amd64 and linux/arm64. To use it instead of building, replace `build: .` with `image: ghcr.io/fabriziosalmi/websites-monitor:latest` in both services. The image already contains the web UI, so the `./docs` mount is then optional.

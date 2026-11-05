@@ -69,11 +69,14 @@ Rules:
 
 ## Registering a check
 
-1. `api.py`: add the module to `CHECK_MODULES` and the category to `CHECK_CATEGORIES`.
-2. `main.py`: add it to `WebsiteMonitor._initialize_check_functions` so the scheduled report runs it.
-3. `docs/assets/app.js`: add it to `CHECKS` with the same category; `tests/test_ui_catalog.py` fails while the web UI and the API disagree. Add `check.<id>.name` and `check.<id>.hint` to every file in `docs/assets/locales/`; `tests/test_ui_locales.py` fails while a language lacks them.
-4. Run `python scripts/export_openapi.py`. `tests/test_openapi_snapshot.py` fails while `docs/openapi.json` is out of date.
-5. Add the check to the table in `README.md`.
+1. `websites_monitor/adapters/checks.py`: add a row to `REGISTRY` with the ID, the category, the English name (the same as `check.<id>.name` in `en.json`) and, if the check needs more than the default, a minimum timeout. This is the only registry: the REST API, the command line, the MCP server and the scheduled report all read it. A check that needs extra arguments gets them in `PythonCheckRunner.run`.
+2. `docs/assets/app.js`: add it to `CHECKS` with the same category; `tests/test_ui_catalog.py` fails while the web UI and the API disagree. Add `check.<id>.name` and `check.<id>.hint` to every file in `docs/assets/locales/`; `tests/test_ui_locales.py` fails while a language lacks them.
+3. Run `python scripts/export_openapi.py`. `tests/test_openapi_snapshot.py` fails while `docs/openapi.json` is out of date.
+4. Add the check to the table in `README.md`.
+
+## Where code goes
+
+The package `websites_monitor/` is laid out as ports and adapters (see the Architecture section of the README). Behaviour goes in `application.py` (`MonitorService`) or `domain.py`, never in an adapter: `adapters/http.py`, `adapters/cli.py` and `adapters/mcp.py` only translate their protocol to a `MonitorService` call. A new operation goes in `OPERATIONS` and in all three adapters; `tests/test_parity.py` fails until it is exposed everywhere and returns the same JSON. Tests that need checks use the fake runner in `tests/fakes.py`, not the network.
 
 ## Interface text
 

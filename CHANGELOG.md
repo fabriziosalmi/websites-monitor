@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- A command line, `python -m websites_monitor` (`websites-monitor` in the Docker image), with the commands health, checks, check, scan, scan-many, report, serve and mcp. `--json` prints the JSON the REST API returns; `--fail-on fail|warn` sets exit code 1 for CI.
+- An MCP server for AI assistants over stdio or streamable HTTP, with one tool per operation and the same JSON as the REST API.
+- Every check result carries `verdict` (pass, warn, fail, unknown), `detail`, `category` and `duration_ms`; scans carry a `summary` with the counts and the pass rate.
+- `concurrency` on the scan requests, and `category` on `GET /checks`.
+- The web UI's JSON export is the `scan` response of the API.
+
+### Changed
+- The code is laid out as ports and adapters in the `websites_monitor` package: one `MonitorService` implements every operation, and the REST API, the command line and the MCP server only translate to it. `api.py` and `main.py` remain as entry points.
+- One registry of checks replaces the two that disagreed. As a result `check_name` holds the check's name ("SSL certificate", not "Ssl Cert"), the scheduled report's columns use the same names, the scheduler sends 10 requests in the rate limiting check like the API, and the API applies the longer minimum timeouts of the PageSpeed (60 s) and DNS blocklist (45 s) checks.
+- Timestamps are UTC with an offset (`2026-11-05T11:36:23+00:00`).
+- `GET /monitor/single` returns the same response as `POST /monitor/single`, not the grouped response of `POST /monitor`.
+- `GET /check/{id}` answers 200 with `status: error` when the check fails or times out, as the other endpoints do, instead of 500.
+- `POST /monitor` and the reports run checks concurrently (4 at a time by default) instead of one by one.
+- The Markdown report starts each row with a pipe, and `POST /generate-report` renders it in memory instead of writing `api_generated_report.md`.
+
+### Fixed
+- The HTML report put the scanned site's results into the page unescaped.
+
 ## [1.5.0] - 2026-11-05
 
 ### Added

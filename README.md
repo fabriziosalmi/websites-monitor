@@ -3,7 +3,7 @@
 [![CI](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/ci.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Website Monitor runs 53 checks against a website: TLS, security headers, performance, SEO, DNS, privacy and accessibility. It has a web UI, a REST API, and a scheduler that writes a Markdown report for a list of sites.
+Website Monitor runs 53 checks against a website: TLS, security headers, performance, SEO, DNS, privacy and accessibility. It has a web UI, a REST API, a command line, an MCP server for AI assistants, and a scheduler that writes a Markdown report for a list of sites.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshot-dark.png">
@@ -16,7 +16,11 @@ Website Monitor runs 53 checks against a website: TLS, security headers, perform
 - [Web UI](#web-ui)
 - [Verdicts](#verdicts)
 - [Checks](#checks)
+- [Interfaces](#interfaces)
 - [REST API](#rest-api)
+- [Command line](#command-line)
+- [MCP server](#mcp-server)
+- [Architecture](#architecture)
 - [Scheduled reports](#scheduled-reports)
 - [Configuration](#configuration)
 - [Development](#development)
@@ -181,19 +185,34 @@ Some checks need a key to give a verdict; without it they return no verdict and 
 
 </details>
 
+## Interfaces
+
+The same operations are available four ways. The REST API, the command line and the MCP server return the same JSON for the same operation; the web UI calls the REST API.
+
+| Operation | REST API | Command line | MCP tool | Web UI |
+|---|---|---|---|---|
+| health | `GET /health` | `websites-monitor health` | `health` | sidebar |
+| list_checks | `GET /checks` | `websites-monitor checks` | `list_checks` | Check catalog |
+| run_check | `GET /check/{id}?website=` | `websites-monitor check <id> <website>` | `run_check` | Run again, on a result row |
+| scan | `POST /monitor/single` | `websites-monitor scan <website>` | `scan` | New scan, Results, JSON export |
+| scan_many | `POST /monitor` | `websites-monitor scan-many <website>...` | `scan_many` | |
+| report | `POST /generate-report` | `websites-monitor report <website>...` | `report` | |
+
+Each check result carries `verdict` (`pass`, `warn`, `fail` or `unknown`) and `detail`, so a client does not need to read the symbols. A scan also returns a `summary` with the counts and the pass rate.
+
 ## REST API
 
-The API is a FastAPI application (`api.py`). `website` accepts a domain or a URL; only the host is used. The interactive reference is served at `/api/docs` (Swagger UI) and `/api/redoc`, and the OpenAPI description at `/api/openapi.json`.
+The API is a FastAPI application. `website` accepts a domain or a URL; only the host is used. The interactive reference is served at `/api/docs` (Swagger UI) and `/api/redoc`, and the OpenAPI description at `/api/openapi.json`.
 
 | Method and path | What it does |
 |---|---|
 | `GET /health` | Status, version and number of checks. |
-| `GET /checks` | The 53 checks: ID, category, description and endpoint. |
-| `POST /monitor/single` | Runs the listed checks against one website. Each check runs once, in the order given. |
-| `GET /monitor/single?website=` | Runs every check against one website. |
+| `GET /checks?category=` | The checks: ID, name, category, description and endpoint. `category` is optional. |
+| `POST /monitor/single` | Runs the listed checks (all of them when `checks` is omitted) against one website. Each check runs once, in the order given. |
+| `GET /monitor/single?website=` | Runs every check against one website; same response as the POST. |
 | `GET /check/{id}?website=` | Runs one check. |
-| `POST /monitor` | Runs every check against a list of websites and waits for the results. |
-| `POST /monitor/async` | Same, in the background: returns a task ID. |
+| `POST /monitor` | Runs every check against several websites; results are grouped by check. |
+| `POST /monitor/async` | Same, in the background: returns a task ID. HTTP only. |
 | `GET /monitor/async/{task_id}` | Status and result of a background task. Tasks live in memory and are lost on restart. |
 | `POST /generate-report` | Runs every check and returns a report as JSON, Markdown or HTML (`output_format`). |
 
@@ -209,42 +228,120 @@ curl -s -X POST http://127.0.0.1:8000/monitor/single \
 {
   "success": true,
   "message": "Custom monitoring completed successfully",
+  "website": "example.com",
   "results": [
     {
       "check_id": "ssl_cert",
-      "check_name": "Ssl Cert",
+      "check_name": "SSL certificate",
+      "category": "security",
       "website": "example.com",
       "result": "\ud83d\udfe2 (50 days left)",
+      "verdict": "pass",
+      "detail": "50 days left",
       "status": "completed",
-      "timestamp": "2026-11-05T10:56:44.284830"
+      "error": null,
+      "timestamp": "2026-11-05T11:36:23.064392+00:00",
+      "duration_ms": 53
     },
     {
       "check_id": "hsts",
-      "check_name": "Hsts",
+      "check_name": "HSTS",
+      "category": "security",
       "website": "example.com",
       "result": "\ud83d\udd34",
+      "verdict": "fail",
+      "detail": "",
       "status": "completed",
-      "timestamp": "2026-11-05T10:56:44.351761"
+      "error": null,
+      "timestamp": "2026-11-05T11:36:23.083954+00:00",
+      "duration_ms": 72
     },
     {
       "check_id": "pagespeed_performances",
-      "check_name": "Pagespeed Performances",
+      "check_name": "PageSpeed score",
+      "category": "performance",
       "website": "example.com",
       "result": "\u26aa (no PageSpeed API key)",
+      "verdict": "unknown",
+      "detail": "no PageSpeed API key",
       "status": "completed",
-      "timestamp": "2026-11-05T10:56:44.351920"
+      "error": null,
+      "timestamp": "2026-11-05T11:36:23.012356+00:00",
+      "duration_ms": 1
     }
   ],
-  "execution_time": 0.172866,
-  "timestamp": "2026-11-05T10:56:44.351921",
+  "summary": {
+    "total": 3,
+    "passed": 1,
+    "warnings": 0,
+    "failed": 1,
+    "no_verdict": 1,
+    "pass_rate_percent": 50
+  },
+  "execution_time": 0.073,
+  "timestamp": "2026-11-05T11:36:23.084009+00:00",
   "websites_checked": 1,
   "checks_performed": 3
 }
 ```
 
-`result` starts with the verdict (shown here as JSON escapes; see [Verdicts](#verdicts)). When a check raises an error or exceeds its timeout, `status` is `error`, `result` is the white circle and `error` holds the message, for example `Timed out after 30s`. An unknown check ID comes back with `"error": "Unknown check"`.
+`result` is the check's own string, starting with the verdict symbol (shown here as JSON escapes; see [Verdicts](#verdicts)). When a check raises an error or exceeds its timeout, `status` is `error`, `verdict` is `unknown` and `error` holds the message, for example `Timed out after 30s`. An unknown check ID comes back with `"error": "Unknown check"`.
 
-`timeout` (5 to 300 seconds, default 30) limits each check, and `pagespeed_api_key` overrides `PAGESPEED_API_KEY` for one request. Both are optional fields of the request body.
+Optional request fields: `timeout` (5 to 300 seconds, default 30) limits each check, `concurrency` (1 to 16, default 4) sets how many checks run at once, and `pagespeed_api_key` overrides `PAGESPEED_API_KEY` for one request.
+
+## Command line
+
+```bash
+python -m websites_monitor scan example.com                # all checks, text output
+python -m websites_monitor scan example.com --checks ssl_cert,hsts --json
+python -m websites_monitor check ssl_cert example.com
+python -m websites_monitor checks --category security
+python -m websites_monitor report example.com example.org --format html --output report.html
+python -m websites_monitor serve --port 8000               # REST API and web UI
+```
+
+In the Docker image the same command is `websites-monitor`, for example `docker exec website-monitor-api websites-monitor scan example.com`.
+
+Without `--json` the output is a line per check (`PASS`, `WARN`, `FAIL` or `----` for no verdict) and a summary. With `--json` it is the JSON the REST API returns for the same operation. The checks' own log lines are hidden unless you pass `-v`.
+
+Exit codes: `0` done; `1` when `--fail-on fail` (or `--fail-on warn`) is given and a check failed (or failed or warned), which makes the command usable as a CI gate; `2` bad usage; `3` the operation could not run (a website that is not a host, an unknown check).
+
+## MCP server
+
+The MCP server lets an AI assistant run the checks itself. It has one tool per operation (`health`, `list_checks`, `run_check`, `scan`, `scan_many`, `report`), returning the same JSON as the REST API. `run_check`, `scan`, `scan_many` and `report` are marked as read only but open world: they change nothing locally and send requests to the websites they are given.
+
+Over stdio, for an assistant on the same machine:
+
+```bash
+python -m websites_monitor mcp
+```
+
+With the Docker Compose setup running, an MCP client can start it inside the API container. A client configuration in the usual `mcpServers` format:
+
+```json
+{
+  "mcpServers": {
+    "websites-monitor": {
+      "command": "docker",
+      "args": ["exec", "-i", "website-monitor-api", "websites-monitor", "mcp"]
+    }
+  }
+}
+```
+
+Over HTTP: `python -m websites_monitor mcp --transport streamable-http --port 8001`, then point the client at `http://127.0.0.1:8001/mcp`. Like the REST API, it has no authentication; see [SECURITY.md](SECURITY.md).
+
+## Architecture
+
+The code in `websites_monitor/` is laid out as ports and adapters:
+
+- `domain.py`: verdicts, targets and summaries, without I/O.
+- `application.py`: `MonitorService`, the one implementation of every operation, and the report rendering.
+- `ports.py`: the `CheckRunner` interface the application needs.
+- `adapters/checks.py`: the check runner over the functions in `checks/`, and the registry of checks (ID, category, name, minimum timeout).
+- `adapters/http.py`, `adapters/cli.py`, `adapters/mcp.py`: the REST API, the command line and the MCP server. Each translates its protocol to a `MonitorService` call and nothing else.
+
+`api.py` and `main.py` are kept as entry points for Docker Compose, the scheduler and the GitHub Action. `tests/test_parity.py` runs every operation through the three interfaces on the same input and fails if their JSON differs, if an interface lacks an operation, or if the web UI's JSON export drifts from the API's `scan` response.
 
 ## Scheduled reports
 
@@ -294,8 +391,8 @@ The tests do not use the network. CI runs them on Python 3.11, then builds the i
 To add a check:
 
 1. Write `checks/check_<id>.py` with a function `check_<id>(website: str) -> str` that returns a verdict as described in [Verdicts](#verdicts), and never raises.
-2. Register it in `CHECK_MODULES` and `CHECK_CATEGORIES` in `api.py`, and in `WebsiteMonitor._initialize_check_functions` in `main.py` for the scheduled report.
-3. Add it to `CHECKS` in `docs/assets/app.js` with its category, and its name and short description to every file in `docs/assets/locales/` (`check.<id>.name`, `check.<id>.hint`). Tests fail while the web UI and the API disagree on the list or the categories, or a language lacks a string.
+2. Add a row to `REGISTRY` in `websites_monitor/adapters/checks.py`: ID, category, name, and a minimum timeout if it needs more than the default. The REST API, the command line, the MCP server and the scheduled report pick it up from there.
+3. Add it to `CHECKS` in `docs/assets/app.js` with the same category, and its name and short description to every file in `docs/assets/locales/` (`check.<id>.name`, `check.<id>.hint`). Tests fail while the web UI and the registry disagree, or a language lacks a string.
 4. Run `python scripts/export_openapi.py` to refresh `docs/openapi.json`, which the API reference on GitHub Pages loads. A test fails when it is out of date.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the rest, and [SECURITY.md](SECURITY.md) to report a vulnerability.

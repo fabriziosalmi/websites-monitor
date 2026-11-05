@@ -20,6 +20,13 @@ Each check returns a verdict: pass, warning, fail, or no verdict when it cannot 
 - GET /check/{id}?website=example.com: runs one check.
 - POST /monitor, POST /monitor/async, POST /generate-report: every check against a list of sites.
 
+Each result has a verdict (pass, warn, fail, unknown) and a detail; a scan also returns a summary.
+
+## Command line and MCP
+
+- Command line: `python -m websites_monitor scan example.com --json` (or `websites-monitor` in the Docker image) returns the same JSON as the REST API. `--fail-on fail` makes it exit 1 when a check fails.
+- MCP server for AI assistants: `python -m websites_monitor mcp` (stdio) or `--transport streamable-http`. Tools: health, list_checks, run_check, scan, scan_many, report, with the same JSON as the REST API.
+
 ## Checks
 
 ### Security (10)
