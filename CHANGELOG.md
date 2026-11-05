@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-11-05
+
+### Fixed
+- The API reference (`docs/swagger.html` and `/api/docs`) renders again: the vendored Swagger UI 4.15.5 could not read the OpenAPI 3.1 description FastAPI emits. It is replaced by Swagger UI 5.34.0, served with a versioned URL so browsers do not keep the cached copy.
+- `/api/docs` no longer loads Swagger UI from cdn.jsdelivr.net.
+- The scheduler container is no longer reported unhealthy: it inherited the image's health check, which probes the API port.
+- `docs/security.txt` declares the same canonical location as `docs/.well-known/security.txt`.
+
+### Changed
+- The GitHub Pages actions move to their current major versions, and the site keeps publishing `.well-known/security.txt`.
+- Dependabot no longer proposes new Python minor or major versions for the base image; patch digests still come through.
+
 ## [1.4.0] - 2026-11-05
 
 ### Added
@@ -70,7 +82,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Markdown report generation
 - Core security and performance checks
 
-[Unreleased]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.4.1...HEAD
+[1.4.1]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.2.0...v1.3.0
 [1.0.0]: https://github.com/fabriziosalmi/websites-monitor/releases/tag/v1.0.0

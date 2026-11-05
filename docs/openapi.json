@@ -301,7 +301,7 @@
   "info": {
     "description": "Runs security, performance, SEO, privacy and accessibility checks against a website. Each check returns a verdict: pass, warning, fail, or no verdict when it could not run. GET /checks lists them; POST /monitor/single runs a selection against one site, and GET /check/{name} runs a single check.",
     "title": "Website Monitor API",
-    "version": "1.4.0"
+    "version": "1.4.1"
   },
   "openapi": "3.1.0",
   "paths": {
