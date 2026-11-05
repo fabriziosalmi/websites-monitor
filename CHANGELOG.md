@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - The API reference (`docs/swagger.html` and `/api/docs`) renders again: the vendored Swagger UI 4.15.5 could not read the OpenAPI 3.1 description FastAPI emits. It is replaced by Swagger UI 5.34.0, served with a versioned URL so browsers do not keep the cached copy.
 - `/api/docs` no longer loads Swagger UI from cdn.jsdelivr.net.
-- The scheduler container is no longer reported unhealthy: it inherited the image's health check, which probes the API port.
 - `docs/security.txt` declares the same canonical location as `docs/.well-known/security.txt`.
 
 ### Changed
