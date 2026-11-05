@@ -59,7 +59,9 @@ The web UI is a static page in `docs/`, served by the API under `/docs/` (`/` re
 - **Results**: each check runs as its own request, four at a time, so results appear as they finish. The page shows the pass rate, the number of failed checks, warnings and checks without a verdict, a breakdown per category, and the list of checks with filters and search. A single check can be run again, and the `curl` command for it copied. Results export to CSV and JSON.
 - **History**: the last 20 scans, kept in the browser's local storage.
 - **Check catalog**: every check with its ID, category and description.
-- **Settings**: the API address, the timeout per check, how many checks run in parallel, an optional PageSpeed key (kept in memory for the current tab only), and the theme (light, dark or system).
+- **Settings**: the API address, the timeout per check, how many checks run in parallel, an optional PageSpeed key (kept in memory for the current tab only), the theme (light, dark or system) and the language.
+
+The interface is in English and Italian. By default it follows the browser's language; Settings can fix it to either. The text the checks return, such as `50 days left` or an error message, comes from the API and stays in English.
 
 The same page is published on GitHub Pages at https://fabriziosalmi.github.io/websites-monitor/. There it has no API behind it: set the address of a running API in Settings. A page served over HTTPS can only call an API served over HTTPS.
 
@@ -293,7 +295,7 @@ To add a check:
 
 1. Write `checks/check_<id>.py` with a function `check_<id>(website: str) -> str` that returns a verdict as described in [Verdicts](#verdicts), and never raises.
 2. Register it in `CHECK_MODULES` and `CHECK_CATEGORIES` in `api.py`, and in `WebsiteMonitor._initialize_check_functions` in `main.py` for the scheduled report.
-3. Add it to `CHECKS` in `docs/assets/app.js`. A test fails while the web UI and the API disagree on the list or the categories.
+3. Add it to `CHECKS` in `docs/assets/app.js` with its category, and its name and short description to every file in `docs/assets/locales/` (`check.<id>.name`, `check.<id>.hint`). Tests fail while the web UI and the API disagree on the list or the categories, or a language lacks a string.
 4. Run `python scripts/export_openapi.py` to refresh `docs/openapi.json`, which the API reference on GitHub Pages loads. A test fails when it is out of date.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the rest, and [SECURITY.md](SECURITY.md) to report a vulnerability.
