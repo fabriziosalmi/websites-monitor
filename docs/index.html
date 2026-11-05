@@ -64,51 +64,51 @@
     })();
   </script>
   <link rel="preload" href="fonts/inter-5.3.0/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/app.css?v=2">
-  <script src="assets/app.js?v=2" defer></script>
+  <link rel="stylesheet" href="assets/app.css?v=3">
+  <script src="assets/app.js?v=3" defer></script>
 </head>
 <body>
-  <a class="sr-only" href="#view">Skip to content</a>
+  <a class="sr-only" href="#view" data-i18n="a11y.skip">Skip to content</a>
   <div id="mobile-backdrop" class="mobile-backdrop" aria-hidden="true"></div>
 
-  <aside id="app-sidebar" class="sidebar" aria-label="Sidebar">
+  <aside id="app-sidebar" class="sidebar" aria-label="Sidebar" data-i18n-attr="aria-label:sidebar.label">
     <div class="sb-header">
       <img class="sb-logo" src="favicon.svg?v=2" alt="" aria-hidden="true" width="32" height="32">
       <div class="sb-brand-meta hide-collapsed">
-        <span class="sb-title">Website Monitor</span>
+        <span class="sb-title" data-i18n="app.name">Website Monitor</span>
         <span class="sb-sub" id="sb-sub">Security, speed, SEO</span>
       </div>
-      <button type="button" class="btn btn-icon mobile-close-btn" id="btn-mobile-close" aria-label="Close navigation" data-icon="x"></button>
+      <button type="button" class="btn btn-icon mobile-close-btn" id="btn-mobile-close" aria-label="Close navigation" data-i18n-attr="aria-label:sidebar.closeNav" data-icon="x"></button>
     </div>
 
     <div class="sb-search-wrap hide-collapsed">
       <label class="sb-search-box">
         <span data-icon="search" data-size="16"></span>
-        <input id="global-search" class="sb-search-input" type="search" placeholder="Filter this page" aria-label="Filter the table on this page" autocomplete="off">
+        <input id="global-search" class="sb-search-input" type="search" placeholder="Filter this page" aria-label="Filter the table on this page" data-i18n-attr="placeholder:search.placeholder;aria-label:search.aria" autocomplete="off">
         <kbd class="kbd" id="search-kbd" aria-hidden="true">Ctrl K</kbd>
       </label>
     </div>
 
-    <nav class="sb-nav" aria-label="Main">
+    <nav class="sb-nav" aria-label="Main" data-i18n-attr="aria-label:nav.main">
       <div>
-        <p class="sb-group-label hide-collapsed">Analyze</p>
+        <p class="sb-group-label hide-collapsed" data-i18n="nav.analyze">Analyze</p>
         <ul class="sb-list">
-          <li><a class="sb-item" href="#/scan" data-route="scan"><span data-icon="play"></span><span class="sb-label hide-collapsed">New scan</span></a></li>
-          <li><a class="sb-item" href="#/results" data-route="results"><span data-icon="gauge"></span><span class="sb-label hide-collapsed">Results</span><span class="sb-count hide-collapsed" id="nav-results-count" hidden></span></a></li>
-          <li><a class="sb-item" href="#/history" data-route="history"><span data-icon="history"></span><span class="sb-label hide-collapsed">History</span><span class="sb-count hide-collapsed" id="nav-history-count" hidden></span></a></li>
+          <li><a class="sb-item" href="#/scan" data-route="scan"><span data-icon="play"></span><span class="sb-label hide-collapsed" data-i18n="nav.newScan">New scan</span></a></li>
+          <li><a class="sb-item" href="#/results" data-route="results"><span data-icon="gauge"></span><span class="sb-label hide-collapsed" data-i18n="nav.results">Results</span><span class="sb-count hide-collapsed" id="nav-results-count" hidden></span></a></li>
+          <li><a class="sb-item" href="#/history" data-route="history"><span data-icon="history"></span><span class="sb-label hide-collapsed" data-i18n="nav.history">History</span><span class="sb-count hide-collapsed" id="nav-history-count" hidden></span></a></li>
         </ul>
       </div>
       <div>
-        <p class="sb-group-label hide-collapsed">Reference</p>
+        <p class="sb-group-label hide-collapsed" data-i18n="nav.reference">Reference</p>
         <ul class="sb-list">
-          <li><a class="sb-item" href="#/catalog" data-route="catalog"><span data-icon="list-checks"></span><span class="sb-label hide-collapsed">Check catalog</span></a></li>
-          <li><a class="sb-item" id="nav-api-docs" href="swagger.html" target="_blank" rel="noopener"><span data-icon="book"></span><span class="sb-label hide-collapsed">API reference</span><span class="hide-collapsed" data-icon="external" data-size="14"></span></a></li>
+          <li><a class="sb-item" href="#/catalog" data-route="catalog"><span data-icon="list-checks"></span><span class="sb-label hide-collapsed" data-i18n="nav.catalog">Check catalog</span></a></li>
+          <li><a class="sb-item" id="nav-api-docs" href="swagger.html" target="_blank" rel="noopener"><span data-icon="book"></span><span class="sb-label hide-collapsed" data-i18n="nav.apiReference">API reference</span><span class="hide-collapsed" data-icon="external" data-size="14"></span></a></li>
         </ul>
       </div>
       <div>
-        <p class="sb-group-label hide-collapsed">System</p>
+        <p class="sb-group-label hide-collapsed" data-i18n="nav.system">System</p>
         <ul class="sb-list">
-          <li><a class="sb-item" href="#/settings" data-route="settings"><span data-icon="settings"></span><span class="sb-label hide-collapsed">Settings</span></a></li>
+          <li><a class="sb-item" href="#/settings" data-route="settings"><span data-icon="settings"></span><span class="sb-label hide-collapsed" data-i18n="nav.settings">Settings</span></a></li>
         </ul>
       </div>
     </nav>
@@ -116,7 +116,7 @@
     <div class="sb-footer">
       <p role="status" class="sb-health-row" id="health-row">
         <span id="health-dot" class="dot dot-unknown" aria-hidden="true"></span>
-        <span id="health-text" class="hide-collapsed">Checking API</span>
+        <span id="health-text" class="hide-collapsed" data-i18n="health.checking">Checking API</span>
       </p>
       <button type="button" class="sb-footer-btn" id="btn-collapse" aria-label="Collapse sidebar" aria-expanded="true">
         <span data-icon="panel-left"></span>
@@ -127,8 +127,8 @@
 
   <main class="viewport" id="viewport">
     <div class="mobile-topbar">
-      <button type="button" class="topbar-icon-btn" id="btn-mobile-menu" aria-label="Open navigation menu" aria-controls="app-sidebar" aria-expanded="false" data-icon="menu" data-size="22"></button>
-      <span id="mobile-page-label" class="mobile-topbar-title">Website Monitor</span>
+      <button type="button" class="topbar-icon-btn" id="btn-mobile-menu" aria-label="Open navigation menu" data-i18n-attr="aria-label:sidebar.openNav" aria-controls="app-sidebar" aria-expanded="false" data-icon="menu" data-size="22"></button>
+      <span id="mobile-page-label" class="mobile-topbar-title" data-i18n="app.name">Website Monitor</span>
     </div>
     <div class="page-container" id="view" tabindex="-1">
       <noscript>

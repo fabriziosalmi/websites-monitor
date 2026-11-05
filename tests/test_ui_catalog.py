@@ -9,7 +9,7 @@ APP_JS = pathlib.Path(__file__).resolve().parent.parent / "docs" / "assets" / "a
 
 def ui_check_ids():
     source = APP_JS.read_text(encoding="utf-8")
-    block = source[source.index("const CHECKS = ["):source.index("].map(([id, name, hint, cat], order)")]
+    block = source[source.index("const CHECKS = ["):source.index("].map(([id, cat], order)")]
     return re.findall(r"^\s*\['([a-z_]+)',", block, re.M)
 
 
@@ -25,8 +25,8 @@ def test_the_ui_catalog_matches_the_api_registry():
 
 def ui_categories():
     source = APP_JS.read_text(encoding="utf-8")
-    block = source[source.index("const CHECKS = ["):source.index("].map(([id, name, hint, cat], order)")]
-    return dict(re.findall(r"^\s*\['([a-z_]+)', '(?:[^'\\]|\\.)*', '(?:[^'\\]|\\.)*', '([a-z]+)'\]", block, re.M))
+    block = source[source.index("const CHECKS = ["):source.index("].map(([id, cat], order)")]
+    return dict(re.findall(r"^\s*\['([a-z_]+)', '([a-z]+)'\]", block, re.M))
 
 
 def test_the_api_files_each_check_where_the_ui_does():
