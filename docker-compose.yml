@@ -6,7 +6,7 @@ services:
     build: .
     container_name: website-monitor-api
     ports:
-      - "127.0.0.1:18000:8000"
+      - "192.168.0.126:18000:8000"
     mem_limit: 256m
     security_opt:
       - no-new-privileges:true
