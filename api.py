@@ -621,16 +621,16 @@ for check_name, check_func in CHECK_FUNCTIONS.items():
     endpoint_func = create_check_endpoint(check_name, check_func)
     endpoint_func.__name__ = f"check_{check_name}"
     
-    # Get check description
-    description = getattr(check_func, '__doc__', f'Run {check_name.replace("_", " ").title()} check').strip()
-    endpoint_func.__doc__ = f"""
-    ## {check_name.replace('_', ' ').title()} Check
-    
-    {description}
-    
-    **Category:** {CHECK_CATEGORIES.get(check_name, 'technical').title()}
-    """
-    
+    # inspect.getdoc strips indentation the same way on every Python
+    # version: pasted raw into an indented string, the docstring gave a
+    # different description on 3.11 than on 3.13, which dedents at compile
+    # time.
+    description = inspect.getdoc(check_func) or f"Run the {check_name} check."
+    category = CHECK_CATEGORIES.get(check_name, "technical").title()
+    endpoint_func.__doc__ = (
+        f"## {check_name.replace('_', ' ').title()} Check\n\n{description}\n\n**Category:** {category}"
+    )
+
     app.get(f"/check/{check_name}", tags=["Individual Checks"])(endpoint_func)
 
 # Background task management
