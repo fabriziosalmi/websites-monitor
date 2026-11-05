@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `/api/redoc` no longer loads ReDoc from cdn.jsdelivr.net or fonts from Google Fonts: ReDoc 2.5.4 is vendored in `docs/vendor/redoc/`, and a Content-Security-Policy keeps the page to what the server serves (the Redocly logo in its footer, from cdn.redoc.ly, is blocked and hidden).
+
 ## [2.0.1] - 2026-11-05
 
 ### Fixed

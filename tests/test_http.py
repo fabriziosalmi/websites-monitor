@@ -1,4 +1,6 @@
 """The REST API translates HTTP to MonitorService and back."""
+import re
+
 from fastapi.testclient import TestClient
 
 from fakes import make_service
@@ -79,6 +81,20 @@ def test_root_and_api_redirect_and_swagger_is_vendored():
     page = c.get("/api/docs").text
     assert "/docs/vendor/swagger-ui-bundle.js" in page and "cdn.jsdelivr.net" not in page
     assert c.get("/docs/fonts/inter-5.3.0/inter-latin-wght-normal.woff2").status_code == 200
+
+
+def test_redoc_loads_only_what_the_server_serves():
+    c, _ = client()
+
+    res = c.get("/api/redoc")
+    script = re.search(r'<script src="([^"]+)"', res.text).group(1)
+    assert script.startswith("/docs/vendor/redoc/redoc.standalone.js")
+    assert c.get(script).status_code == 200
+    assert re.findall(r'(?:src|href)="(https?:)?//', res.text) == []
+    # The bundle's footer logo comes from cdn.redoc.ly: the policy blocks it.
+    policy = dict(d.strip().split(" ", 1) for d in res.headers["content-security-policy"].split(";"))
+    assert policy["img-src"] == "'self' data:"
+    assert policy["default-src"] == "'none'"
 
 
 def test_health_reports_the_service_version():
