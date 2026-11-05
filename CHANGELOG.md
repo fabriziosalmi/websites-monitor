@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.2] - 2026-11-05
+
+### Fixed
+- `/api/redoc` no longer loads ReDoc from cdn.jsdelivr.net or fonts from Google Fonts: ReDoc 2.5.4 is vendored in `docs/vendor/redoc/`, and a Content-Security-Policy keeps the page to what the server serves (the Redocly logo in its footer, from cdn.redoc.ly, is blocked and hidden).
+
 ## [2.0.1] - 2026-11-05
 
 ### Fixed
@@ -122,7 +127,8 @@ The REST API, a new command line and a new MCP server share one implementation a
 - Markdown report generation
 - Core security and performance checks
 
-[Unreleased]: https://github.com/fabriziosalmi/websites-monitor/compare/v2.0.1...HEAD
+[Unreleased]: https://github.com/fabriziosalmi/websites-monitor/compare/v2.0.2...HEAD
+[2.0.2]: https://github.com/fabriziosalmi/websites-monitor/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/fabriziosalmi/websites-monitor/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.5.0...v2.0.0
 [1.5.0]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.4.1...v1.5.0

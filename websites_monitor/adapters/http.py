@@ -14,7 +14,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Path as PathParam, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, field_validator
@@ -26,6 +26,13 @@ logger = logging.getLogger(__name__)
 
 DOCS_DIR = Path(__file__).resolve().parents[2] / "docs"
 SWAGGER_VERSION = "5.34.0"
+REDOC_VERSION = "2.5.4"
+# The ReDoc page loads only what this server serves. The one outside request in
+# the bundle, the Redocly logo in the footer, is blocked and hides itself.
+REDOC_CSP = (
+    "default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
+    "img-src 'self' data:; connect-src 'self'; worker-src blob:; font-src 'self' data:"
+)
 
 TimeoutField = Field(DEFAULT_TIMEOUT, description="Seconds each check may take", ge=5, le=300)
 ConcurrencyField = Field(DEFAULT_CONCURRENCY, description="Checks run at the same time", ge=1, le=MAX_CONCURRENCY)
@@ -149,7 +156,7 @@ def create_app(service: MonitorService, *, on_startup: Optional[Callable[[], Non
         ),
         version=service.health()["version"],
         docs_url=None,
-        redoc_url="/api/redoc",
+        redoc_url=None,
         openapi_url="/api/openapi.json",
         lifespan=lifespan,
     )
@@ -178,6 +185,19 @@ def create_app(service: MonitorService, *, on_startup: Optional[Callable[[], Non
             swagger_css_url=f"/docs/vendor/swagger-ui-dist/swagger-ui.css?v={SWAGGER_VERSION}",
             swagger_favicon_url="/docs/favicon.svg?v=2",
         )
+
+    @app.get("/api/redoc", include_in_schema=False)
+    async def redoc():
+        """ReDoc from the vendored copy, without Google Fonts: the default page loads both from outside."""
+        page = get_redoc_html(
+            openapi_url=app.openapi_url,
+            title=f"{app.title} - ReDoc",
+            redoc_js_url=f"/docs/vendor/redoc/redoc.standalone.js?v={REDOC_VERSION}",
+            redoc_favicon_url="/docs/favicon.svg?v=2",
+            with_google_fonts=False,
+        )
+        page.headers["Content-Security-Policy"] = REDOC_CSP
+        return page
 
     @app.get("/api", include_in_schema=False)
     async def api_landing():

@@ -15,4 +15,4 @@ The package is laid out as ports and adapters:
   REST API.
 """
 
-__version__ = "2.0.1"
+__version__ = "2.0.2"
