@@ -151,3 +151,12 @@ def test_the_single_check_endpoint_gets_a_host_too(client):
     assert response.status_code == 200, response.text
     assert response.json()["result"] == "🟢"
     assert client.calls == [("individual", "hsts", "example.com")]
+
+
+def test_swagger_ui_is_served_from_the_vendored_copy(client):
+    page = client.get("/api/docs").text
+
+    assert "/docs/vendor/swagger-ui-bundle.js" in page
+    assert "/docs/vendor/swagger-ui-dist/swagger-ui.css" in page
+    assert "cdn.jsdelivr.net" not in page
+    assert client.get("/docs/vendor/swagger-ui-bundle.js").status_code == 200

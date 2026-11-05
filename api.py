@@ -6,6 +6,7 @@ Includes individual endpoints for all 53+ security, performance, and compliance 
 
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Query, Path
 from fastapi.responses import RedirectResponse
+from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, HttpUrl, Field, field_validator
@@ -164,7 +165,7 @@ app = FastAPI(
         "GET /check/{name} runs a single check."
     ),
     version="1.4.0",
-    docs_url="/api/docs",
+    docs_url=None,
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json"
 )
@@ -303,6 +304,22 @@ async def root():
     if not os.path.exists(html_file_path):
         raise HTTPException(status_code=404, detail="Frontend interface not found")
     return RedirectResponse(url="/docs/", status_code=307)
+
+@app.get("/api/docs", include_in_schema=False)
+async def swagger_ui():
+    """
+    Swagger UI from the copy vendored in docs/vendor: FastAPI's default page
+    loads it from cdn.jsdelivr.net, and the web UI makes no third-party
+    requests.
+    """
+    return get_swagger_ui_html(
+        openapi_url=app.openapi_url,
+        title=f"{app.title} - Swagger UI",
+        swagger_js_url="/docs/vendor/swagger-ui-bundle.js?v=5.34.0",
+        swagger_css_url="/docs/vendor/swagger-ui-dist/swagger-ui.css?v=5.34.0",
+        swagger_favicon_url="/docs/favicon.svg?v=2",
+    )
+
 
 @app.get("/api", include_in_schema=False)
 async def api_landing():
