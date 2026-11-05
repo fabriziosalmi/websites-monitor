@@ -11,6 +11,12 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # Security patches of python:3.11-slim still arrive as digest updates.
+    # A new Python minor version (3.11 to 3.15 at once, in #28) changes the
+    # runtime of every dependency: that is a planned upgrade, not a bump.
+    ignore:
+      - dependency-name: python
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
