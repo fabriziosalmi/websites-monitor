@@ -113,7 +113,7 @@
   const LANGS = ['en', 'it'];
   // Bump with every change to app.js, app.css or a locale file, together with
   // the ?v= in index.html: browsers keep the previous files under the same URL.
-  const ASSET_VERSION = '4';
+  const ASSET_VERSION = '5';
   const i18n = { lang: 'en', dict: {}, fallback: {}, plural: new Intl.PluralRules('en') };
 
   function readLangPref() {
@@ -921,7 +921,7 @@
     return h('div', { class: 'chip-row' },
       h('span', { class: 'text-muted', text: t('scan.recent') }),
       seen.slice(0, 6).map(target => h('button', {
-        type: 'button', class: 'chip', text: target,
+        type: 'button', class: 'chip', text: target, title: target,
         onclick: () => { input.value = target; onPick(); input.focus(); },
       })));
   }
@@ -1010,6 +1010,7 @@
     ui.desc.textContent = parts.join(' · ');
 
     clear(ui.progress);
+    ui.progress.hidden = !running;
     if (running) {
       const w = n => `${(n / c.total) * 100}%`;
       ui.progress.appendChild(h('div', { class: 'panel' }, h('div', { class: 'run-strip' },
