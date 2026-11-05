@@ -1,21 +1,35 @@
 {
   "components": {
     "schemas": {
-      "CustomMonitorRequest": {
+      "CheckGroup": {
         "properties": {
-          "checks": {
-            "description": "List of check names to run",
-            "example": [
-              "ssl_cert",
-              "security_headers"
-            ],
-            "items": {
-              "type": "string"
-            },
-            "title": "Checks",
-            "type": "array"
+          "check_id": {
+            "title": "Check Id",
+            "type": "string"
           },
-          "pagespeed_api_key": {
+          "check_name": {
+            "title": "Check Name",
+            "type": "string"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/Outcome"
+            },
+            "title": "Results",
+            "type": "array"
+          }
+        },
+        "required": [
+          "check_id",
+          "check_name",
+          "results"
+        ],
+        "title": "CheckGroup",
+        "type": "object"
+      },
+      "CheckRun": {
+        "properties": {
+          "category": {
             "anyOf": [
               {
                 "type": "string"
@@ -24,36 +38,78 @@
                 "type": "null"
               }
             ],
-            "description": "Optional Google PageSpeed Insights API key",
-            "title": "Pagespeed Api Key"
+            "title": "Category"
           },
-          "timeout": {
+          "check_id": {
+            "title": "Check Id",
+            "type": "string"
+          },
+          "check_name": {
+            "title": "Check Name",
+            "type": "string"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "duration_ms": {
+            "title": "Duration Ms",
+            "type": "integer"
+          },
+          "error": {
             "anyOf": [
               {
-                "maximum": 300.0,
-                "minimum": 5.0,
-                "type": "integer"
+                "type": "string"
               },
               {
                 "type": "null"
               }
             ],
-            "default": 30,
-            "description": "Timeout in seconds for each check",
-            "title": "Timeout"
+            "title": "Error"
+          },
+          "execution_time": {
+            "title": "Execution Time",
+            "type": "number"
+          },
+          "result": {
+            "description": "The check's result string: a verdict symbol, then an optional detail in parentheses",
+            "title": "Result",
+            "type": "string"
+          },
+          "status": {
+            "description": "completed, or error when the check raised or timed out",
+            "title": "Status",
+            "type": "string"
+          },
+          "timestamp": {
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "verdict": {
+            "description": "pass, warn, fail or unknown (no verdict)",
+            "title": "Verdict",
+            "type": "string"
           },
           "website": {
-            "description": "Website URL or domain to monitor",
-            "example": "example.com",
             "title": "Website",
             "type": "string"
           }
         },
         "required": [
+          "check_id",
+          "check_name",
+          "category",
           "website",
-          "checks"
+          "result",
+          "verdict",
+          "detail",
+          "status",
+          "error",
+          "timestamp",
+          "duration_ms",
+          "execution_time"
         ],
-        "title": "CustomMonitorRequest",
+        "title": "CheckRun",
         "type": "object"
       },
       "HTTPValidationError": {
@@ -69,33 +125,25 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
-      "HealthResponse": {
+      "Health": {
         "properties": {
           "config_loaded": {
-            "description": "Whether default config was loaded successfully",
             "title": "Config Loaded",
             "type": "boolean"
           },
           "status": {
-            "description": "API health status",
-            "example": "healthy",
             "title": "Status",
             "type": "string"
           },
           "timestamp": {
-            "description": "Current server time",
-            "format": "date-time",
             "title": "Timestamp",
             "type": "string"
           },
           "total_checks_available": {
-            "description": "Number of available checks",
             "title": "Total Checks Available",
             "type": "integer"
           },
           "version": {
-            "description": "API version",
-            "example": "1.0.0",
             "title": "Version",
             "type": "string"
           }
@@ -107,82 +155,136 @@
           "total_checks_available",
           "config_loaded"
         ],
-        "title": "HealthResponse",
+        "title": "Health",
         "type": "object"
       },
-      "MonitorResponse": {
+      "Outcome": {
         "properties": {
-          "checks_performed": {
-            "description": "Total number of checks performed",
-            "title": "Checks Performed",
-            "type": "integer"
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
           },
-          "execution_time": {
-            "description": "Total execution time in seconds",
-            "title": "Execution Time",
-            "type": "number"
-          },
-          "message": {
-            "description": "Summary message",
-            "title": "Message",
+          "check_id": {
+            "title": "Check Id",
             "type": "string"
           },
-          "results": {
-            "description": "Detailed check results",
-            "items": {
-              "additionalProperties": true,
-              "type": "object"
-            },
-            "title": "Results",
-            "type": "array"
+          "check_name": {
+            "title": "Check Name",
+            "type": "string"
           },
-          "success": {
-            "description": "Whether monitoring completed successfully",
-            "title": "Success",
-            "type": "boolean"
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "duration_ms": {
+            "title": "Duration Ms",
+            "type": "integer"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "result": {
+            "description": "The check's result string: a verdict symbol, then an optional detail in parentheses",
+            "title": "Result",
+            "type": "string"
+          },
+          "status": {
+            "description": "completed, or error when the check raised or timed out",
+            "title": "Status",
+            "type": "string"
           },
           "timestamp": {
-            "description": "When monitoring was performed",
-            "format": "date-time",
             "title": "Timestamp",
             "type": "string"
           },
-          "websites_checked": {
-            "description": "Number of websites monitored",
-            "title": "Websites Checked",
-            "type": "integer"
+          "verdict": {
+            "description": "pass, warn, fail or unknown (no verdict)",
+            "title": "Verdict",
+            "type": "string"
+          },
+          "website": {
+            "title": "Website",
+            "type": "string"
           }
         },
         "required": [
-          "success",
-          "message",
-          "results",
-          "execution_time",
+          "check_id",
+          "check_name",
+          "category",
+          "website",
+          "result",
+          "verdict",
+          "detail",
+          "status",
+          "error",
           "timestamp",
-          "websites_checked",
-          "checks_performed"
+          "duration_ms"
         ],
-        "title": "MonitorResponse",
+        "title": "Outcome",
         "type": "object"
       },
       "ReportRequest": {
         "properties": {
+          "concurrency": {
+            "anyOf": [
+              {
+                "maximum": 16.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 4,
+            "description": "Checks run at the same time",
+            "title": "Concurrency"
+          },
           "include_timestamp": {
             "default": true,
-            "description": "Whether to include timestamp in report",
+            "description": "Kept for compatibility; the report always carries its date",
             "title": "Include Timestamp",
             "type": "boolean"
           },
           "output_format": {
             "default": "markdown",
-            "description": "Report format",
+            "description": "markdown, json or html",
             "pattern": "^(markdown|json|html)$",
             "title": "Output Format",
             "type": "string"
           },
+          "pagespeed_api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Google PageSpeed Insights API key for this request; defaults to PAGESPEED_API_KEY",
+            "title": "Pagespeed Api Key"
+          },
           "timeout": {
             "anyOf": [
               {
+                "maximum": 300.0,
+                "minimum": 5.0,
                 "type": "integer"
               },
               {
@@ -190,11 +292,17 @@
               }
             ],
             "default": 30,
-            "description": "Timeout for checks",
+            "description": "Seconds each check may take",
             "title": "Timeout"
           },
           "websites": {
-            "description": "Websites to include in report",
+            "description": "Domains or URLs; only the hosts are used",
+            "examples": [
+              [
+                "example.com",
+                "example.org"
+              ]
+            ],
             "items": {
               "type": "string"
             },
@@ -206,6 +314,301 @@
           "websites"
         ],
         "title": "ReportRequest",
+        "type": "object"
+      },
+      "ScanManyRequest": {
+        "properties": {
+          "concurrency": {
+            "anyOf": [
+              {
+                "maximum": 16.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 4,
+            "description": "Checks run at the same time",
+            "title": "Concurrency"
+          },
+          "pagespeed_api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Google PageSpeed Insights API key for this request; defaults to PAGESPEED_API_KEY",
+            "title": "Pagespeed Api Key"
+          },
+          "timeout": {
+            "anyOf": [
+              {
+                "maximum": 300.0,
+                "minimum": 5.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 30,
+            "description": "Seconds each check may take",
+            "title": "Timeout"
+          },
+          "websites": {
+            "description": "Domains or URLs; only the hosts are used",
+            "examples": [
+              [
+                "example.com",
+                "example.org"
+              ]
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "Websites",
+            "type": "array"
+          }
+        },
+        "required": [
+          "websites"
+        ],
+        "title": "ScanManyRequest",
+        "type": "object"
+      },
+      "ScanManyResponse": {
+        "properties": {
+          "checks_performed": {
+            "title": "Checks Performed",
+            "type": "integer"
+          },
+          "execution_time": {
+            "title": "Execution Time",
+            "type": "number"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/CheckGroup"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "success": {
+            "title": "Success",
+            "type": "boolean"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/Summary"
+          },
+          "timestamp": {
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "websites_checked": {
+            "title": "Websites Checked",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "results",
+          "summary",
+          "execution_time",
+          "timestamp",
+          "websites_checked",
+          "checks_performed"
+        ],
+        "title": "ScanManyResponse",
+        "type": "object"
+      },
+      "ScanRequest": {
+        "properties": {
+          "checks": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Check IDs to run, in order; all of them when omitted",
+            "examples": [
+              [
+                "ssl_cert",
+                "hsts"
+              ]
+            ],
+            "title": "Checks"
+          },
+          "concurrency": {
+            "anyOf": [
+              {
+                "maximum": 16.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 4,
+            "description": "Checks run at the same time",
+            "title": "Concurrency"
+          },
+          "pagespeed_api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Google PageSpeed Insights API key for this request; defaults to PAGESPEED_API_KEY",
+            "title": "Pagespeed Api Key"
+          },
+          "timeout": {
+            "anyOf": [
+              {
+                "maximum": 300.0,
+                "minimum": 5.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 30,
+            "description": "Seconds each check may take",
+            "title": "Timeout"
+          },
+          "website": {
+            "description": "Domain or URL; only the host is used",
+            "examples": [
+              "example.com"
+            ],
+            "title": "Website",
+            "type": "string"
+          }
+        },
+        "required": [
+          "website"
+        ],
+        "title": "ScanRequest",
+        "type": "object"
+      },
+      "ScanResponse": {
+        "properties": {
+          "checks_performed": {
+            "title": "Checks Performed",
+            "type": "integer"
+          },
+          "execution_time": {
+            "title": "Execution Time",
+            "type": "number"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/Outcome"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "success": {
+            "title": "Success",
+            "type": "boolean"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/Summary"
+          },
+          "timestamp": {
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "website": {
+            "title": "Website",
+            "type": "string"
+          },
+          "websites_checked": {
+            "title": "Websites Checked",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "website",
+          "results",
+          "summary",
+          "execution_time",
+          "timestamp",
+          "websites_checked",
+          "checks_performed"
+        ],
+        "title": "ScanResponse",
+        "type": "object"
+      },
+      "Summary": {
+        "properties": {
+          "failed": {
+            "title": "Failed",
+            "type": "integer"
+          },
+          "no_verdict": {
+            "title": "No Verdict",
+            "type": "integer"
+          },
+          "pass_rate_percent": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pass Rate Percent"
+          },
+          "passed": {
+            "title": "Passed",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "warnings": {
+            "title": "Warnings",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total",
+          "passed",
+          "warnings",
+          "failed",
+          "no_verdict",
+          "pass_rate_percent"
+        ],
+        "title": "Summary",
         "type": "object"
       },
       "ValidationError": {
@@ -247,103 +650,36 @@
         ],
         "title": "ValidationError",
         "type": "object"
-      },
-      "WebsiteRequest": {
-        "properties": {
-          "pagespeed_api_key": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Optional Google PageSpeed Insights API key",
-            "title": "Pagespeed Api Key"
-          },
-          "timeout": {
-            "anyOf": [
-              {
-                "maximum": 300.0,
-                "minimum": 5.0,
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": 30,
-            "description": "Timeout in seconds for each check",
-            "title": "Timeout"
-          },
-          "websites": {
-            "description": "List of website URLs or domains to monitor",
-            "example": [
-              "example.com",
-              "google.com"
-            ],
-            "items": {
-              "type": "string"
-            },
-            "title": "Websites",
-            "type": "array"
-          }
-        },
-        "required": [
-          "websites"
-        ],
-        "title": "WebsiteRequest",
-        "type": "object"
       }
     }
   },
   "info": {
-    "description": "Runs security, performance, SEO, privacy and accessibility checks against a website. Each check returns a verdict: pass, warning, fail, or no verdict when it could not run. GET /checks lists them; POST /monitor/single runs a selection against one site, and GET /check/{name} runs a single check.",
+    "description": "Runs security, performance, SEO, privacy and accessibility checks against a website. Each check returns a verdict: pass, warning, fail, or no verdict when it could not run. GET /checks lists them; POST /monitor/single runs a selection against one site, and GET /check/{name} runs a single check. The command line (python -m websites_monitor) and the MCP server return the same JSON.",
     "title": "Website Monitor API",
     "version": "1.5.0"
   },
   "openapi": "3.1.0",
   "paths": {
-    "/": {
-      "get": {
-        "description": "Redirect to the web interface under /docs/.\n\nThe page loads its stylesheet, script and fonts by relative path, and\nthose only exist under the /docs mount: served at /, every one of them\nwas a 404.",
-        "operationId": "root__get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Root",
-        "tags": [
-          "Root"
-        ]
-      }
-    },
     "/check/accessibility": {
       "get": {
-        "description": "## Accessibility Check\n\nCheck the website's accessibility score using Lighthouse or similar services.\n\nOrder of attempts:\n1. Lighthouse via the PageSpeed Insights API (key: api_key or PAGESPEED_API_KEY).\n2. WAVE API, only when WAVE_API_KEY is set.\n3. Local heuristics on the page HTML (result marked \"(heuristic)\").\nAny API failure (HTTP error, 429 quota, malformed JSON) falls through to\nthe next step instead of raising.\n\nArgs:\n- website (str): URL of the website to be checked.\n- api_key (str, optional): PageSpeed Insights API key.\n\nReturns:\n- str: \"🟢\" if the accessibility score is high (0.9 to 1),\n       \"🟠\" if the score is moderate (0.8 to 0.9),\n       \"🔴\" if the score is low (less than 0.8),\n       \"⚪\" for any errors.\n\n**Category:** Accessibility",
+        "description": "## Accessibility\n\nCheck the website's accessibility score using Lighthouse or similar services.\n\n**Category:** accessibility",
         "operationId": "check_accessibility_check_accessibility_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with accessibility",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with accessibility",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -359,8 +695,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -368,7 +719,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -384,7 +737,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Accessibility",
+        "summary": "run_check accessibility",
         "tags": [
           "Individual Checks"
         ]
@@ -392,23 +745,24 @@
     },
     "/check/ad_and_tracking": {
       "get": {
-        "description": "## Ad And Tracking Check\n\nCheck if the website is using Google Analytics, AdsbyGoogle, or other common ad/tracking scripts.\n\nArgs:\n    website (str): URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🔴\" if both Google Analytics and AdsbyGoogle are present\n        - \"🟠\" if only Google Analytics is present\n        - \"🟡\" if other ad/tracking scripts are detected\n        - \"🟢\" if neither are present\n        - \"⚪\" if an error occurs\n\n**Category:** Privacy",
+        "description": "## Ads and tracking\n\nCheck if the website is using Google Analytics, AdsbyGoogle, or other common ad/tracking scripts.\n\n**Category:** privacy",
         "operationId": "check_ad_and_tracking_check_ad_and_tracking_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with ad_and_tracking",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with ad_and_tracking",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -424,8 +778,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -433,7 +802,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -449,7 +820,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Ad And Tracking",
+        "summary": "run_check ad_and_tracking",
         "tags": [
           "Individual Checks"
         ]
@@ -457,23 +828,24 @@
     },
     "/check/alt_tags": {
       "get": {
-        "description": "## Alt Tags Check\n\nCheck if all the images on the website have alt tags.\n\nArgs:\n    website (str): The URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🔴\" if no image has an alt tag\n        - \"🟠\" if some images have alt tags and one or more doesn't\n        - \"🟢\" if all images have alt tags\n        - \"⚪\" if an error occurs\n\n**Category:** Seo",
+        "description": "## Image alt text\n\nCheck if all the images on the website have alt tags.\n\n**Category:** seo",
         "operationId": "check_alt_tags_check_alt_tags_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with alt_tags",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with alt_tags",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -489,8 +861,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -498,7 +885,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -514,7 +903,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Alt Tags",
+        "summary": "run_check alt_tags",
         "tags": [
           "Individual Checks"
         ]
@@ -522,23 +911,24 @@
     },
     "/check/amp_compatibility": {
       "get": {
-        "description": "## Amp Compatibility Check\n\nCheck if the website has AMP compatibility.\n\nArgs:\n    website (str): URL of the website to be checked.\n\nReturns:\n    str: \"🟢\" if AMP compatible, \"🔴\" if not AMP compatible, \"⚪\" if error occurs\n\n**Category:** Accessibility",
+        "description": "## AMP\n\nCheck if the website has AMP compatibility.\n\n**Category:** accessibility",
         "operationId": "check_amp_compatibility_check_amp_compatibility_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with amp_compatibility",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with amp_compatibility",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -554,8 +944,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -563,7 +968,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -579,7 +986,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Amp Compatibility",
+        "summary": "run_check amp_compatibility",
         "tags": [
           "Individual Checks"
         ]
@@ -587,23 +994,24 @@
     },
     "/check/asset_minification": {
       "get": {
-        "description": "## Asset Minification Check\n\nCheck if the website's CSS/JS assets are minified.\n\nArgs:\n    website (str): URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🟢\" if all assets are minified\n        - \"🟠\" if some assets are minified and others are not\n        - \"🔴\" if none of the assets are minified\n        - \"⚪\" if an error occurs or no assets to check\n\n**Category:** Performance",
+        "description": "## Asset minification\n\nCheck if the website's CSS/JS assets are minified.\n\n**Category:** performance",
         "operationId": "check_asset_minification_check_asset_minification_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with asset_minification",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with asset_minification",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -619,8 +1027,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -628,7 +1051,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -644,7 +1069,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Asset Minification",
+        "summary": "run_check asset_minification",
         "tags": [
           "Individual Checks"
         ]
@@ -652,23 +1077,24 @@
     },
     "/check/broken_links": {
       "get": {
-        "description": "## Broken Links Check\n\nCheck for broken links on the provided website.\n\nArgs:\n    website (str): The URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🟢\" if no broken links are found\n        - \"🟠\" if some broken links are found\n        - \"🔴\" if all links are broken\n        - \"⚪\" if an error occurs\n\n**Category:** Seo",
+        "description": "## Broken links\n\nCheck for broken links on the provided website.\n\n**Category:** seo",
         "operationId": "check_broken_links_check_broken_links_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with broken_links",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with broken_links",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -684,8 +1110,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -693,7 +1134,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -709,7 +1152,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Broken Links",
+        "summary": "run_check broken_links",
         "tags": [
           "Individual Checks"
         ]
@@ -717,23 +1160,24 @@
     },
     "/check/brotli_compression": {
       "get": {
-        "description": "## Brotli Compression Check\n\nCheck if the website supports Brotli compression.\n\nArgs:\n    website (str): The URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🟢\" if Brotli compression is enabled\n        - \"🔴\" if Brotli compression is not enabled\n        - \"⚪\" if an error occurs\n\n**Category:** Performance",
+        "description": "## Brotli compression\n\nCheck if the website supports Brotli compression.\n\n**Category:** performance",
         "operationId": "check_brotli_compression_check_brotli_compression_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with brotli_compression",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with brotli_compression",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -749,8 +1193,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -758,7 +1217,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -774,7 +1235,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Brotli Compression",
+        "summary": "run_check brotli_compression",
         "tags": [
           "Individual Checks"
         ]
@@ -782,23 +1243,24 @@
     },
     "/check/browser_compatibility": {
       "get": {
-        "description": "## Browser Compatibility Check\n\nCheck if the website is compatible with different browsers.\n\nArgs:\n    website (str): The URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🟢\" if the website is compatible with all tested browsers\n        - \"🟠\" if the website loads in some of the browsers that could start\n        - \"🔴\" if the website is not compatible with any browser that could start\n        - \"⚪ (no browser available)\" if no browser is installed or none could start\n\n**Category:** Accessibility",
+        "description": "## Browser compatibility\n\nCheck if the website is compatible with different browsers.\n\n**Category:** accessibility",
         "operationId": "check_browser_compatibility_check_browser_compatibility_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with browser_compatibility",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with browser_compatibility",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -814,8 +1276,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -823,7 +1300,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -839,7 +1318,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Browser Compatibility",
+        "summary": "run_check browser_compatibility",
         "tags": [
           "Individual Checks"
         ]
@@ -847,23 +1326,24 @@
     },
     "/check/cdn": {
       "get": {
-        "description": "## Cdn Check\n\nChecks if a website is using a CDN by inspecting headers and other indicators.\n\nArgs:\n    website (str): The URL of the website to check.\n\nReturns:\n    str:\n        - \"🟢\" if a CDN is detected.\n        - \"🔴\" if no CDN is detected.\n        - \"⚪\" if an error occurs.\n\n**Category:** Performance",
+        "description": "## CDN\n\nChecks if a website is using a CDN by inspecting headers and other indicators.\n\n**Category:** performance",
         "operationId": "check_cdn_check_cdn_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with cdn",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with cdn",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -879,8 +1359,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -888,7 +1383,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -904,7 +1401,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Cdn",
+        "summary": "run_check cdn",
         "tags": [
           "Individual Checks"
         ]
@@ -912,23 +1409,24 @@
     },
     "/check/clientside_rendering": {
       "get": {
-        "description": "## Clientside Rendering Check\n\nChecks if a website relies heavily on client-side rendering by counting the number of script tags and other indicators.\n\nArgs:\n    website (str): The website URL to check.\n    threshold (int): The threshold above which the number of scripts indicates heavy client-side rendering.\n\nReturns:\n    str: \n        - \"🟢\" if the number of scripts is below the threshold\n        - \"🟠\" if it's close to the threshold\n        - \"🔴\" if above the threshold\n        - \"⚪\" if an error occurs\n\n**Category:** Technical",
+        "description": "## Client-side rendering\n\nChecks if a website relies heavily on client-side rendering by counting the number of script tags and other indicators.\n\n**Category:** technical",
         "operationId": "check_clientside_rendering_check_clientside_rendering_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with clientside_rendering",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with clientside_rendering",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -944,8 +1442,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -953,7 +1466,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -969,7 +1484,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Clientside Rendering",
+        "summary": "run_check clientside_rendering",
         "tags": [
           "Individual Checks"
         ]
@@ -977,23 +1492,24 @@
     },
     "/check/cms_used": {
       "get": {
-        "description": "## Cms Used Check\n\nChecks which CMS (if any) a website runs, from the URLs of its assets,\nits generator meta tag and its response headers.\n\nArgs:\n    website (str): The domain or URL to check.\n\nReturns:\n    str:\n        - \"🟢 (CMS Name)\" if a CMS is detected\n        - \"⚪ (no CMS detected)\" if none is: not running a known CMS is\n          not a fault, so this is no verdict\n        - \"⚪\" if the page could not be fetched\n\n**Category:** Technical",
+        "description": "## CMS detection\n\nChecks which CMS (if any) a website runs, from the URLs of its assets, its generator meta tag and its response headers.\n\n**Category:** technical",
         "operationId": "check_cms_used_check_cms_used_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with cms_used",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with cms_used",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1009,8 +1525,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1018,7 +1549,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1034,7 +1567,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Cms Used",
+        "summary": "run_check cms_used",
         "tags": [
           "Individual Checks"
         ]
@@ -1042,23 +1575,24 @@
     },
     "/check/content_type_headers": {
       "get": {
-        "description": "## Content Type Headers Check\n\nChecks if the 'Content-Type' header of the website is set to 'text/html' \nand has a character encoding specified.\n\nArgs:\n    website (str): The website URL to check.\n\nReturns:\n    str: \n        - \"🟢\" if the header is properly set\n        - \"🔴\" if the header is not properly set\n        - \"⚪\" if an error occurs\n\n**Category:** Technical",
+        "description": "## Content-Type header\n\nChecks if the 'Content-Type' header of the website is set to 'text/html' and has a character encoding specified.\n\n**Category:** technical",
         "operationId": "check_content_type_headers_check_content_type_headers_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with content_type_headers",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with content_type_headers",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1074,8 +1608,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1083,7 +1632,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1099,7 +1650,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Content Type Headers",
+        "summary": "run_check content_type_headers",
         "tags": [
           "Individual Checks"
         ]
@@ -1107,23 +1658,24 @@
     },
     "/check/cookie_duration": {
       "get": {
-        "description": "## Cookie Duration Check\n\nEnsure that session cookies set by the website don't have an overly long duration.\n\nArgs:\n    website (str): URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🔴\" if any cookie has an overly long duration\n        - \"🟢\" if all cookies have an acceptable duration\n        - \"⚪\" if an error occurs\n\n**Category:** Privacy",
+        "description": "## Cookie duration\n\nEnsure that session cookies set by the website don't have an overly long duration.\n\n**Category:** privacy",
         "operationId": "check_cookie_duration_check_cookie_duration_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with cookie_duration",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with cookie_duration",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1139,8 +1691,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1148,7 +1715,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1164,7 +1733,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Cookie Duration",
+        "summary": "run_check cookie_duration",
         "tags": [
           "Individual Checks"
         ]
@@ -1172,23 +1741,24 @@
     },
     "/check/cookie_flags": {
       "get": {
-        "description": "## Cookie Flags Check\n\nCheck if all cookies set by the website have the Secure and HttpOnly flags.\n\nArgs:\n    website (str): URL of the website to be checked.\n\nReturns:\n    str:\n        - \"🟢\" if all cookies have Secure and HttpOnly flags\n        - \"🟠\" if some cookies have Secure and HttpOnly flags, but not all\n        - \"🔴\" if no cookies have both Secure and HttpOnly flags\n        - \"⚪\" if an error occurs\n\n**Category:** Privacy",
+        "description": "## Cookie flags\n\nCheck if all cookies set by the website have the Secure and HttpOnly flags.\n\n**Category:** privacy",
         "operationId": "check_cookie_flags_check_cookie_flags_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with cookie_flags",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with cookie_flags",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1204,8 +1774,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1213,7 +1798,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1229,7 +1816,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Cookie Flags",
+        "summary": "run_check cookie_flags",
         "tags": [
           "Individual Checks"
         ]
@@ -1237,23 +1824,24 @@
     },
     "/check/cookie_policy": {
       "get": {
-        "description": "## Cookie Policy Check\n\nVerify if the website has a cookie policy and it's accessible to users.\n\nArgs:\n    website (str): URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🟢\" if a cookie policy is found and accessible\n        - \"🔴\" if no cookie policy is found or if it's inaccessible\n        - \"⚪\" for any errors\n\n**Category:** Privacy",
+        "description": "## Cookie policy\n\nVerify if the website has a cookie policy and it's accessible to users.\n\n**Category:** privacy",
         "operationId": "check_cookie_policy_check_cookie_policy_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with cookie_policy",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with cookie_policy",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1269,8 +1857,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1278,7 +1881,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1294,7 +1899,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Cookie Policy",
+        "summary": "run_check cookie_policy",
         "tags": [
           "Individual Checks"
         ]
@@ -1302,23 +1907,24 @@
     },
     "/check/cookie_samesite_attribute": {
       "get": {
-        "description": "## Cookie Samesite Attribute Check\n\nVerify the SameSite attribute of cookies for the website.\n\nArgs:\n    website (str): URL of the website to be checked.\n\nReturns:\n    str:\n        - \"🟢\" if all cookies have proper SameSite attributes\n        - \"🟡\" if cookies have suboptimal but acceptable SameSite configuration\n        - \"🔴\" if cookies have insecure SameSite configuration\n        - \"⚪\" for any errors\n\n**Category:** Privacy",
+        "description": "## Cookie SameSite\n\nVerify the SameSite attribute of cookies for the website.\n\n**Category:** privacy",
         "operationId": "check_cookie_samesite_attribute_check_cookie_samesite_attribute_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with cookie_samesite_attribute",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with cookie_samesite_attribute",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1334,8 +1940,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1343,7 +1964,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1359,7 +1982,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Cookie Samesite Attribute",
+        "summary": "run_check cookie_samesite_attribute",
         "tags": [
           "Individual Checks"
         ]
@@ -1367,23 +1990,24 @@
     },
     "/check/cors_headers": {
       "get": {
-        "description": "## Cors Headers Check\n\nChecks the CORS policy of the given website.\n\nArgs:\n    website (str): The website URL to check.\n\nReturns:\n    str: \n        - \"🟢\" if the CORS policy is secure and properly configured.\n        - \"🟡\" if CORS is configured but with potential security concerns.\n        - \"🔴\" if the CORS policy is insecure or misconfigured.\n        - \"⚪\" if an error occurred during checking.\n\n**Category:** Security",
+        "description": "## CORS policy\n\nChecks the CORS policy of the given website.\n\n**Category:** security",
         "operationId": "check_cors_headers_check_cors_headers_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with cors_headers",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with cors_headers",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1399,8 +2023,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1408,7 +2047,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1424,7 +2065,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Cors Headers",
+        "summary": "run_check cors_headers",
         "tags": [
           "Individual Checks"
         ]
@@ -1432,23 +2073,24 @@
     },
     "/check/data_leakage": {
       "get": {
-        "description": "## Data Leakage Check\n\nCheck public repositories on GitHub for potential data leakages related to the website.\n\nArgs:\n    website (str): URL of the website to be checked.\n    token (str, optional): GitHub Personal Access Token for authenticated requests.\n        Defaults to the GITHUB_TOKEN environment variable.\n\nReturns:\n    str:\n        - \"🟢\" if no potential data leakages are found.\n        - \"🟡\" if minor/low-risk leakages are found.\n        - \"🔴\" if critical data leakages are identified.\n        - \"⚪\" if any errors occurred.\n        - \"⚪ (GITHUB_TOKEN not set)\" if no token is available.\n\n**Category:** Security",
+        "description": "## Data leakage\n\nCheck public repositories on GitHub for potential data leakages related to the website.\n\n**Category:** security",
         "operationId": "check_data_leakage_check_data_leakage_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with data_leakage",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with data_leakage",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1464,8 +2106,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1473,7 +2130,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1489,7 +2148,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Data Leakage",
+        "summary": "run_check data_leakage",
         "tags": [
           "Individual Checks"
         ]
@@ -1497,23 +2156,24 @@
     },
     "/check/deprecated_libraries": {
       "get": {
-        "description": "## Deprecated Libraries Check\n\nChecks if a website is using deprecated JavaScript libraries.\n\nArgs:\n    website (str): The URL of the website to check.\n\nReturns:\n     str:\n        - \"🟢\" if no deprecated libraries are found.\n        - \"🟡\" if deprecated but low-risk libraries are found.\n        - \"🔴\" if critically deprecated libraries are found.\n        - \"⚪\" if any errors occur during the check.\n\n**Category:** Technical",
+        "description": "## Deprecated libraries\n\nChecks if a website is using deprecated JavaScript libraries.\n\n**Category:** technical",
         "operationId": "check_deprecated_libraries_check_deprecated_libraries_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with deprecated_libraries",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with deprecated_libraries",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1529,8 +2189,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1538,7 +2213,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1554,7 +2231,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Deprecated Libraries",
+        "summary": "run_check deprecated_libraries",
         "tags": [
           "Individual Checks"
         ]
@@ -1562,23 +2239,24 @@
     },
     "/check/dns_blacklist": {
       "get": {
-        "description": "## Dns Blacklist Check\n\nCheck if a domain is blacklisted in known DNS-based blacklists.\n\nArgs:\n    domain (str): The domain name to be checked.\n\nReturns:\n    str: \n        - \"🟢\" if the domain is not in any blacklist.\n        - \"🟡\" if the domain is found in some blacklists.\n        - \"🔴\" if the domain is found in multiple or critical blacklists.\n        - \"⚪\" if no blacklist could give a verdict (or the IP is not public).\n        A \"(no verdict from ...)\" suffix names lists that answered with an\n        error code (e.g. Spamhaus 127.255.255.254 when queried through a\n        public resolver); those lists are not counted as listings.\n\nNote: these are IP-based DNSBLs. The domain's IPv4 address is queried,\nso for a site behind a CDN the result describes the CDN edge IP.\n\n**Category:** Domain",
+        "description": "## DNS blocklists\n\nCheck if a domain is blacklisted in known DNS-based blacklists.\n\n**Category:** domain",
         "operationId": "check_dns_blacklist_check_dns_blacklist_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with dns_blacklist",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with dns_blacklist",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1594,8 +2272,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1603,7 +2296,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1619,7 +2314,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Dns Blacklist",
+        "summary": "run_check dns_blacklist",
         "tags": [
           "Individual Checks"
         ]
@@ -1627,23 +2322,24 @@
     },
     "/check/dnssec": {
       "get": {
-        "description": "## Dnssec Check\n\nCheck if a domain supports DNSSEC (Domain Name System Security Extensions).\n\nArgs:\n    domain (str): The domain name to be checked.\n\nReturns:\n    str:\n        - \"🟢\" if the domain supports DNSSEC properly.\n        - \"🟡\" if DNSSEC is partially configured.\n        - \"🔴\" if the domain does not support DNSSEC or there's a DNSSEC-related error.\n        - \"⚪\" for other errors.\n\n**Category:** Domain",
+        "description": "## DNSSEC\n\nCheck if a domain supports DNSSEC (Domain Name System Security Extensions).\n\n**Category:** domain",
         "operationId": "check_dnssec_check_dnssec_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with dnssec",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with dnssec",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1659,8 +2355,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1668,7 +2379,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1684,7 +2397,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Dnssec",
+        "summary": "run_check dnssec",
         "tags": [
           "Individual Checks"
         ]
@@ -1692,23 +2405,24 @@
     },
     "/check/domain_breach": {
       "get": {
-        "description": "## Domain Breach Check\n\nCheck if a domain has been found in any known data breaches using the Have I Been Pwned API.\n\nArgs:\n    website (str): The domain name to be checked.\n\nReturns:\n    str:\n        - \"🟢\" if no breaches are found.\n        - \"🟡\" if the domain is found in old/resolved breaches.\n        - \"🔴\" if the domain is found in recent/active breaches.\n        - \"⚪\" if any errors occurred or if the breach check could not be completed.\n\n**Category:** Domain",
+        "description": "## Breach exposure\n\nCheck if a domain has been found in any known data breaches using the Have I Been Pwned API.\n\n**Category:** domain",
         "operationId": "check_domain_breach_check_domain_breach_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with domain_breach",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with domain_breach",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1724,8 +2438,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1733,7 +2462,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1749,7 +2480,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Domain Breach",
+        "summary": "run_check domain_breach",
         "tags": [
           "Individual Checks"
         ]
@@ -1757,23 +2488,24 @@
     },
     "/check/domain_expiration": {
       "get": {
-        "description": "## Domain Expiration Check\n\nCheck the expiration date of a domain.\n\nArgs:\n    domain (str): The domain name to be checked.\n\nReturns:\n    str:\n        - \"🟢 (X days left)\" if the domain has more than 90 days to expire.\n        - \"🟡 (X days left)\" if the domain has between 30 to 90 days to expire.\n        - \"🟠 (X days left)\" if the domain has between 15 to 30 days to expire.\n        - \"🔴 (X days left)\" if the domain has less than 15 days to expire.\n        - \"⚪\" for other errors.\n\n**Category:** Domain",
+        "description": "## Domain expiration\n\nCheck the expiration date of a domain.\n\n**Category:** domain",
         "operationId": "check_domain_expiration_check_domain_expiration_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with domain_expiration",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with domain_expiration",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1789,8 +2521,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1798,7 +2545,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1814,7 +2563,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Domain Expiration",
+        "summary": "run_check domain_expiration",
         "tags": [
           "Individual Checks"
         ]
@@ -1822,23 +2571,24 @@
     },
     "/check/domainsblacklists_blacklist": {
       "get": {
-        "description": "## Domainsblacklists Blacklist Check\n\nCheck if a domain is present in a large blacklist file hosted online.\n\nArgs:\n    domain (str): The domain to check against the blacklist.\n\nReturns:\n    str: \n        - \"🔴\" if the domain is found in the blacklist\n        - \"🟢\" if the domain is not found in the blacklist\n        - \"⚪\" if an error occurs\n\n**Category:** Domain",
+        "description": "## Domain blocklists\n\nCheck if a domain is present in a large blacklist file hosted online.\n\n**Category:** domain",
         "operationId": "check_domainsblacklists_blacklist_check_domainsblacklists_blacklist_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with domainsblacklists_blacklist",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with domainsblacklists_blacklist",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1854,8 +2604,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1863,7 +2628,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1879,7 +2646,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Domainsblacklists Blacklist",
+        "summary": "run_check domainsblacklists_blacklist",
         "tags": [
           "Individual Checks"
         ]
@@ -1887,23 +2654,24 @@
     },
     "/check/email_domain": {
       "get": {
-        "description": "## Email Domain Check\n\nCheck if an email domain has an SPF (Sender Policy Framework) record.\n\nArgs:\n    email_domain (str): The domain of the email to be checked.\n\nReturns:\n    str: \n        - \"🟢\" if a strong SPF record is found.\n        - \"🟡\" if a basic SPF record is found.\n        - \"🔴\" if no SPF record is found.\n        - \"⚪\" for any other errors or issues.\n\n**Category:** Domain",
+        "description": "## Email records\n\nCheck if an email domain has an SPF (Sender Policy Framework) record.\n\n**Category:** domain",
         "operationId": "check_email_domain_check_email_domain_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with email_domain",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with email_domain",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1919,8 +2687,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1928,7 +2711,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -1944,7 +2729,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Email Domain",
+        "summary": "run_check email_domain",
         "tags": [
           "Individual Checks"
         ]
@@ -1952,23 +2737,24 @@
     },
     "/check/external_links": {
       "get": {
-        "description": "## External Links Check\n\nVerify that all external links on the website are valid and do not lead to broken or malicious destinations.\n\nArgs:\n    website (str): URL of the website to be checked.\n    max_workers (int): Maximum number of threads to use for checking links concurrently.\n\nReturns:\n    str:\n        - \"🔴\" if any broken or malicious external link is found.\n        - \"🟡\" if some links have warnings but are accessible.\n        - \"🟢\" if all external links are valid.\n        - \"⚪\" if any errors occurred during the check, or no link could be verified.\n        Only 4xx (except 429) and 5xx responses count as broken. Links that\n        answer 429 (rate limited) or raise (timeout, connection error) are\n        \"not verified\": they are reported in a suffix, never as broken.\n\n**Category:** Seo",
+        "description": "## External links\n\nVerify that all external links on the website are valid and do not lead to broken or malicious destinations.\n\n**Category:** seo",
         "operationId": "check_external_links_check_external_links_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with external_links",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with external_links",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -1984,8 +2770,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -1993,7 +2794,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2009,7 +2812,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check External Links",
+        "summary": "run_check external_links",
         "tags": [
           "Individual Checks"
         ]
@@ -2017,23 +2820,24 @@
     },
     "/check/favicon": {
       "get": {
-        "description": "## Favicon Check\n\nCheck if the website has a valid favicon.\n\nArgs:\n    website (str): URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🟢\" if a valid favicon is found.\n        - \"🔴\" if no valid favicon is found.\n        - \"⚪\" if an error occurred during the check.\n\n**Category:** Seo",
+        "description": "## Favicon\n\nCheck if the website has a valid favicon.\n\n**Category:** seo",
         "operationId": "check_favicon_check_favicon_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with favicon",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with favicon",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2049,8 +2853,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2058,7 +2877,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2074,7 +2895,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Favicon",
+        "summary": "run_check favicon",
         "tags": [
           "Individual Checks"
         ]
@@ -2082,23 +2903,24 @@
     },
     "/check/floc": {
       "get": {
-        "description": "## Floc Check\n\nCheck if the website has opted out of FLoC (Federated Learning of Cohorts).\n\nArgs:\n    website (str): URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🟢\" if the site has opted out of FLoC\n        - \"🔴\" if it has not opted out\n        - \"⚪\" if an error occurred\n\n**Category:** Privacy",
+        "description": "## FLoC opt-out\n\nCheck if the website has opted out of FLoC (Federated Learning of Cohorts).\n\n**Category:** privacy",
         "operationId": "check_floc_check_floc_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with floc",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with floc",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2114,8 +2936,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2123,7 +2960,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2139,7 +2978,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Floc",
+        "summary": "run_check floc",
         "tags": [
           "Individual Checks"
         ]
@@ -2147,23 +2986,24 @@
     },
     "/check/hsts": {
       "get": {
-        "description": "## Hsts Check\n\nCheck if the website implements HTTP Strict Transport Security (HSTS).\n\nArgs:\n    website (str): URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🟢\" if the site has HSTS enabled with good configuration.\n        - \"🟡\" if HSTS is enabled but with suboptimal configuration.\n        - \"🔴\" if the site does not have HSTS enabled.\n        - \"⚪\" if an error occurred during the check.\n\n**Category:** Security",
+        "description": "## HSTS\n\nCheck if the website implements HTTP Strict Transport Security (HSTS).\n\n**Category:** security",
         "operationId": "check_hsts_check_hsts_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with hsts",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with hsts",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2179,8 +3019,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2188,7 +3043,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2204,7 +3061,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Hsts",
+        "summary": "run_check hsts",
         "tags": [
           "Individual Checks"
         ]
@@ -2212,23 +3069,24 @@
     },
     "/check/internationalization": {
       "get": {
-        "description": "## Internationalization Check\n\nChecks if a website has implemented internationalization (i18n) using the lang attribute.\n\nArgs:\n    website (str): The URL of the website to check.\n\nReturns:\n    str:\n       - \"🟢\" if i18n is detected\n       - \"🟡\" if partial i18n is detected\n       - \"⚪\" if i18n is not detected or an error occurred.\n\n**Category:** Accessibility",
+        "description": "## Internationalization\n\nChecks if a website has implemented internationalization (i18n) using the lang attribute.\n\n**Category:** accessibility",
         "operationId": "check_internationalization_check_internationalization_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with internationalization",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with internationalization",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2244,8 +3102,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2253,7 +3126,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2269,7 +3144,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Internationalization",
+        "summary": "run_check internationalization",
         "tags": [
           "Individual Checks"
         ]
@@ -2277,23 +3152,24 @@
     },
     "/check/mixed_content": {
       "get": {
-        "description": "## Mixed Content Check\n\nCheck a given website for mixed content issues by searching for resources loaded over HTTP.\n\nArgs:\n    website (str): The URL of the website to be checked.\n\nReturns:\n    str:\n        - \"🟢\" if no mixed content is found.\n        - \"🔴\" if mixed content is found.\n        - \"⚪\" for any errors.\n\n**Category:** Security",
+        "description": "## Mixed content\n\nCheck a given website for mixed content issues by searching for resources loaded over HTTP.\n\n**Category:** security",
         "operationId": "check_mixed_content_check_mixed_content_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with mixed_content",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with mixed_content",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2309,8 +3185,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2318,7 +3209,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2334,7 +3227,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Mixed Content",
+        "summary": "run_check mixed_content",
         "tags": [
           "Individual Checks"
         ]
@@ -2342,23 +3235,24 @@
     },
     "/check/mobile_friendly": {
       "get": {
-        "description": "## Mobile Friendly Check\n\nCheck if the given website is mobile-friendly from its HTML.\n\nThis used to call Google's Mobile-Friendly Test API, which needs a Search\nConsole API key the monitor never passes and whose retirement Google\nannounced for December 2023. It is now a local static check of the page\nHTML. It does not render the page: it only reads markup and inline CSS.\n\nCriteria:\n    1. A <meta name=\"viewport\"> exists and its content has\n       width=device-width. Without it mobile browsers render the page at a\n       desktop width (about 980px) and shrink it: 🔴.\n    2. The viewport does not disable zooming (user-scalable=no or\n       maximum-scale below 2): otherwise 🟡.\n    3. No fixed-width layout hints: no \"width: Npx\" declaration with\n       N >= 980 in <style> blocks or style attributes (max-width and\n       min-width are ignored), and no width=\"N\" attribute with N >= 980:\n       otherwise 🟡.\n\nArgs:\n    website (str): The URL or bare domain of the website to be checked.\n    api_key (str, optional): Ignored, kept for backward compatibility.\n\nReturns:\n    str:\n        - \"🟢\" if all criteria pass.\n        - \"🟡 (reasons)\" if the viewport is responsive but there are issues.\n        - \"🔴 (no responsive viewport meta)\" if criterion 1 fails.\n        - \"⚪\" for any errors.\n\n**Category:** Accessibility",
+        "description": "## Mobile friendly\n\nCheck if the given website is mobile-friendly from its HTML.\n\n**Category:** accessibility",
         "operationId": "check_mobile_friendly_check_mobile_friendly_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with mobile_friendly",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with mobile_friendly",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2374,8 +3268,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2383,7 +3292,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2399,7 +3310,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Mobile Friendly",
+        "summary": "run_check mobile_friendly",
         "tags": [
           "Individual Checks"
         ]
@@ -2407,23 +3318,24 @@
     },
     "/check/open_graph_protocol": {
       "get": {
-        "description": "## Open Graph Protocol Check\n\nCheck a given website for the presence of essential Open Graph Protocol meta tags with enhanced validation.\n\nArgs:\n    website (str): The URL of the website to be checked.\n\nReturns:\n    str:\n        - \"🟢\" if essential Open Graph Protocol meta tags are found.\n        - \"🔴\" if essential Open Graph Protocol meta tags are missing.\n        - \"⚪\" for any errors.\n\n**Category:** Seo",
+        "description": "## Open Graph tags\n\nCheck a given website for the presence of essential Open Graph Protocol meta tags with enhanced validation.\n\n**Category:** seo",
         "operationId": "check_open_graph_protocol_check_open_graph_protocol_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with open_graph_protocol",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with open_graph_protocol",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2439,8 +3351,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2448,7 +3375,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2464,7 +3393,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Open Graph Protocol",
+        "summary": "run_check open_graph_protocol",
         "tags": [
           "Individual Checks"
         ]
@@ -2472,23 +3401,24 @@
     },
     "/check/pagespeed_performances": {
       "get": {
-        "description": "## Pagespeed Performances Check\n\nChecks the PageSpeed Insights performance score for a website with enhanced error handling.\n\nArgs:\n    website (str): The URL of the website to be checked.\n    api_key (str, optional): The Google PageSpeed Insights API key.\n        Defaults to the PAGESPEED_API_KEY environment variable.\n\nReturns:\n    str:\n        - \"🟢 (93/100, mobile)\": the performance score with Lighthouse's\n          bands, 🟢 90-100, 🟠 50-89, 🔴 0-49.\n        - \"⚪\" if any errors occur during the check.\n        - \"⚪ (no PageSpeed API key)\" if no API key is available.\n\n**Category:** Performance",
+        "description": "## PageSpeed score\n\nChecks the PageSpeed Insights performance score for a website with enhanced error handling.\n\n**Category:** performance",
         "operationId": "check_pagespeed_performances_check_pagespeed_performances_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with pagespeed_performances",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with pagespeed_performances",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2504,8 +3434,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2513,7 +3458,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2529,7 +3476,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Pagespeed Performances",
+        "summary": "run_check pagespeed_performances",
         "tags": [
           "Individual Checks"
         ]
@@ -2537,23 +3484,24 @@
     },
     "/check/privacy_exposure": {
       "get": {
-        "description": "## Privacy Exposure Check\n\nCheck a given website for potential exposure of sensitive or private data with enhanced detection.\n\nArgs:\n    website (str): The URL of the website to be checked.\n\nReturns:\n    str: \"🟢\" if no patterns of sensitive data are found, \"🔴\" otherwise, \"⚪\" if an error occurred.\n\n**Category:** Privacy",
+        "description": "## Privacy exposure\n\nCheck a given website for potential exposure of sensitive or private data with enhanced detection.\n\n**Category:** privacy",
         "operationId": "check_privacy_exposure_check_privacy_exposure_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with privacy_exposure",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with privacy_exposure",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2569,8 +3517,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2578,7 +3541,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2594,7 +3559,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Privacy Exposure",
+        "summary": "run_check privacy_exposure",
         "tags": [
           "Individual Checks"
         ]
@@ -2602,23 +3567,24 @@
     },
     "/check/privacy_protected_whois": {
       "get": {
-        "description": "## Privacy Protected Whois Check\n\nCheck if a domain's WHOIS information indicates that it is privacy-protected with enhanced detection.\n\nArgs:\n    domain (str): The domain to check.\n\nReturns:\n    str: \"🟢\" if the domain's WHOIS information is privacy-protected, \"🔴\" otherwise,\n         \"⚪\" if an error occurred.\n\n**Category:** Privacy",
+        "description": "## WHOIS privacy\n\nCheck if a domain's WHOIS information indicates that it is privacy-protected with enhanced detection.\n\n**Category:** privacy",
         "operationId": "check_privacy_protected_whois_check_privacy_protected_whois_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with privacy_protected_whois",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with privacy_protected_whois",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2634,8 +3600,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2643,7 +3624,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2659,7 +3642,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Privacy Protected Whois",
+        "summary": "run_check privacy_protected_whois",
         "tags": [
           "Individual Checks"
         ]
@@ -2667,23 +3650,24 @@
     },
     "/check/rate_limiting": {
       "get": {
-        "description": "## Rate Limiting Check\n\nChecks for rate limiting using enhanced detection with varied delays and request patterns.\n\nArgs:\n    website (str): The URL of the website to check.\n    num_requests (int): Number of requests to send for testing.\n    delay (float): Initial delay in seconds between requests.\n    user_agent (str): Custom User-Agent string for the requests.\n    threshold (int): The maximum number of successful requests before assuming no rate limiting.\n\nReturns:\n    str: \"🟢\", \"🔴\", or \"⚪\" based on the detection status.\n\n**Category:** Security",
+        "description": "## Rate limiting\n\nChecks for rate limiting using enhanced detection with varied delays and request patterns.\n\n**Category:** security",
         "operationId": "check_rate_limiting_check_rate_limiting_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with rate_limiting",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with rate_limiting",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2699,8 +3683,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2708,7 +3707,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2724,7 +3725,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Rate Limiting",
+        "summary": "run_check rate_limiting",
         "tags": [
           "Individual Checks"
         ]
@@ -2732,23 +3733,24 @@
     },
     "/check/redirect_chains": {
       "get": {
-        "description": "## Redirect Chains Check\n\nCheck the number of redirects that a website triggers with enhanced security analysis.\n\nArgs:\n    website (str): The URL of the website to check.\n\nReturns:\n    str: \n        - \"🟢\" if no redirects or optimal redirect pattern.\n        - \"🟠\" if there's one redirect or acceptable chain.\n        - \"🔴\" if multiple redirects or security issues.\n        - \"⚪\" in case of an error.\n\n**Category:** Performance",
+        "description": "## Redirect chains\n\nCheck the number of redirects that a website triggers with enhanced security analysis.\n\n**Category:** performance",
         "operationId": "check_redirect_chains_check_redirect_chains_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with redirect_chains",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with redirect_chains",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2764,8 +3766,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2773,7 +3790,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2789,7 +3808,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Redirect Chains",
+        "summary": "run_check redirect_chains",
         "tags": [
           "Individual Checks"
         ]
@@ -2797,23 +3816,24 @@
     },
     "/check/redirects": {
       "get": {
-        "description": "## Redirects Check\n\nVerify if a website using HTTP redirects to its HTTPS counterpart with enhanced security analysis.\n\nArgs:\n    website (str): The URL (without protocol) of the website to check.\n\nReturns:\n    str:\n        - \"🟢\" if the site redirects from HTTP to HTTPS securely.\n        - \"🟠\" if redirect exists but has minor security issues.\n        - \"🔴\" if it does not redirect from HTTP to HTTPS or has security issues.\n        - \"⚪\" in case of an error.\n\n**Category:** Performance",
+        "description": "## HTTPS redirect\n\nVerify if a website using HTTP redirects to its HTTPS counterpart with enhanced security analysis.\n\n**Category:** performance",
         "operationId": "check_redirects_check_redirects_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with redirects",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with redirects",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2829,8 +3849,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2838,7 +3873,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2854,7 +3891,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Redirects",
+        "summary": "run_check redirects",
         "tags": [
           "Individual Checks"
         ]
@@ -2862,23 +3899,24 @@
     },
     "/check/robot_txt": {
       "get": {
-        "description": "## Robot Txt Check\n\nVerify the presence and basic validity of a robots.txt file on a website.\n\nArgs:\n- website (str): The URL (without protocol) of the website to check.\n\nReturns:\n- str: \"🟢\" if the site has a valid robots.txt file, \"🔴\" otherwise, and \n       \"⚪\" in case of an error.\n\n**Category:** Seo",
+        "description": "## robots.txt\n\nVerify the presence and basic validity of a robots.txt file on a website.\n\n**Category:** seo",
         "operationId": "check_robot_txt_check_robot_txt_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with robot_txt",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with robot_txt",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2894,8 +3932,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2903,7 +3956,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2919,7 +3974,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Robot Txt",
+        "summary": "run_check robot_txt",
         "tags": [
           "Individual Checks"
         ]
@@ -2927,23 +3982,24 @@
     },
     "/check/security_headers": {
       "get": {
-        "description": "## Security Headers Check\n\nCheck for the presence and correct implementation of recommended security headers on a website.\n\nArgs:\n    website (str): URL of the website to be checked.\n\nReturns:\n    str:\n        - \"🟢\" if all recommended headers are properly implemented.\n        - \"🟠\" if headers are present but not all are ideally implemented.\n        - \"🔴\" if some recommended headers are missing.\n        - \"⚪\" for any errors.\n\n**Category:** Security",
+        "description": "## Security headers\n\nCheck for the presence and correct implementation of recommended security headers on a website.\n\n**Category:** security",
         "operationId": "check_security_headers_check_security_headers_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with security_headers",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with security_headers",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -2959,8 +4015,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -2968,7 +4039,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -2984,7 +4057,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Security Headers",
+        "summary": "run_check security_headers",
         "tags": [
           "Individual Checks"
         ]
@@ -2992,23 +4065,24 @@
     },
     "/check/semantic_markup": {
       "get": {
-        "description": "## Semantic Markup Check\n\nCheck if the website contains semantic markup in the form of JSON-LD, Microdata, or RDFa.\n\nArgs:\n    website (str): The URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🟢\" if comprehensive semantic markup is found\n        - \"🟠\" if some semantic markup is found\n        - \"🔴\" if no semantic markup is found\n        - \"⚪\" if an error occurs\n\n**Category:** Seo",
+        "description": "## Semantic markup\n\nCheck if the website contains semantic markup in the form of JSON-LD, Microdata, or RDFa.\n\n**Category:** seo",
         "operationId": "check_semantic_markup_check_semantic_markup_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with semantic_markup",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with semantic_markup",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -3024,8 +4098,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -3033,7 +4122,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -3049,7 +4140,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Semantic Markup",
+        "summary": "run_check semantic_markup",
         "tags": [
           "Individual Checks"
         ]
@@ -3057,23 +4148,24 @@
     },
     "/check/server_response_time": {
       "get": {
-        "description": "## Server Response Time Check\n\nMeasure the server's response time with multiple attempts for accuracy.\n\nArgs:\n    website (str): URL of the website to be checked.\n    num_attempts (int): Number of attempts to measure response time.\n\nReturns:\n    str: \n        - \"🟢\" if the response time is excellent (under 0.5 seconds)\n        - \"🟠\" if the response time is moderate (between 0.5 and 2 seconds)\n        - \"🔴\" if the response time is slow (2 seconds or more)\n        - \"⚪\" if an error occurs or the server does not respond in time\n\n**Category:** Performance",
+        "description": "## Server response time\n\nMeasure the server's response time with multiple attempts for accuracy.\n\n**Category:** performance",
         "operationId": "check_server_response_time_check_server_response_time_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with server_response_time",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with server_response_time",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -3089,8 +4181,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -3098,7 +4205,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -3114,7 +4223,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Server Response Time",
+        "summary": "run_check server_response_time",
         "tags": [
           "Individual Checks"
         ]
@@ -3122,23 +4231,24 @@
     },
     "/check/sitemap": {
       "get": {
-        "description": "## Sitemap Check\n\nCheck if the provided website has a sitemap.xml with enhanced validation.\n\nArgs:\n    website (str): The URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🟢\" if a valid sitemap is found.\n        - \"🔴\" if no sitemap is found or if there's a request-related error.\n        - \"⚪\" for any other unexpected errors.\n\n**Category:** Seo",
+        "description": "## Sitemap\n\nCheck if the provided website has a sitemap.xml with enhanced validation.\n\n**Category:** seo",
         "operationId": "check_sitemap_check_sitemap_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with sitemap",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with sitemap",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -3154,8 +4264,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -3163,7 +4288,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -3179,7 +4306,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Sitemap",
+        "summary": "run_check sitemap",
         "tags": [
           "Individual Checks"
         ]
@@ -3187,23 +4314,24 @@
     },
     "/check/ssl_cert": {
       "get": {
-        "description": "## Ssl Cert Check\n\nCheck the SSL certificate of a given website for comprehensive security analysis.\n\nArgs:\n    website (str): The hostname or URL to check.\n    port (int, optional): The port number. Defaults to 443 (standard HTTPS port).\n\nReturns:\n    str:\n        - \"🟢 (X days left)\" if the certificate is valid and secure with more than 30 days left.\n        - \"🟠 (X days left)\" if the certificate is valid but has 30 days or fewer left, or minor issues.\n        - \"🔴\" if the certificate is expired, invalid, or has security issues.\n        - \"⚪\" if an error occurs during the check.\n\n**Category:** Security",
+        "description": "## SSL certificate\n\nCheck the SSL certificate of a given website for comprehensive security analysis.\n\n**Category:** security",
         "operationId": "check_ssl_cert_check_ssl_cert_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with ssl_cert",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with ssl_cert",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -3219,8 +4347,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -3228,7 +4371,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -3244,7 +4389,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Ssl Cert",
+        "summary": "run_check ssl_cert",
         "tags": [
           "Individual Checks"
         ]
@@ -3252,23 +4397,24 @@
     },
     "/check/ssl_cipher_strength": {
       "get": {
-        "description": "## Ssl Cipher Strength Check\n\nCheck the strength of the SSL/TLS cipher suite of the website with enhanced analysis.\n\nArgs:\n    website (str): URL of the website to be checked.\n\nReturns:\n    str:\n        - \"🟢\" if the cipher strength is strong\n        - \"🟠\" if the cipher strength is moderate\n        - \"🔴\" if the cipher strength is weak\n        - \"⚪\" for any errors\n\n**Category:** Security",
+        "description": "## TLS cipher strength\n\nCheck the strength of the SSL/TLS cipher suite of the website with enhanced analysis.\n\n**Category:** security",
         "operationId": "check_ssl_cipher_strength_check_ssl_cipher_strength_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with ssl_cipher_strength",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with ssl_cipher_strength",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -3284,8 +4430,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -3293,7 +4454,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -3309,7 +4472,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Ssl Cipher Strength",
+        "summary": "run_check ssl_cipher_strength",
         "tags": [
           "Individual Checks"
         ]
@@ -3317,23 +4480,24 @@
     },
     "/check/subdomain_enumeration": {
       "get": {
-        "description": "## Subdomain Enumeration Check\n\nCheck for the existence of common subdomains for a given website with enhanced security analysis.\n\nArgs:\n    website (str): The main domain of the website to be checked.\n\nReturns:\n    tuple: A status symbol and a list of discovered subdomains.\n        - \"🟢\" if no potentially risky subdomains were discovered.\n        - \"🟠\" if some subdomains were found but appear safe.\n        - \"🔴\" if risky subdomains were found.\n        - \"⚪\" for unexpected errors.\n\n**Category:** Domain",
+        "description": "## Subdomains\n\nCheck for the existence of common subdomains for a given website with enhanced security analysis.\n\n**Category:** domain",
         "operationId": "check_subdomain_enumeration_check_subdomain_enumeration_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with subdomain_enumeration",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with subdomain_enumeration",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -3349,8 +4513,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -3358,7 +4537,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -3374,7 +4555,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Subdomain Enumeration",
+        "summary": "run_check subdomain_enumeration",
         "tags": [
           "Individual Checks"
         ]
@@ -3382,23 +4563,24 @@
     },
     "/check/subresource_integrity": {
       "get": {
-        "description": "## Subresource Integrity Check\n\nCheck if the given website uses Subresource Integrity (SRI) by analyzing external resources.\n\nArgs:\n    website (str): The URL of the website to be analyzed.\n\nReturns:\n    tuple: A status symbol and a count of external resources with SRI.\n        - \"🟢\" if most external resources have SRI protection.\n        - \"🟠\" if some external resources have SRI protection.\n        - \"🔴\" if no or few external resources have SRI protection.\n        - \"⚪\" if an error occurs.\n\n**Category:** Security",
+        "description": "## Subresource integrity\n\nCheck if the given website uses Subresource Integrity (SRI) by analyzing external resources.\n\n**Category:** security",
         "operationId": "check_subresource_integrity_check_subresource_integrity_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with subresource_integrity",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with subresource_integrity",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -3414,8 +4596,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -3423,7 +4620,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -3439,7 +4638,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Subresource Integrity",
+        "summary": "run_check subresource_integrity",
         "tags": [
           "Individual Checks"
         ]
@@ -3447,23 +4646,24 @@
     },
     "/check/third_party_requests": {
       "get": {
-        "description": "## Third Party Requests Check\n\nMonitor the number of third-party requests made by a website with enhanced analysis.\n\nArgs:\n    website (str): URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🟢\" if the number of third-party requests is minimal (0-20).\n        - \"🟠\" if there is a moderate number of third-party requests (21-50).\n        - \"🔴\" if the website makes a high number of third-party requests (51+).\n        - \"⚪\" for any errors.\n\n**Category:** Privacy",
+        "description": "## Third-party requests\n\nMonitor the number of third-party requests made by a website with enhanced analysis.\n\n**Category:** privacy",
         "operationId": "check_third_party_requests_check_third_party_requests_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with third_party_requests",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with third_party_requests",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -3479,8 +4679,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -3488,7 +4703,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -3504,7 +4721,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Third Party Requests",
+        "summary": "run_check third_party_requests",
         "tags": [
           "Individual Checks"
         ]
@@ -3512,23 +4729,24 @@
     },
     "/check/third_party_resources": {
       "get": {
-        "description": "## Third Party Resources Check\n\nCheck for third-party resources loaded by the website with enhanced analysis.\n\nArgs:\n    website (str): URL of the website to be checked.\n\nReturns:\n    str:\n        - \"🟢\" if the number of third-party resources is minimal (0-3 domains).\n        - \"🟠\" if there is a moderate number of third-party resources (4-8 domains).\n        - \"🔴\" if there is a high number of third-party resources (9+ domains).\n        - \"⚪\" for any errors.\n\n**Category:** Privacy",
+        "description": "## Third-party resources\n\nCheck for third-party resources loaded by the website with enhanced analysis.\n\n**Category:** privacy",
         "operationId": "check_third_party_resources_check_third_party_resources_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with third_party_resources",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with third_party_resources",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -3544,8 +4762,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -3553,7 +4786,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -3569,7 +4804,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Third Party Resources",
+        "summary": "run_check third_party_resources",
         "tags": [
           "Individual Checks"
         ]
@@ -3577,23 +4812,24 @@
     },
     "/check/url_canonicalization": {
       "get": {
-        "description": "## Url Canonicalization Check\n\nCheck if the given website uses a canonical link element to avoid potential duplicate content issues.\n\nArgs:\n    website (str): The URL of the website to be checked.\n\nReturns:\n    str: \n        - \"🟢\" if a correct canonical link element is found.\n        - \"🟠\" if canonical link exists but has minor issues.\n        - \"🔴\" if no canonical link or major issues found.\n        - \"⚪\" on errors.\n\n**Category:** Seo",
+        "description": "## Canonical URL\n\nCheck if the given website uses a canonical link element to avoid potential duplicate content issues.\n\n**Category:** seo",
         "operationId": "check_url_canonicalization_check_url_canonicalization_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with url_canonicalization",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with url_canonicalization",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -3609,8 +4845,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -3618,7 +4869,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -3634,7 +4887,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Url Canonicalization",
+        "summary": "run_check url_canonicalization",
         "tags": [
           "Individual Checks"
         ]
@@ -3642,23 +4895,24 @@
     },
     "/check/website_load_time": {
       "get": {
-        "description": "## Website Load Time Check\n\nCheck the load time of the given website with multiple measurements for accuracy.\n\nArgs:\n    website (str): The URL of the website to be checked.\n    num_attempts (int): Number of attempts to measure load time for accuracy.\n\nReturns:\n    str: \n        - \"🟢\" if average load time is under 2 seconds\n        - \"🟠\" if average load time is between 2 and 4 seconds\n        - \"🔴\" if average load time is over 4 seconds\n        - \"⚪\" in case of any errors or timeouts\n\n**Category:** Performance",
+        "description": "## Load time\n\nCheck the load time of the given website with multiple measurements for accuracy.\n\n**Category:** performance",
         "operationId": "check_website_load_time_check_website_load_time_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with website_load_time",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with website_load_time",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -3674,8 +4928,23 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
             }
           }
         ],
@@ -3683,7 +4952,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
               }
             },
             "description": "Successful Response"
@@ -3699,7 +4970,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Website Load Time",
+        "summary": "run_check website_load_time",
         "tags": [
           "Individual Checks"
         ]
@@ -3707,23 +4978,24 @@
     },
     "/check/xss_protection": {
       "get": {
-        "description": "## Xss Protection Check\n\nCheck if the X-XSS-Protection header is present in the HTTP response headers of a website.\n\nArgs:\n    website (str): The URL of the website to be checked.\n    timeout_seconds (int, optional): Timeout for the HTTP request in seconds. Default is 10 seconds.\n\nReturns:\n    str:\n        - \"🟢\" if X-XSS-Protection header is present and properly configured.\n        - \"🟠\" if header is present but with suboptimal configuration.\n        - \"🔴\" if X-XSS-Protection header is absent.\n        - \"⚪\" for any errors or non-success HTTP responses.\n\n**Category:** Security",
+        "description": "## XSS protection\n\nCheck if the X-XSS-Protection header is present in the HTTP response headers of a website.\n\n**Category:** security",
         "operationId": "check_xss_protection_check_xss_protection_get",
         "parameters": [
           {
-            "description": "Website URL or domain to check with xss_protection",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to check with xss_protection",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -3739,8 +5011,75 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds",
               "title": "Timeout"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagespeed_api_key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagespeed Api Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckRun"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "run_check xss_protection",
+        "tags": [
+          "Individual Checks"
+        ]
+      }
+    },
+    "/checks": {
+      "get": {
+        "description": "Every check: ID (slug), name, category, description and its own endpoint.",
+        "operationId": "list_checks_checks_get",
+        "parameters": [
+          {
+            "description": "Only the checks of this category",
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only the checks of this category",
+              "title": "Category"
             }
           }
         ],
@@ -3764,27 +5103,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Check Xss Protection",
-        "tags": [
-          "Individual Checks"
-        ]
-      }
-    },
-    "/checks": {
-      "get": {
-        "description": "List the checks this API runs: the ids that POST /monitor/single and\nGET /check/{name} accept, with their category and description.\n\nIt used to list each check twice, under its id and under the name\nmain.py gives it, and filed most of them under \"other\".",
-        "operationId": "list_checks_checks_get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "List Checks",
+        "summary": "list_checks",
         "tags": [
           "Checks"
         ]
@@ -3792,8 +5111,8 @@
     },
     "/generate-report": {
       "post": {
-        "description": "## Generate Monitoring Report\n\nCreate a comprehensive monitoring report for websites.\nSupports multiple output formats including Markdown, JSON, and HTML.\n\n**Features:**\n- Multi-format output (Markdown, JSON, HTML)\n- Comprehensive check results\n- Timestamp and metadata inclusion\n- Customizable website selection",
-        "operationId": "generate_monitoring_report_generate_report_post",
+        "description": "Run every check against several websites and render the result as Markdown, HTML or JSON.",
+        "operationId": "report_generate_report_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -3824,7 +5143,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Generate Monitoring Report",
+        "summary": "report",
         "tags": [
           "Reports"
         ]
@@ -3832,21 +5151,20 @@
     },
     "/health": {
       "get": {
-        "description": "## Health Check\n\nGet the current health status of the API, including:\n- Service status\n- Available checks count\n- Configuration status\n- Current server time",
-        "operationId": "health_check_health_get",
+        "operationId": "health_health_get",
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HealthResponse"
+                  "$ref": "#/components/schemas/Health"
                 }
               }
             },
             "description": "Successful Response"
           }
         },
-        "summary": "Health Check",
+        "summary": "health",
         "tags": [
           "Health"
         ]
@@ -3854,13 +5172,13 @@
     },
     "/monitor": {
       "post": {
-        "description": "## Comprehensive Website Monitoring\n\nRun all available security, performance, and compliance checks on multiple websites.\n\n**Features:**\n- 50+ specialized checks per website\n- Parallel execution for optimal performance\n- Detailed results with status indicators\n- Custom timeout configuration\n- PageSpeed Insights integration (with API key)\n\n**Result Indicators:**\n- 🟢 Check passed\n- 🔴 Check failed  \n- 🟡 Check warning/partial\n- ⚪ Check error/timeout",
-        "operationId": "monitor_websites_monitor_post",
+        "description": "Run every check against several websites; results are grouped by check.",
+        "operationId": "scan_many_monitor_post",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/WebsiteRequest"
+                "$ref": "#/components/schemas/ScanManyRequest"
               }
             }
           },
@@ -3871,7 +5189,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MonitorResponse"
+                  "$ref": "#/components/schemas/ScanManyResponse"
                 }
               }
             },
@@ -3888,7 +5206,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Monitor Websites",
+        "summary": "scan_many",
         "tags": [
           "Monitoring"
         ]
@@ -3896,13 +5214,13 @@
     },
     "/monitor/async": {
       "post": {
-        "description": "## Asynchronous Website Monitoring\n\nStart monitoring checks in the background and return immediately with a task ID.\nUseful for large batch jobs or when you don't want to wait for completion.\n\n**Workflow:**\n1. Submit monitoring request\n2. Receive task ID immediately\n3. Use task ID to check status via `/monitor/async/{task_id}`\n4. Retrieve results when complete",
-        "operationId": "monitor_websites_async_monitor_async_post",
+        "description": "Start scan_many in the background and return a task ID to poll (HTTP only).",
+        "operationId": "scan_many_async_monitor_async_post",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/WebsiteRequest"
+                "$ref": "#/components/schemas/ScanManyRequest"
               }
             }
           },
@@ -3928,7 +5246,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Monitor Websites Async",
+        "summary": "Scan Many Async",
         "tags": [
           "Async Monitoring"
         ]
@@ -3936,16 +5254,16 @@
     },
     "/monitor/async/{task_id}": {
       "get": {
-        "description": "## Check Async Task Status\n\nGet the current status of a background monitoring task.\n\n**Status Values:**\n- `running`: Task is currently executing\n- `completed`: Task finished successfully\n- `failed`: Task encountered an error",
-        "operationId": "get_monitoring_task_status_monitor_async__task_id__get",
+        "description": "running, completed (with result) or failed (with error). Tasks live in memory.",
+        "operationId": "scan_many_async_status_monitor_async__task_id__get",
         "parameters": [
           {
-            "description": "Task ID returned from async monitoring request",
+            "description": "ID returned by POST /monitor/async",
             "in": "path",
             "name": "task_id",
             "required": true,
             "schema": {
-              "description": "Task ID returned from async monitoring request",
+              "description": "ID returned by POST /monitor/async",
               "title": "Task Id",
               "type": "string"
             }
@@ -3971,7 +5289,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Get Monitoring Task Status",
+        "summary": "Scan Many Async Status",
         "tags": [
           "Async Monitoring"
         ]
@@ -3979,23 +5297,24 @@
     },
     "/monitor/single": {
       "get": {
-        "description": "## Single Website Monitoring\n\nConvenient endpoint for running all checks on a single website.\nPerfect for testing and quick analysis.\n\n**Use Cases:**\n- Quick website health check\n- Testing specific domains\n- Development and debugging\n- Integration testing",
-        "operationId": "monitor_single_website_monitor_single_get",
+        "description": "Run every check against one website: the same response as POST /monitor/single.",
+        "operationId": "scan_all_monitor_single_get",
         "parameters": [
           {
-            "description": "Website URL or domain to monitor",
-            "example": "example.com",
+            "description": "Domain or URL",
             "in": "query",
             "name": "website",
             "required": true,
             "schema": {
-              "description": "Website URL or domain to monitor",
+              "description": "Domain or URL",
+              "examples": [
+                "example.com"
+              ],
               "title": "Website",
               "type": "string"
             }
           },
           {
-            "description": "Timeout in seconds for each check",
             "in": "query",
             "name": "timeout",
             "required": false,
@@ -4011,12 +5330,10 @@
                 }
               ],
               "default": 30,
-              "description": "Timeout in seconds for each check",
               "title": "Timeout"
             }
           },
           {
-            "description": "Optional PageSpeed Insights API key",
             "in": "query",
             "name": "pagespeed_api_key",
             "required": false,
@@ -4029,7 +5346,6 @@
                   "type": "null"
                 }
               ],
-              "description": "Optional PageSpeed Insights API key",
               "title": "Pagespeed Api Key"
             }
           }
@@ -4038,7 +5354,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ScanResponse"
+                }
               }
             },
             "description": "Successful Response"
@@ -4054,19 +5372,19 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Monitor Single Website",
+        "summary": "scan (all checks)",
         "tags": [
           "Monitoring"
         ]
       },
       "post": {
-        "description": "## Custom Single Website Monitoring\n\nRun selected checks on a single website with custom check selection.\nPerfect for targeted analysis and custom workflows.\n\n**Features:**\n- Custom check selection from 50+ available checks\n- Single website focus for faster analysis\n- Custom timeout configuration\n- Detailed results for selected checks only",
-        "operationId": "monitor_single_website_custom_monitor_single_post",
+        "description": "Run the given checks (all of them when checks is omitted) against one website.",
+        "operationId": "scan_monitor_single_post",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CustomMonitorRequest"
+                "$ref": "#/components/schemas/ScanRequest"
               }
             }
           },
@@ -4076,7 +5394,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ScanResponse"
+                }
               }
             },
             "description": "Successful Response"
@@ -4092,7 +5412,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Monitor Single Website Custom",
+        "summary": "scan",
         "tags": [
           "Monitoring"
         ]
