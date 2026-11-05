@@ -12,6 +12,7 @@ services:
       - no-new-privileges:true
     volumes:
       - ./config.yaml:/app/config.yaml:ro
+      - ./docs:/app/docs:ro
       - ./reports:/app/reports
       - ./logs:/app/logs
     environment:
@@ -39,6 +40,7 @@ services:
       - no-new-privileges:true
     volumes:
       - ./config.yaml:/app/config.yaml:ro
+      - ./docs:/app/docs:ro
       - ./reports:/app/reports
       - ./logs:/app/logs
       - ./README.md:/app/README.md

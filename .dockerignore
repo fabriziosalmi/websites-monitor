@@ -46,7 +46,6 @@ README.md.backup
 reports/
 
 # Documentation
-docs/
 *.md
 
 # Tests
