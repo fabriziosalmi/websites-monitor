@@ -54,6 +54,11 @@ services:
       - MONITOR_INTERVAL=${MONITOR_INTERVAL:-3600}
     command: ["python", "scheduler.py"]
     restart: unless-stopped
+    # The image's HEALTHCHECK probes the API on port 8000, which this
+    # container does not serve: without this line the scheduler is always
+    # "unhealthy". If scheduler.py stops, the container stops and restarts.
+    healthcheck:
+      disable: true
     depends_on:
       - website-monitor-api
     networks:
