@@ -9,7 +9,7 @@ import time
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def check_subdomain_enumeration(website: str) -> tuple:
+def check_subdomain_enumeration(website: str) -> str:
     """
     Check for the existence of common subdomains for a given website with enhanced security analysis.
 
@@ -26,7 +26,7 @@ def check_subdomain_enumeration(website: str) -> tuple:
     # Input validation and URL normalization
     if not website or not isinstance(website, str):
         logger.error(f"Invalid website input: {website}")
-        return "⚪", []
+        return "⚪"
     
     # Extract domain from URL if full URL provided
     if website.startswith(('http://', 'https://')):
@@ -107,17 +107,27 @@ def check_subdomain_enumeration(website: str) -> tuple:
         
         if total_risky > 0:
             logger.warning(f"Risky subdomains found: {risky_subdomains}")
-            return "🔴", discovered_subdomains
+            return f"🔴 ({_describe(discovered_subdomains, risky_subdomains)})"
         elif total_discovered > 5:
             logger.warning(f"Multiple subdomains discovered for {domain}, potential attack surface")
-            return "🟠", discovered_subdomains
+            return f"🟠 ({_describe(discovered_subdomains, risky_subdomains)})"
         elif total_discovered > 0:
             logger.info(f"Few subdomains discovered for {domain}")
-            return "🟠", discovered_subdomains
+            return f"🟠 ({_describe(discovered_subdomains, risky_subdomains)})"
         else:
             logger.info(f"No subdomains discovered for {domain}")
-            return "🟢", []
+            return "🟢"
 
     except Exception as e:
         logger.error(f"Unexpected error during subdomain enumeration for {domain}: {e}")
-        return "⚪", []
+        return "⚪"
+
+
+def _describe(discovered, risky, limit=5):
+    """'3 found: www.example.com, mail.example.com (1 risky: dev.example.com)'."""
+    hosts = [urlparse(u).hostname or u for u in discovered]
+    shown = ", ".join(hosts[:limit]) + (f" and {len(hosts) - limit} more" if len(hosts) > limit else "")
+    text = f"{len(hosts)} found: {shown}"
+    if risky:
+        text += f"; risky: {', '.join(urlparse(u).hostname or u for u in risky[:limit])}"
+    return text

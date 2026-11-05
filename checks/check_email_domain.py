@@ -37,7 +37,7 @@ def check_email_domain(email_domain: str) -> str:
 
     try:
         # Query DNS TXT records for the given email domain
-        answers = dns.resolver.resolve(email_domain, 'TXT', timeout=10)
+        answers = dns.resolver.resolve(email_domain, 'TXT', lifetime=10)
 
         # Enhanced detection patterns
         spf_records = []

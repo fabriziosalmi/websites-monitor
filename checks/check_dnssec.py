@@ -3,6 +3,7 @@ import dns.dnssec
 import dns.query
 import dns.name
 import dns.rdatatype
+import dns.flags
 import logging
 import re
 from urllib.parse import urlparse
@@ -46,7 +47,11 @@ def check_dnssec(domain: str) -> str:
         
         # Enhanced detection patterns
         dnssec_indicators = []
-        
+        # Resolver failures (SERVFAIL/REFUSED/timeout) on individual queries.
+        # They must not abort the whole check, but if every query failed we
+        # cannot give a verdict.
+        resolver_errors = []
+
         # Check for DNSKEY records
         try:
             dnskey_query = dns.resolver.resolve(domain_name, 'DNSKEY', tcp=True)
@@ -55,7 +60,9 @@ def check_dnssec(domain: str) -> str:
                 logger.info(f"Found {len(dnskey_query)} DNSKEY records for {domain}")
         except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN):
             logger.warning(f"No DNSKEY records found for {domain}")
-        
+        except (dns.resolver.NoNameservers, dns.resolver.LifetimeTimeout) as e:
+            resolver_errors.append(f"DNSKEY: {e}")
+
         # Check for DS records in parent zone
         try:
             ds_query = dns.resolver.resolve(domain_name, 'DS', tcp=True)
@@ -64,28 +71,32 @@ def check_dnssec(domain: str) -> str:
                 logger.info(f"Found {len(ds_query)} DS records for {domain}")
         except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN):
             logger.warning(f"No DS records found for {domain}")
-        
-        # Check for RRSIG records (signature records)
+        except (dns.resolver.NoNameservers, dns.resolver.LifetimeTimeout) as e:
+            resolver_errors.append(f"DS: {e}")
+
+        # Check for RRSIG records (signature records).
+        # Querying qtype RRSIG directly is answered with SERVFAIL by most
+        # recursive resolvers (1.1.1.1, 8.8.8.8, Docker/Tailscale stubs), so
+        # ask for the A record with the DO bit set and look for the RRSIG
+        # that covers it in the answer section.
         try:
-            rrsig_query = dns.resolver.resolve(domain_name, 'RRSIG', tcp=True)
-            if rrsig_query:
+            resolver = dns.resolver.Resolver()
+            resolver.use_edns(0, dns.flags.DO, 4096)  # Enable DNSSEC
+            a_query = resolver.resolve(domain_name, 'A', tcp=True)
+            if any(rrset.rdtype == dns.rdatatype.RRSIG for rrset in a_query.response.answer):
                 dnssec_indicators.append("RRSIG records found")
                 logger.info(f"Found RRSIG records for {domain}")
+            else:
+                logger.warning(f"No RRSIG records found for {domain}")
         except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN):
             logger.warning(f"No RRSIG records found for {domain}")
-        
-        # Fallback mechanism - check for any DNSSEC records
-        if not dnssec_indicators:
-            # Try checking A record with DNSSEC validation
-            try:
-                resolver = dns.resolver.Resolver()
-                resolver.use_edns(0, dns.flags.DO, 4096)  # Enable DNSSEC
-                a_query = resolver.resolve(domain_name, 'A')
-                # If we get here, DNS works but DNSSEC might not be configured
-                logger.info(f"DNS resolution works for {domain} but no DNSSEC indicators found")
-            except Exception:
-                pass
-        
+        except (dns.resolver.NoNameservers, dns.resolver.LifetimeTimeout) as e:
+            resolver_errors.append(f"A+DO: {e}")
+
+        if not dnssec_indicators and len(resolver_errors) == 3:
+            logger.error(f"All DNSSEC queries failed for {domain}: {'; '.join(resolver_errors)}")
+            return "⚪"
+
         # Improved scoring and categorization
         if len(dnssec_indicators) >= 2:
             logger.info(f"Strong DNSSEC configuration for {domain}: {', '.join(dnssec_indicators)}")

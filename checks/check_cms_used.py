@@ -1,68 +1,95 @@
+import logging
+import re
+
 import requests
-from requests.exceptions import RequestException, Timeout, HTTPError
+from requests.exceptions import RequestException
 from bs4 import BeautifulSoup
+
+logger = logging.getLogger(__name__)
+
+# Evidence is looked for in three places only: the URLs of the page's own
+# assets and links, the generator meta tag, and the response headers. The
+# old check searched the whole HTML for substrings, so "mage/" matched
+# "image/png" (Magento on any site with a PNG favicon) and "wp-" matched any
+# word starting with it (WordPress on github.com).
+ASSET_PATTERNS = {
+    "WordPress": [r"/wp-content/", r"/wp-includes/", r"/wp-json/"],
+    "Drupal": [r"/sites/(default|all)/(files|modules|themes)/", r"/core/misc/drupal\.js"],
+    "Joomla": [r"/media/(jui|system)/js/", r"index\.php\?option=com_", r"/components/com_"],
+    "Wix": [r"static\.wixstatic\.com", r"static\.parastorage\.com"],
+    "Squarespace": [r"static1\.squarespace\.com", r"squarespace-cdn\.com"],
+    "Shopify": [r"cdn\.shopify\.com", r"/cdn/shop/"],
+    "Magento": [r"/static/version\d+/", r"/skin/frontend/", r"/js/mage/"],
+    "Ghost": [r"/ghost/api/", r"/public/ghost-sdk"],
+}
+HEADER_PATTERNS = {
+    "Drupal": [("x-generator", r"drupal"), ("x-drupal-cache", r".")],
+    "Wix": [("x-wix-request-id", r".")],
+    "Shopify": [("x-shopid", r"."), ("x-shopify-stage", r".")],
+    "Magento": [("x-magento-cache-debug", r"."), ("x-magento-tags", r".")],
+    "WordPress": [("x-pingback", r"xmlrpc\.php"), ("link", r"/wp-json/")],
+}
+URL_ATTRIBUTES = ("src", "href", "data-src", "action")
+
+
+def detect_cms(html: str, headers) -> str:
+    """The CMS the page, its asset URLs or its headers name, or "" if none."""
+    lowered = {k.lower(): v for k, v in (headers or {}).items()}
+    for cms, rules in HEADER_PATTERNS.items():
+        for header, pattern in rules:
+            if header in lowered and re.search(pattern, lowered[header], re.I):
+                return cms
+
+    soup = BeautifulSoup(html, "html.parser")
+    generator = soup.find("meta", attrs={"name": re.compile("^generator$", re.I)})
+    if generator and generator.get("content"):
+        content = generator["content"].lower()
+        for cms in ASSET_PATTERNS:
+            if cms.lower() in content:
+                return cms
+
+    urls = "\n".join(
+        tag.get(attr)
+        for tag in soup.find_all(True)
+        for attr in URL_ATTRIBUTES
+        if isinstance(tag.get(attr), str)
+    )
+    for cms, patterns in ASSET_PATTERNS.items():
+        if any(re.search(p, urls, re.I) for p in patterns):
+            return cms
+    return ""
+
 
 def check_cms_used(website):
     """
-    Checks which CMS (if any) is used by a website based on certain telltale patterns in its content.
-    
+    Checks which CMS (if any) a website runs, from the URLs of its assets,
+    its generator meta tag and its response headers.
+
     Args:
-        website (str): The website URL to check.
-    
+        website (str): The domain or URL to check.
+
     Returns:
-        str: 
+        str:
             - "🟢 (CMS Name)" if a CMS is detected
-            - "🔴" if no CMS is detected
-            - "⚪" if an error occurs
+            - "⚪ (no CMS detected)" if none is: not running a known CMS is
+              not a fault, so this is no verdict
+            - "⚪" if the page could not be fetched
     """
-    # Ensure the website starts with 'http://' or 'https://'
     if not website.startswith(('http://', 'https://')):
         website = f"https://{website}"
 
-    headers = {
-        'User-Agent': 'CMSChecker/1.0'
-    }
-
-    cms_patterns = {
-        "WordPress": ["wp-", "wp-content", "wp-includes", "wp-json", "xmlrpc.php"],
-        "Drupal": ["Drupal", "sites/default/files", "drupal.js"],
-        "Joomla": ["Joomla", "/templates/joomla/", "index.php?option=com_"],
-        "Wix": ["wix.com", "wix-public", "wixstatic"],
-        "Squarespace": ["squarespace.com", "static.squarespace.com"],
-        "Shopify": ["shopify", "cdn.shopify.com"],
-        "Magento": ["Magento", "mage/", "static/version", "skin/frontend"]
-    }
-
     try:
-        # Method 1: Direct HTML content analysis
-        response = requests.get(website, headers=headers, timeout=10)
+        response = requests.get(website, headers={'User-Agent': 'CMSChecker/1.0'}, timeout=10)
         response.raise_for_status()
-        content = response.text
-
-        # Search for CMS-specific patterns in the website content
-        for cms, patterns in cms_patterns.items():
-            if any(pattern in content for pattern in patterns):
-                print(f"Detected CMS: {cms} for {website}.")
-                return f"🟢 ({cms})"
-        
-        # Method 2: Additional heuristic checks with BeautifulSoup
-        soup = BeautifulSoup(content, 'html.parser')
-
-        # Check for meta tags or generator information that might indicate a CMS
-        meta_generator = soup.find('meta', attrs={'name': 'generator'})
-        if meta_generator and meta_generator.get('content'):
-            generator_content = meta_generator['content'].lower()
-            for cms in cms_patterns:
-                if cms.lower() in generator_content:
-                    print(f"Detected CMS via meta tag: {cms} for {website}.")
-                    return f"🟢 ({cms})"
-        
-        print(f"No CMS detected for {website}.")
-        return "🔴"
-
-    except (Timeout, HTTPError, RequestException) as e:
-        print(f"Request error occurred while checking CMS for {website}: {e}")
+        cms = detect_cms(response.text, response.headers)
+        if cms:
+            logger.info(f"Detected CMS {cms} for {website}")
+            return f"🟢 ({cms})"
+        logger.info(f"No CMS detected for {website}")
+        return "⚪ (no CMS detected)"
+    except RequestException as e:
+        logger.warning(f"Request error while checking CMS for {website}: {e}")
         return "⚪"
     except Exception as e:
-        print(f"An unexpected error occurred while checking CMS for {website}: {e}")
+        logger.error(f"Unexpected error while checking CMS for {website}: {e}")
         return "⚪"

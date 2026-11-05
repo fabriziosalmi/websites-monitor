@@ -8,7 +8,7 @@ from requests.exceptions import RequestException
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def check_subresource_integrity(website: str) -> Tuple[str, int]:
+def check_subresource_integrity(website: str) -> str:
     """
     Check if the given website uses Subresource Integrity (SRI) by analyzing external resources.
     
@@ -25,7 +25,7 @@ def check_subresource_integrity(website: str) -> Tuple[str, int]:
     # Input validation and URL normalization
     if not website or not isinstance(website, str):
         logger.error(f"Invalid website input: {website}")
-        return "⚪", 0
+        return "⚪"
     
     website = website.strip()
     if not website.startswith(('http://', 'https://')):
@@ -80,23 +80,24 @@ def check_subresource_integrity(website: str) -> Tuple[str, int]:
         # Determine result based on SRI coverage
         if total_external == 0:
             logger.info(f"No external resources found for {website}")
-            return "🟢", 0
+            return "🟢 (no external scripts or stylesheets)"
         
         sri_coverage = total_sri_protected / total_external
+        detail = f"({total_sri_protected} of {total_external} external resources with SRI)"
         
         if sri_coverage >= 0.8:  # 80% or more have SRI
             logger.info(f"Excellent SRI coverage ({sri_coverage:.1%}) for {website}")
-            return "🟢", total_sri_protected
+            return f"🟢 {detail}"
         elif sri_coverage >= 0.4:  # 40% or more have SRI
             logger.warning(f"Moderate SRI coverage ({sri_coverage:.1%}) for {website}")
-            return "🟠", total_sri_protected
+            return f"🟠 {detail}"
         else:  # Less than 40% have SRI
             logger.warning(f"Poor SRI coverage ({sri_coverage:.1%}) for {website}")
-            return "🔴", total_sri_protected
+            return f"🔴 {detail}"
 
     except RequestException as e:
         logger.warning(f"Request error for {website}: {e}")
-        return "⚪", 0
+        return "⚪"
     except Exception as e:
         logger.error(f"Unexpected error for {website}: {e}")
-        return "⚪", 0
+        return "⚪"

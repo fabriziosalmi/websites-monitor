@@ -1,7 +1,7 @@
 websites:
   - audiolibri.org
   - example.com
-output_file: README.md
+output_file: report.md
 max_workers: 2
 timeout: 30
 report_template: report_template.md
