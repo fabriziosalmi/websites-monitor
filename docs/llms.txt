@@ -1,47 +1,97 @@
 # Website Monitor
 
-> Advanced Security, Performance, SEO, and Compliance Analysis Platform.
+> Open source tool that runs 53 checks against a website (TLS, security headers, performance, SEO, DNS, privacy, accessibility) from a web UI, a REST API, or a scheduled job that writes a Markdown report.
 
-Website Monitor is an automated open-source web platform monitoring suite created by Fabrizio Salmi. It runs 53+ technical audits via GitHub Actions, CLI, or FastAPI REST service to inspect website security, TLS configuration, performance metrics (Core Web Vitals), SEO, accessibility, and privacy compliance.
+Each check returns a verdict: pass, warning, fail, or no verdict when it cannot decide (an error, a timeout, a missing API key). The API is a FastAPI application; the web UI is a static page that calls it. Source and documentation: https://github.com/fabriziosalmi/websites-monitor (MIT license).
 
-## Platform Capabilities
+## Links
 
-### 1. Security & Cryptography (10 Checks)
-- SSL/TLS Certificate validity, expiration date, and issuer chain.
-- SSL Cipher Suite strength and modern protocol enforcement (TLS 1.2 / TLS 1.3).
-- HTTP Security Headers: Content-Security-Policy (CSP), X-Frame-Options, X-Content-Type-Options.
-- Strict-Transport-Security (HSTS) implementation and preload verification.
-- Cross-Origin Resource Sharing (CORS) policy and wildcard checks.
-- Mixed content detection (HTTP subresources on HTTPS origins).
-- Subresource Integrity (SRI) validation on external CDN scripts.
-- Rate limiting and DDoS protection detection.
-- Data leakage and sensitive header exposure prevention.
+- Web UI (static, needs a running API set in Settings): https://fabriziosalmi.github.io/websites-monitor/
+- API reference: https://fabriziosalmi.github.io/websites-monitor/swagger.html
+- OpenAPI description: https://fabriziosalmi.github.io/websites-monitor/openapi.json
+- Docker instructions: https://github.com/fabriziosalmi/websites-monitor/blob/main/docs/DOCKER.md
+- Container image: ghcr.io/fabriziosalmi/websites-monitor
 
-### 2. Performance & Web Vitals (8 Checks)
-- Google PageSpeed Insights & Core Web Vitals (LCP, INP, CLS).
-- Total page load time and Time To First Byte (TTFB).
-- Modern compression detection (Brotli / Gzip).
-- CSS and JavaScript asset minification verification.
-- CDN presence detection (Cloudflare, Fastly, CloudFront, Akamai).
-- Redirect chain and 301/302 hop analysis.
+## API
 
-### 3. SEO & Discoverability (8 Checks)
-- XML Sitemap discovery and schema compliance.
-- robots.txt directive parsing and crawler declarations.
-- Title and meta description optimization audits.
-- Canonical URL alignment and hreflang validation.
-- OpenGraph and Twitter Card social preview tags.
-- Schema.org structured data (JSON-LD) extraction and validation.
+- GET /health: status, version and number of checks.
+- GET /checks: the checks, with ID, category and description.
+- POST /monitor/single with {"website": "example.com", "checks": ["ssl_cert", "hsts"]}: runs the listed checks against one site.
+- GET /check/{id}?website=example.com: runs one check.
+- POST /monitor, POST /monitor/async, POST /generate-report: every check against a list of sites.
 
-### 4. Privacy, Legal & Accessibility (27 Checks)
-- Cookie banner and GDPR compliance indicators.
-- Privacy policy and RFC 9116 security.txt declaration.
-- Web accessibility (WCAG 2.1) contrast and ARIA attribute scans.
+## Checks
 
-## Integration & Deployment
+### Security (10)
 
-- **Web Dashboard**: https://fabriziosalmi.github.io/websites-monitor/
-- **API Swagger UI**: https://fabriziosalmi.github.io/websites-monitor/swagger.html
-- **Docker Image**: `docker pull fabriziosalmi/website-monitor:latest`
-- **GitHub Repository**: https://github.com/fabriziosalmi/websites-monitor
-- **Automated Runs**: GitHub Actions workflow cron scheduling with multi-format report exports (HTML, JSON, Markdown).
+- `ssl_cert` (SSL certificate): Validity and days to expiry
+- `ssl_cipher_strength` (TLS cipher strength): Negotiated cipher suite
+- `security_headers` (Security headers): CSP, X-Frame-Options and others
+- `hsts` (HSTS): Strict-Transport-Security header
+- `xss_protection` (XSS protection): X-XSS-Protection header
+- `cors_headers` (CORS policy): Cross-origin response headers
+- `mixed_content` (Mixed content): HTTP resources on HTTPS pages
+- `subresource_integrity` (Subresource integrity): SRI on external scripts and styles
+- `rate_limiting` (Rate limiting): Response to a burst of requests
+- `data_leakage` (Data leakage): Mentions in public GitHub code
+
+### Performance (8)
+
+- `pagespeed_performances` (PageSpeed score): Google PageSpeed Insights
+- `website_load_time` (Load time): Total time to load the page
+- `server_response_time` (Server response time): Time to first byte
+- `brotli_compression` (Brotli compression): Content-Encoding: br
+- `asset_minification` (Asset minification): CSS and JavaScript minified
+- `cdn` (CDN): Content delivery network in front
+- `redirect_chains` (Redirect chains): Number of hops to the final URL
+- `redirects` (HTTPS redirect): HTTP redirects to HTTPS
+
+### SEO and content (9)
+
+- `sitemap` (Sitemap): sitemap.xml present and valid
+- `robot_txt` (robots.txt): Present and well formed
+- `open_graph_protocol` (Open Graph tags): Social sharing metadata
+- `alt_tags` (Image alt text): Every image has an alt attribute
+- `semantic_markup` (Semantic markup): Structured data in the page
+- `url_canonicalization` (Canonical URL): rel="canonical" link
+- `favicon` (Favicon): Site icon present
+- `broken_links` (Broken links): Internal links that fail
+- `external_links` (External links): Outbound links reachable
+
+### Domain and DNS (7)
+
+- `domain_expiration` (Domain expiration): Registration expiry date
+- `dnssec` (DNSSEC): Signed DNS zone
+- `dns_blacklist` (DNS blocklists): Listed on DNS-based blocklists
+- `domain_breach` (Breach exposure): Domain in known data breaches
+- `domainsblacklists_blacklist` (Domain blocklists): Aggregated threat lists
+- `subdomain_enumeration` (Subdomains): Common subdomains that resolve
+- `email_domain` (Email records): SPF and mail records
+
+### Privacy and tracking (10)
+
+- `cookie_policy` (Cookie policy): Policy page linked
+- `cookie_flags` (Cookie flags): Secure and HttpOnly set
+- `cookie_duration` (Cookie duration): Session cookie lifetimes
+- `cookie_samesite_attribute` (Cookie SameSite): SameSite attribute set
+- `ad_and_tracking` (Ads and tracking): Analytics and ad scripts
+- `floc` (FLoC opt-out): interest-cohort permission policy
+- `privacy_exposure` (Privacy exposure): Sensitive data in the page
+- `privacy_protected_whois` (WHOIS privacy): Registrant data redacted
+- `third_party_requests` (Third-party requests): Requests to other domains
+- `third_party_resources` (Third-party resources): Scripts and styles from other domains
+
+### Accessibility and mobile (5)
+
+- `accessibility` (Accessibility): Accessibility score
+- `mobile_friendly` (Mobile friendly): Viewport and responsive layout
+- `amp_compatibility` (AMP): AMP version available
+- `internationalization` (Internationalization): lang and hreflang attributes
+- `browser_compatibility` (Browser compatibility): Markup older browsers handle
+
+### Technical (4)
+
+- `content_type_headers` (Content-Type header): MIME type and charset
+- `cms_used` (CMS detection): Platform behind the site
+- `clientside_rendering` (Client-side rendering): Content rendered by JavaScript
+- `deprecated_libraries` (Deprecated libraries): Outdated JavaScript libraries
