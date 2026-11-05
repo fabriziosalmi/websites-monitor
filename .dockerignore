@@ -61,3 +61,6 @@ npm-debug.log*
 *.backup
 *.bak
 *.tmp
+
+# Images only used by the README and by link previews
+docs/screenshot*.png

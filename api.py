@@ -5,7 +5,7 @@ Includes individual endpoints for all 53+ security, performance, and compliance 
 """
 
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Query, Path
-from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, HttpUrl, Field, field_validator
@@ -79,6 +79,64 @@ CHECK_MODULES = {
     'xss_protection': 'checks.check_xss_protection',
 }
 
+# Category of each check, as the web UI groups them (tests/test_ui_catalog.py
+# keeps the two in step).
+CHECK_CATEGORIES = {
+    "ssl_cert": "security",
+    "ssl_cipher_strength": "security",
+    "security_headers": "security",
+    "hsts": "security",
+    "xss_protection": "security",
+    "cors_headers": "security",
+    "mixed_content": "security",
+    "subresource_integrity": "security",
+    "rate_limiting": "security",
+    "data_leakage": "security",
+    "pagespeed_performances": "performance",
+    "website_load_time": "performance",
+    "server_response_time": "performance",
+    "brotli_compression": "performance",
+    "asset_minification": "performance",
+    "cdn": "performance",
+    "redirect_chains": "performance",
+    "redirects": "performance",
+    "sitemap": "seo",
+    "robot_txt": "seo",
+    "open_graph_protocol": "seo",
+    "alt_tags": "seo",
+    "semantic_markup": "seo",
+    "url_canonicalization": "seo",
+    "favicon": "seo",
+    "broken_links": "seo",
+    "external_links": "seo",
+    "domain_expiration": "domain",
+    "dnssec": "domain",
+    "dns_blacklist": "domain",
+    "domain_breach": "domain",
+    "domainsblacklists_blacklist": "domain",
+    "subdomain_enumeration": "domain",
+    "email_domain": "domain",
+    "cookie_policy": "privacy",
+    "cookie_flags": "privacy",
+    "cookie_duration": "privacy",
+    "cookie_samesite_attribute": "privacy",
+    "ad_and_tracking": "privacy",
+    "floc": "privacy",
+    "privacy_exposure": "privacy",
+    "privacy_protected_whois": "privacy",
+    "third_party_requests": "privacy",
+    "third_party_resources": "privacy",
+    "accessibility": "accessibility",
+    "mobile_friendly": "accessibility",
+    "amp_compatibility": "accessibility",
+    "internationalization": "accessibility",
+    "browser_compatibility": "accessibility",
+    "content_type_headers": "technical",
+    "cms_used": "technical",
+    "clientside_rendering": "technical",
+    "deprecated_libraries": "technical",
+}
+
 # Load all check functions
 CHECK_FUNCTIONS = {}
 for check_name, module_path in CHECK_MODULES.items():
@@ -98,43 +156,14 @@ logger = logging.getLogger(__name__)
 # Create FastAPI app
 app = FastAPI(
     title="Website Monitor API",
-    description="""
-    ## 🔍 Comprehensive Website Security & Performance Monitor API
-    
-    This API provides 50+ security, performance, and compliance checks for websites including:
-    
-    ### 🛡️ Security Checks
-    - SSL Certificate validation
-    - Security headers analysis
-    - XSS protection verification  
-    - CORS configuration review
-    - Domain breach detection
-    - DNS blacklist checking
-    
-    ### ⚡ Performance Checks  
-    - PageSpeed Insights integration
-    - Load time measurement
-    - CDN detection
-    - Brotli compression analysis
-    - Asset minification verification
-    
-    ### 🎯 SEO & Compliance
-    - Robots.txt validation
-    - Sitemap detection
-    - Open Graph protocol
-    - Accessibility compliance
-    - Mobile-friendly testing
-    
-    ### 📊 Advanced Features
-    - Batch monitoring of multiple websites
-    - Individual check endpoints for each test
-    - Async background processing
-    - Report generation
-    - Custom timeout configurations
-    
-    **Total Available Checks:** 53+
-    """,
-    version="1.3.0",
+    description=(
+        "Runs security, performance, SEO, privacy and accessibility checks "
+        "against a website. Each check returns a verdict: pass, warning, fail, "
+        "or no verdict when it could not run. GET /checks lists them; "
+        "POST /monitor/single runs a selection against one site, and "
+        "GET /check/{name} runs a single check."
+    ),
+    version="1.4.0",
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json"
@@ -275,82 +304,10 @@ async def root():
         raise HTTPException(status_code=404, detail="Frontend interface not found")
     return RedirectResponse(url="/docs/", status_code=307)
 
-@app.get("/api", response_class=HTMLResponse, tags=["Documentation"])
+@app.get("/api", include_in_schema=False)
 async def api_landing():
-    """
-    API landing page with navigation and quick start information.
-    """
-    return f"""
-    <html>
-        <head>
-            <title>Website Monitor API</title>
-            <style>
-                body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', roboto, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; line-height: 1.6; }}
-                .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; }}
-                .card {{ background: #f8f9fa; padding: 20px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #667eea; }}
-                .endpoint {{ background: #fff; padding: 15px; margin: 10px 0; border-radius: 5px; border: 1px solid #e9ecef; }}
-                .badge {{ background: #28a745; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8em; margin-left: 10px; }}
-                .category {{ background: #17a2b8; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.75em; margin-right: 5px; }}
-                ul {{ columns: 2; column-gap: 30px; }}
-                li {{ margin-bottom: 5px; break-inside: avoid; }}
-            </style>
-        </head>
-        <body>
-            <div class="header">
-                <h1>🔍 Website Monitor API</h1>
-                <p>Comprehensive website security, performance, and compliance monitoring with {len(CHECK_FUNCTIONS)} specialized checks</p>
-            </div>
-            
-            <div class="card">
-                <h2>📚 API Documentation</h2>
-                <div class="endpoint">
-                    <strong>🚀 Interactive API Docs (Swagger UI):</strong> <a href="/api/docs">/api/docs</a><span class="badge">Recommended</span><br>
-                    <strong>📖 ReDoc Documentation:</strong> <a href="/api/redoc">/api/redoc</a><br>
-                    <strong>📄 OpenAPI Schema:</strong> <a href="/api/openapi.json">/api/openapi.json</a><br>
-                    <strong>🎨 Enhanced Interface:</strong> <a href="/">/</a>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h2>🎯 Quick Start Endpoints</h2>
-                <div class="endpoint">
-                    <strong>GET /health</strong> - API health and status information<br>
-                    <strong>GET /checks</strong> - List all {len(CHECK_FUNCTIONS)} available checks<br>
-                    <strong>POST /monitor</strong> - Run all checks on multiple websites<br>
-                    <strong>GET /monitor/single</strong> - Quick single website monitoring<br>
-                    <strong>POST /generate-report</strong> - Generate comprehensive reports
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>🔧 Individual Check Endpoints</h2>
-                <p>Each of our {len(CHECK_FUNCTIONS)} checks has its own dedicated endpoint:</p>
-                <ul>
-                    {chr(10).join([f'<li><span class="category">CHECK</span> <code>/check/{name}</code></li>' for name in sorted(CHECK_FUNCTIONS.keys())])}
-                </ul>
-            </div>
-            
-            <div class="card">
-                <h2>💡 Example Usage</h2>
-                <div class="endpoint">
-                    <strong>Single Website Check:</strong><br>
-                    <code>curl "http://localhost:8000/monitor/single?website=example.com"</code><br><br>
-                    <strong>Specific Security Check:</strong><br>
-                    <code>curl "http://localhost:8000/check/ssl_cert?website=example.com"</code><br><br>
-                    <strong>Batch Monitoring:</strong><br>
-                    <code>curl -X POST "http://localhost:8000/monitor" -H "Content-Type: application/json" -d '{{"websites":["example.com","google.com"]}}'</code>
-                </div>
-            </div>
-            
-            <div style="text-align: center; margin-top: 40px; padding: 20px; border-top: 1px solid #e9ecef; color: #6c757d;">
-                <p>Made with ❤️ by <a href="https://github.com/fabriziosalmi" target="_blank" style="color: #667eea; text-decoration: none;">Fabrizio Salmi</a> • 
-                <a href="https://github.com/fabriziosalmi/websites-monitor" target="_blank" style="color: #667eea; text-decoration: none;">
-                    <img src="https://img.shields.io/badge/source-GitHub-181717?logo=github" alt="GitHub" style="vertical-align: middle;">
-                </a></p>
-            </div>
-        </body>
-    </html>
-    """
+    """The interactive API reference lives at /api/docs."""
+    return RedirectResponse(url="/api/docs", status_code=307)
 
 @app.get("/health", response_model=HealthResponse, tags=["Health"])
 async def health_check():
@@ -375,78 +332,34 @@ async def health_check():
 @app.get("/checks", tags=["Checks"])
 async def list_checks():
     """
-    ## List All Available Checks
-    
-    Returns comprehensive information about all 50+ available website checks, including:
-    - Check names and descriptions
-    - Categories (security, performance, SEO, etc.)
-    - Individual API endpoints
-    - Default timeouts and settings
-    """
-    global default_config
-    monitor = WebsiteMonitor(default_config)
-    
-    checks_info = []
-    
-    # Add checks from WebsiteMonitor
-    for check in monitor.check_functions:
-        checks_info.append({
-            "name": check.name,
-            "slug": check.name.lower().replace(" ", "_").replace("-", "_"),
-            "enabled": check.enabled,
-            "timeout": check.timeout,
-            "description": getattr(check.function, '__doc__', 'No description available').strip() if hasattr(check.function, '__doc__') else "No description available",
-            "category": _categorize_check(check.name),
-            "endpoint": f"/check/{check.name.lower().replace(' ', '_').replace('-', '_')}"
-        })
-    
-    # Add individual check functions
-    for check_name, check_func in CHECK_FUNCTIONS.items():
-        # Skip if already in WebsiteMonitor checks
-        if not any(c["slug"] == check_name for c in checks_info):
-            checks_info.append({
-                "name": check_name.replace("_", " ").title(),
-                "slug": check_name,
-                "enabled": True,
-                "timeout": None,
-                "description": getattr(check_func, '__doc__', 'No description available').strip() if hasattr(check_func, '__doc__') else "No description available",
-                "category": _categorize_check(check_name),
-                "endpoint": f"/check/{check_name}"
-            })
-    
-    # Group by category
-    categories = {}
-    for check in checks_info:
-        cat = check["category"]
-        if cat not in categories:
-            categories[cat] = []
-        categories[cat].append(check)
-    
-    return {
-        "total_checks": len(checks_info),
-        "categories": list(categories.keys()),
-        "checks_by_category": categories,
-        "all_checks": sorted(checks_info, key=lambda x: x["name"])
-    }
+    List the checks this API runs: the ids that POST /monitor/single and
+    GET /check/{name} accept, with their category and description.
 
-def _categorize_check(check_name: str) -> str:
-    """Categorize a check based on its name."""
-    check_lower = check_name.lower()
-    
-    if any(word in check_lower for word in ['ssl', 'security', 'hsts', 'xss', 'cors', 'breach', 'blacklist']):
-        return "security"
-    elif any(word in check_lower for word in ['pagespeed', 'load', 'performance', 'cdn', 'brotli', 'minification']):
-        return "performance"  
-    elif any(word in check_lower for word in ['seo', 'sitemap', 'robot', 'open_graph', 'alt_tags', 'semantic']):
-        return "seo"
-    elif any(word in check_lower for word in ['accessibility', 'mobile', 'internationalization', 'i18n']):
-        return "accessibility"
-    elif any(word in check_lower for word in ['privacy', 'cookie', 'tracking', 'floc', 'whois']):
-        return "privacy"
-    elif any(word in check_lower for word in ['domain', 'dns', 'subdomain', 'email']):
-        return "domain"
-    else:
-        return "other"
+    It used to list each check twice, under its id and under the name
+    main.py gives it, and filed most of them under "other".
+    """
+    all_checks = []
+    for check_id, check_func in sorted(CHECK_FUNCTIONS.items()):
+        all_checks.append({
+            "name": check_id.replace("_", " ").title(),
+            "slug": check_id,
+            "enabled": True,
+            "timeout": None,
+            "description": inspect.getdoc(check_func) or "",
+            "category": CHECK_CATEGORIES.get(check_id, "technical"),
+            "endpoint": f"/check/{check_id}",
+        })
+
+    checks_by_category = {}
+    for check in all_checks:
+        checks_by_category.setdefault(check["category"], []).append(check)
+
+    return {
+        "total_checks": len(all_checks),
+        "categories": list(checks_by_category),
+        "checks_by_category": checks_by_category,
+        "all_checks": all_checks,
+    }
 
 @app.post("/monitor", response_model=MonitorResponse, tags=["Monitoring"])
 async def monitor_websites(request: WebsiteRequest):
@@ -708,17 +621,16 @@ for check_name, check_func in CHECK_FUNCTIONS.items():
     endpoint_func = create_check_endpoint(check_name, check_func)
     endpoint_func.__name__ = f"check_{check_name}"
     
-    # Get check description
-    description = getattr(check_func, '__doc__', f'Run {check_name.replace("_", " ").title()} check').strip()
-    endpoint_func.__doc__ = f"""
-    ## {check_name.replace('_', ' ').title()} Check
-    
-    {description}
-    
-    **Category:** {_categorize_check(check_name).title()}
-    **Check Type:** Individual Security/Performance/SEO Analysis
-    """
-    
+    # inspect.getdoc strips indentation the same way on every Python
+    # version: pasted raw into an indented string, the docstring gave a
+    # different description on 3.11 than on 3.13, which dedents at compile
+    # time.
+    description = inspect.getdoc(check_func) or f"Run the {check_name} check."
+    category = CHECK_CATEGORIES.get(check_name, "technical").title()
+    endpoint_func.__doc__ = (
+        f"## {check_name.replace('_', ' ').title()} Check\n\n{description}\n\n**Category:** {category}"
+    )
+
     app.get(f"/check/{check_name}", tags=["Individual Checks"])(endpoint_func)
 
 # Background task management
@@ -923,46 +835,6 @@ def _generate_html_report(monitor_result: MonitorResponse, request: ReportReques
     """
     
     return html
-
-@app.get("/docs/swagger", response_class=HTMLResponse, tags=["Documentation"])
-async def custom_swagger_ui():
-    """
-    ## Custom Swagger UI
-    
-    Enhanced Swagger documentation interface with custom styling and additional features.
-    """
-    return """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Website Monitor API - Swagger UI</title>
-        <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@3.52.5/swagger-ui.css" />
-        <style>
-            .swagger-ui .topbar { display: none; }
-            .swagger-ui .info { margin: 20px 0; }
-            .swagger-ui .info .title { color: #667eea; }
-        </style>
-    </head>
-    <body>
-        <div id="swagger-ui"></div>
-        <script src="https://unpkg.com/swagger-ui-dist@3.52.5/swagger-ui-bundle.js"></script>
-        <script>
-            SwaggerUIBundle({
-                url: '/api/openapi.json',
-                dom_id: '#swagger-ui',
-                presets: [
-                    SwaggerUIBundle.presets.apis,
-                    SwaggerUIBundle.presets.standalone
-                ],
-                layout: "BaseLayout",
-                deepLinking: true,
-                showExtensions: true,
-                showCommonExtensions: true
-            });
-        </script>
-    </body>
-    </html>
-    """
 
 if __name__ == "__main__":
     print("🚀 Starting Website Monitor API...")

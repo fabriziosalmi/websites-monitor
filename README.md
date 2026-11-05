@@ -1,883 +1,303 @@
 # Website Monitor
 
-[![GitHub Workflow Status](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)](https://hub.docker.com/r/fabriziosalmi/websites-monitor)
+[![CI](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/ci.yml/badge.svg)](https://github.com/fabriziosalmi/websites-monitor/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A comprehensive website monitoring framework with both automated daily checks and a powerful web interface. Monitor the health, security, performance, and compliance of your websites with 53+ different checks organized into logical categories.
+Website Monitor runs 53 checks against a website: TLS, security headers, performance, SEO, DNS, privacy and accessibility. It has a web UI, a REST API, and a scheduler that writes a Markdown report for a list of sites.
 
-## 📑 Quick Links
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshot-dark.png">
+  <img alt="Results of a scan of example.com in the web UI: pass rate, failed checks, warnings, a breakdown per category and the list of checks" src="docs/screenshot.png">
+</picture>
 
-- [🚀 Quick Start](#-quick-start) - Get up and running in minutes
-- [✨ Features](#-features) - What Website Monitor can do
-- [📖 How to Use](#-how-to-use) - Detailed usage instructions
-- [🐳 Docker Deployment](docs/DOCKER.md) - Docker setup guide
-- [🤝 Contributing](CONTRIBUTING.md) - How to contribute
-- [📚 API Documentation](#-api-documentation) - API reference
-- [🔧 Troubleshooting](#-troubleshooting) - Common issues and solutions
-- [📝 Changelog](CHANGELOG.md) - Version history and changes
+## Contents
 
-## Screenshot
+- [Quick start](#quick-start)
+- [Web UI](#web-ui)
+- [Verdicts](#verdicts)
+- [Checks](#checks)
+- [REST API](#rest-api)
+- [Scheduled reports](#scheduled-reports)
+- [Configuration](#configuration)
+- [Development](#development)
 
-![screenshot](https://github.com/fabriziosalmi/websites-monitor/blob/main/screenshot.png?raw=true)
+## Quick start
 
-## 🚀 Quick Start
-
-### Web Interface
-Run the local web interface for immediate testing:
-```bash
-python api.py
-```
-Then visit `http://localhost:8000` for the interactive web interface.
-
-### Docker
-Run with Docker for easy deployment:
-```bash
-docker run -p 8000:8000 fabriziosalmi/websites-monitor
-```
-
-### GitHub Actions
-Use the automated daily monitoring by configuring `config.yaml` and enabling GitHub Actions.
-
-## ✨ Features
-
-### 🌐 **Web Interface**
-- Interactive HTML interface for real-time website analysis
-- Category-based check selection for easier management
-- Mobile-responsive design
-- Real-time results display
-- No setup required - just run and test
-
-### 🔄 **Automated Monitoring**
-- Daily automated checks via GitHub Actions
-- Configurable scheduling and reporting
-- Automatic markdown report generation
-- GitHub integration with commit updates
-
-### 📊 **Comprehensive Analysis - 53+ Checks**
-Organized into 7 logical categories:
-
-#### 🛡️ **Security & Protection (10 checks)**
-- SSL Certificate validation
-- SSL Cipher Strength analysis
-- Security Headers assessment
-- HSTS (HTTP Strict Transport Security)
-- XSS Protection verification
-- CORS Headers analysis
-- Mixed Content detection
-- Subresource Integrity check
-- Rate Limiting detection
-- Data Leakage prevention
-
-#### ⚡ **Performance & Speed (8 checks)**
-- PageSpeed Insights score
-- Website Load Time measurement
-- Server Response Time analysis
-- Brotli Compression detection
-- Asset Minification verification
-- CDN Detection
-- Redirect Chains analysis
-- Redirects optimization
-
-#### 🎯 **SEO & Content (9 checks)**
-- Sitemap validation
-- Robots.txt verification
-- Open Graph Protocol compliance
-- Alt Tags for images
-- Semantic Markup analysis
-- URL Canonicalization
-- Favicon presence
-- Broken Links detection
-- External Links analysis
-
-#### 🌍 **Domain & DNS (7 checks)**
-- Domain Expiration monitoring
-- DNSSEC validation
-- DNS Blacklist checking
-- Domain Breach detection
-- Domain Blacklists verification
-- Subdomain Enumeration
-- Email Domain validation
-
-#### 🔒 **Privacy & Tracking (10 checks)**
-- Cookie Policy compliance
-- Cookie Flags verification
-- Cookie Duration analysis
-- Cookie SameSite attributes
-- Ad & Tracking detection
-- FLoC (Federated Learning of Cohorts) detection
-- Privacy Exposure assessment
-- WHOIS Protection verification
-- Third-Party Requests monitoring
-- Third-Party Resources analysis
-
-#### 📱 **Accessibility & Mobile (5 checks)**
-- Accessibility compliance
-- Mobile Friendly testing
-- AMP Compatibility
-- Internationalization support
-- Browser Compatibility
-
-#### 🔧 **Technical & Infrastructure (4 checks)**
-- Content-Type Headers validation
-- CMS Detection
-- Client-Side Rendering analysis
-- Deprecated Libraries detection
-
-### 🛠️ **Multiple Interfaces**
-- **Web UI**: Interactive browser-based interface
-- **API**: RESTful endpoints for integration
-- **CLI**: Command-line interface for automation
-- **GitHub Actions**: Automated daily monitoring
-
-### 📚 **Documentation & API**
-- Swagger UI at `/api/docs` for interactive API testing
-- ReDoc documentation at `/api/redoc` for detailed API reference
-- Comprehensive API endpoints for all monitoring functions
-- Docker support for easy deployment
-
-## 📖 How to Use
-
-### 📋 Prerequisites
-
-Before using Website Monitor, ensure you have:
-
-- **Python**: Version 3.11 or higher
-- **pip**: Python package manager
-- **Git**: For cloning the repository
-- **Chrome/Chromium**: Required for some checks (automatically managed in Docker)
-- **Optional**: Docker and Docker Compose for containerized deployment
-
-### 💻 Local Installation
-
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/fabriziosalmi/websites-monitor.git
-   cd websites-monitor
-   ```
-
-2. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   pip install fastapi uvicorn[standard] pydantic
-   ```
-
-3. **Configure (Optional)**:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your settings (e.g., PAGESPEED_API_KEY)
-   ```
-
-4. **Run the Web Interface**:
-   ```bash
-   python api.py
-   ```
-   Then open `http://localhost:8000` in your browser.
-
-### 🌐 Web Interface Usage
-
-1. **Quick Start**:
-   ```bash
-   python api.py
-   ```
-   Open `http://localhost:8000` in your browser.
-
-2. **Using the Interface**:
-   - Enter a website URL in the input field
-   - Select check categories you want to run
-   - Click "Run Checks" to analyze the website
-   - View real-time results with detailed explanations
-
-3. **Categories Available**:
-   - Toggle entire categories on/off for easier management
-   - Each category contains multiple related checks
-   - Mobile-responsive interface works on all devices
-
-### 🐳 Docker Usage
-
-1. **Run with Docker**:
-   ```bash
-   docker run -p 8000:8000 fabriziosalmi/websites-monitor
-   ```
-
-2. **Build from Source**:
-   ```bash
-   docker build -t websites-monitor .
-   docker run -p 8000:8000 websites-monitor
-   ```
-
-### 🔄 GitHub Actions Setup
-
-Automate website monitoring with GitHub Actions that runs checks daily and commits results to your repository.
-
-#### Step-by-Step Guide:
-
-1. **Fork This Repository**: 
-   - Click the "Fork" button at the top of this page
-   - This creates your own copy of the repository
-
-2. **Configure Websites to Monitor**:
-   - Edit `config.yaml` in your fork
-   - Add your websites under the `websites:` section:
-   ```yaml
-   websites:
-     - yourwebsite.com
-     - example.com
-   ```
-   - **Note**: Don't include `http://` or `https://` - just the domain
-
-3. **Enable GitHub Actions**:
-   - Go to the "Actions" tab in your repository
-   - Click "I understand my workflows, go ahead and enable them"
-   - Ensure Actions have write permissions:
-     - Settings → Actions → General → Workflow permissions
-     - Select "Read and write permissions"
-
-4. **Set PageSpeed API Key** (Optional but Recommended):
-   - Get a free API key from [Google PageSpeed Insights](https://developers.google.com/speed/docs/insights/v5/get-started)
-   - In your repository: Settings → Secrets and variables → Actions
-   - Click "New repository secret"
-   - Name: `PAGESPEED_API_KEY`
-   - Value: Your API key
-   - Click "Add secret"
-
-5. **Customize Report Template** (Optional):
-   - Edit `report_template.md` to customize the report format
-   - The default template is minimal; you can add your own headers and sections
-
-6. **Trigger First Run**:
-   - Make any commit to trigger the workflow
-   - Or go to Actions → Create report → Run workflow
-   - Results will be committed to `README.md` (or your configured `output_file`)
-
-#### Scheduling
-
-By default, the workflow runs daily at 4 AM UTC. To change the schedule:
-
-Edit `.github/workflows/create-report.yml`:
-```yaml
-on:
-  schedule:
-    - cron: '0 4 * * *'  # Change this cron expression
-```
-
-Common cron examples:
-- `'0 */6 * * *'` - Every 6 hours
-- `'0 0 * * 1'` - Every Monday at midnight
-- `'0 12 * * *'` - Daily at noon
-
-### 🛠️ API Usage
-
-The Website Monitor provides a comprehensive REST API for programmatic access to all monitoring functions.
-
-#### Available Endpoints:
-
-- `GET /` - Web interface
-- `POST /monitor` - Run checks on a website
-- `GET /api/docs` - Swagger UI documentation
-- `GET /api/redoc` - ReDoc API documentation
-- `GET /health` - Health check endpoint
-- `GET /checks` - List all available checks
-
-#### Basic Example - Single Website Check:
+With Docker Compose:
 
 ```bash
-curl -X POST "http://localhost:8000/monitor" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "url": "example.com",
-       "checks": ["ssl_cert", "security_headers", "pagespeed_performances"]
-     }'
+git clone https://github.com/fabriziosalmi/websites-monitor.git
+cd websites-monitor
+cp .env.example .env        # optional keys, address and port
+docker compose up -d --build
 ```
 
-#### Response Format:
+Open http://127.0.0.1:8000/ for the web UI. The API answers on the same port; its interactive reference is at http://127.0.0.1:8000/api/docs.
+
+Compose starts two containers, each limited to 256 MB of memory:
+
+- `website-monitor-api`: the REST API and the web UI.
+- `website-monitor-scheduler`: runs every check against the sites in `config.yaml` every `MONITOR_INTERVAL` seconds and writes `reports/report.md`.
+
+By default the port is published on 127.0.0.1 only. To reach it from other machines, set `WM_BIND_ADDRESS` (an address of the host, or `0.0.0.0`) and `WM_PORT` in `.env`.
+
+The API has no authentication, and its checks send requests to whatever host they are given, including hosts on your internal network. Publish it only on a trusted network or behind an authenticating reverse proxy; see [SECURITY.md](SECURITY.md).
+
+Without Docker, with Python 3.11:
+
+```bash
+pip install -r requirements.txt
+python api.py               # API and web UI on http://127.0.0.1:8000/
+python main.py              # one run over config.yaml, writes report.md
+```
+
+## Web UI
+
+The web UI is a static page in `docs/`, served by the API under `/docs/` (`/` redirects there).
+
+- **New scan**: a domain or URL (only the host is used) and the checks to run, all 53 by default.
+- **Results**: each check runs as its own request, four at a time, so results appear as they finish. The page shows the pass rate, the number of failed checks, warnings and checks without a verdict, a breakdown per category, and the list of checks with filters and search. A single check can be run again, and the `curl` command for it copied. Results export to CSV and JSON.
+- **History**: the last 20 scans, kept in the browser's local storage.
+- **Check catalog**: every check with its ID, category and description.
+- **Settings**: the API address, the timeout per check, how many checks run in parallel, an optional PageSpeed key (kept in memory for the current tab only), and the theme (light, dark or system).
+
+The same page is published on GitHub Pages at https://fabriziosalmi.github.io/websites-monitor/. There it has no API behind it: set the address of a running API in Settings. A page served over HTTPS can only call an API served over HTTPS.
+
+## Verdicts
+
+Every check returns a verdict, sometimes followed by a detail in parentheses, such as `(50 days left)`. The API returns the verdict as a coloured circle at the start of the `result` string:
+
+| Symbol | Verdict | Meaning |
+|---|---|---|
+| U+1F7E2 green circle | Pass | The site meets the check. |
+| U+1F7E1 yellow circle, U+1F7E0 orange circle | Warning | Partly met, or worth a look. |
+| U+1F534 red circle | Fail | The site does not meet the check. |
+| U+26AA white circle | No verdict | The check could not decide: an error, a timeout, a missing API key, or nothing to check. The detail says why when the check knows, for example `(no PageSpeed API key)`. |
+
+The pass rate in the web UI is the share of passed checks among those with a verdict; checks without a verdict are left out.
+
+## Checks
+
+Some checks need a key to give a verdict; without it they return no verdict and name the key:
+
+- `pagespeed_performances` needs `PAGESPEED_API_KEY`. The score is mapped onto Lighthouse's bands: 90 to 100 pass, 50 to 89 warning, 0 to 49 fail.
+- `data_leakage` needs `GITHUB_TOKEN` (GitHub code search requires authentication).
+- `accessibility` uses Lighthouse through the PageSpeed API, then the WAVE API if `WAVE_API_KEY` is set, and otherwise its own heuristics on the page HTML; a heuristic result is marked `(heuristic)`.
+- `browser_compatibility` loads the page in Chrome and Firefox through Selenium. The Docker image ships no browser, so there it returns `(no browser available)`.
+- `dns_blacklist` checks the IPv4 address the domain resolves to. Behind a CDN that is the CDN's address.
+
+<details>
+<summary>All 53 checks</summary>
+
+**Security** (10)
+
+| Check | ID | What it looks at |
+|---|---|---|
+| SSL certificate | `ssl_cert` | Validity and days to expiry |
+| TLS cipher strength | `ssl_cipher_strength` | Negotiated cipher suite |
+| Security headers | `security_headers` | CSP, X-Frame-Options and others |
+| HSTS | `hsts` | Strict-Transport-Security header |
+| XSS protection | `xss_protection` | X-XSS-Protection header |
+| CORS policy | `cors_headers` | Cross-origin response headers |
+| Mixed content | `mixed_content` | HTTP resources on HTTPS pages |
+| Subresource integrity | `subresource_integrity` | SRI on external scripts and styles |
+| Rate limiting | `rate_limiting` | Response to a burst of requests |
+| Data leakage | `data_leakage` | Mentions in public GitHub code |
+
+**Performance** (8)
+
+| Check | ID | What it looks at |
+|---|---|---|
+| PageSpeed score | `pagespeed_performances` | Google PageSpeed Insights |
+| Load time | `website_load_time` | Total time to load the page |
+| Server response time | `server_response_time` | Time to first byte |
+| Brotli compression | `brotli_compression` | Content-Encoding: br |
+| Asset minification | `asset_minification` | CSS and JavaScript minified |
+| CDN | `cdn` | Content delivery network in front |
+| Redirect chains | `redirect_chains` | Number of hops to the final URL |
+| HTTPS redirect | `redirects` | HTTP redirects to HTTPS |
+
+**SEO and content** (9)
+
+| Check | ID | What it looks at |
+|---|---|---|
+| Sitemap | `sitemap` | sitemap.xml present and valid |
+| robots.txt | `robot_txt` | Present and well formed |
+| Open Graph tags | `open_graph_protocol` | Social sharing metadata |
+| Image alt text | `alt_tags` | Every image has an alt attribute |
+| Semantic markup | `semantic_markup` | Structured data in the page |
+| Canonical URL | `url_canonicalization` | rel="canonical" link |
+| Favicon | `favicon` | Site icon present |
+| Broken links | `broken_links` | Internal links that fail |
+| External links | `external_links` | Outbound links reachable |
+
+**Domain and DNS** (7)
+
+| Check | ID | What it looks at |
+|---|---|---|
+| Domain expiration | `domain_expiration` | Registration expiry date |
+| DNSSEC | `dnssec` | Signed DNS zone |
+| DNS blocklists | `dns_blacklist` | Listed on DNS-based blocklists |
+| Breach exposure | `domain_breach` | Domain in known data breaches |
+| Domain blocklists | `domainsblacklists_blacklist` | Aggregated threat lists |
+| Subdomains | `subdomain_enumeration` | Common subdomains that resolve |
+| Email records | `email_domain` | SPF and mail records |
+
+**Privacy and tracking** (10)
+
+| Check | ID | What it looks at |
+|---|---|---|
+| Cookie policy | `cookie_policy` | Policy page linked |
+| Cookie flags | `cookie_flags` | Secure and HttpOnly set |
+| Cookie duration | `cookie_duration` | Session cookie lifetimes |
+| Cookie SameSite | `cookie_samesite_attribute` | SameSite attribute set |
+| Ads and tracking | `ad_and_tracking` | Analytics and ad scripts |
+| FLoC opt-out | `floc` | interest-cohort permission policy |
+| Privacy exposure | `privacy_exposure` | Sensitive data in the page |
+| WHOIS privacy | `privacy_protected_whois` | Registrant data redacted |
+| Third-party requests | `third_party_requests` | Requests to other domains |
+| Third-party resources | `third_party_resources` | Scripts and styles from other domains |
+
+**Accessibility and mobile** (5)
+
+| Check | ID | What it looks at |
+|---|---|---|
+| Accessibility | `accessibility` | Accessibility score |
+| Mobile friendly | `mobile_friendly` | Viewport and responsive layout |
+| AMP | `amp_compatibility` | AMP version available |
+| Internationalization | `internationalization` | lang and hreflang attributes |
+| Browser compatibility | `browser_compatibility` | Markup older browsers handle |
+
+**Technical** (4)
+
+| Check | ID | What it looks at |
+|---|---|---|
+| Content-Type header | `content_type_headers` | MIME type and charset |
+| CMS detection | `cms_used` | Platform behind the site |
+| Client-side rendering | `clientside_rendering` | Content rendered by JavaScript |
+| Deprecated libraries | `deprecated_libraries` | Outdated JavaScript libraries |
+
+</details>
+
+## REST API
+
+The API is a FastAPI application (`api.py`). `website` accepts a domain or a URL; only the host is used. The interactive reference is served at `/api/docs` (Swagger UI) and `/api/redoc`, and the OpenAPI description at `/api/openapi.json`.
+
+| Method and path | What it does |
+|---|---|
+| `GET /health` | Status, version and number of checks. |
+| `GET /checks` | The 53 checks: ID, category, description and endpoint. |
+| `POST /monitor/single` | Runs the listed checks against one website. Each check runs once, in the order given. |
+| `GET /monitor/single?website=` | Runs every check against one website. |
+| `GET /check/{id}?website=` | Runs one check. |
+| `POST /monitor` | Runs every check against a list of websites and waits for the results. |
+| `POST /monitor/async` | Same, in the background: returns a task ID. |
+| `GET /monitor/async/{task_id}` | Status and result of a background task. Tasks live in memory and are lost on restart. |
+| `POST /generate-report` | Runs every check and returns a report as JSON, Markdown or HTML (`output_format`). |
+
+Run three checks against one site:
+
+```bash
+curl -s -X POST http://127.0.0.1:8000/monitor/single \
+  -H 'Content-Type: application/json' \
+  -d '{"website": "example.com", "checks": ["ssl_cert", "hsts", "pagespeed_performances"]}'
+```
 
 ```json
 {
-  "url": "example.com",
-  "timestamp": "2024-11-15T19:30:00Z",
-  "results": {
-    "ssl_cert": "🟢 Valid until 2025-12-31",
-    "security_headers": "🟢 All security headers present",
-    "pagespeed_performances": "🟢 Score: 95/100"
-  },
-  "summary": {
-    "total": 3,
-    "passed": 3,
-    "failed": 0,
-    "errors": 0
-  }
+  "success": true,
+  "message": "Custom monitoring completed successfully",
+  "results": [
+    {
+      "check_id": "ssl_cert",
+      "check_name": "Ssl Cert",
+      "website": "example.com",
+      "result": "\ud83d\udfe2 (50 days left)",
+      "status": "completed",
+      "timestamp": "2026-11-05T10:56:44.284830"
+    },
+    {
+      "check_id": "hsts",
+      "check_name": "Hsts",
+      "website": "example.com",
+      "result": "\ud83d\udd34",
+      "status": "completed",
+      "timestamp": "2026-11-05T10:56:44.351761"
+    },
+    {
+      "check_id": "pagespeed_performances",
+      "check_name": "Pagespeed Performances",
+      "website": "example.com",
+      "result": "\u26aa (no PageSpeed API key)",
+      "status": "completed",
+      "timestamp": "2026-11-05T10:56:44.351920"
+    }
+  ],
+  "execution_time": 0.172866,
+  "timestamp": "2026-11-05T10:56:44.351921",
+  "websites_checked": 1,
+  "checks_performed": 3
 }
 ```
 
-#### Advanced Example - Multiple Websites:
+`result` starts with the verdict (shown here as JSON escapes; see [Verdicts](#verdicts)). When a check raises an error or exceeds its timeout, `status` is `error`, `result` is the white circle and `error` holds the message, for example `Timed out after 30s`. An unknown check ID comes back with `"error": "Unknown check"`.
+
+`timeout` (5 to 300 seconds, default 30) limits each check, and `pagespeed_api_key` overrides `PAGESPEED_API_KEY` for one request. Both are optional fields of the request body.
+
+## Scheduled reports
+
+`main.py` runs every check against the `websites` in `config.yaml` and writes a Markdown table, one row per site, to `output_file`. It exits with status 1 when it cannot produce the report.
+
+- **Docker**: the scheduler container runs `main.py` every `MONITOR_INTERVAL` seconds and writes `reports/report.md`.
+- **GitHub Actions**: `.github/workflows/create-report.yml` runs `main.py` daily at 04:00 UTC and commits `report.md`. GitHub disables scheduled workflows in repositories without recent activity; enable it from the Actions tab of your fork. Set the `PAGESPEED_API_KEY` repository secret for the PageSpeed check.
+
+## Configuration
+
+`config.yaml`, read by `main.py` and the scheduler:
+
+| Key | Default | Meaning |
+|---|---|---|
+| `websites` | | Domains or URLs to check. |
+| `timeout` | `30` | Seconds each check may take. |
+| `output_file` | `report.md` | Where the report is written. The `OUTPUT_FILE` variable overrides it. |
+| `report_template` | `report_template.md` | Optional text placed above the table. |
+
+Environment variables (see `.env.example`):
+
+| Variable | Used by | Meaning |
+|---|---|---|
+| `WM_BIND_ADDRESS`, `WM_PORT` | Docker Compose | Address and port where the API is published. Default `127.0.0.1` and `8000`. |
+| `PAGESPEED_API_KEY` | `pagespeed_performances`, `accessibility` | Google PageSpeed Insights API key. |
+| `GITHUB_TOKEN` | `data_leakage` | GitHub token for code search. |
+| `WAVE_API_KEY` | `accessibility` | WAVE API key. |
+| `MONITOR_INTERVAL` | scheduler | Seconds between two runs. Default 3600. |
+| `OUTPUT_FILE` | `main.py` | Report path, overriding `config.yaml`. |
+| `API_HOST`, `API_PORT` | `python api.py` | Listen address and port. Default `0.0.0.0` and `8000`. |
+| `API_RELOAD` | `python api.py` | `1` restarts the server on code changes. Development only: a restart drops requests in progress. |
+| `WM_CACHE_DIR` | `domainsblacklists_blacklist` | Where the 107 MB domain blacklist is cached. Default: a `websites-monitor` directory in the system temp directory. |
+
+## Container image
+
+Each push to `main` publishes `ghcr.io/fabriziosalmi/websites-monitor` for linux/amd64 and linux/arm64, with provenance and an SBOM; tags `v*` add version tags. `docker compose` builds the image locally from the `Dockerfile`.
+
+## Development
 
 ```bash
-curl -X POST "http://localhost:8000/monitor" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "websites": ["example.com", "google.com"],
-       "checks": ["ssl_cert", "hsts", "xss_protection"],
-       "timeout": 60
-     }'
+pip install -r requirements-dev.txt
+python -m pytest -q
 ```
 
-#### Check All Security Features:
+The tests do not use the network. CI runs them on Python 3.11, then builds the image, starts it with a 256 MB memory limit and calls the API.
 
-```bash
-curl -X POST "http://localhost:8000/monitor" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "url": "example.com",
-       "categories": ["security"]
-     }'
-```
+To add a check:
 
-#### List Available Checks:
+1. Write `checks/check_<id>.py` with a function `check_<id>(website: str) -> str` that returns a verdict as described in [Verdicts](#verdicts), and never raises.
+2. Register it in `CHECK_MODULES` and `CHECK_CATEGORIES` in `api.py`, and in `WebsiteMonitor._initialize_check_functions` in `main.py` for the scheduled report.
+3. Add it to `CHECKS` in `docs/assets/app.js`. A test fails while the web UI and the API disagree on the list or the categories.
+4. Run `python scripts/export_openapi.py` to refresh `docs/openapi.json`, which the API reference on GitHub Pages loads. A test fails when it is out of date.
 
-```bash
-curl http://localhost:8000/checks
-```
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the rest, and [SECURITY.md](SECURITY.md) to report a vulnerability.
 
-#### Health Check:
+## License
 
-```bash
-curl http://localhost:8000/health
-```
-
-Expected response:
-```json
-{
-  "status": "healthy",
-  "version": "1.3.0",
-  "checks_available": 53
-}
-```
-
-## ⚙️ Configuration Options
-
-The `config.yaml` file supports:
-
-- `websites`: List of URLs to monitor (required)
-- `output_file`: Report filename (default: `report.md`)
-- `max_workers`: Concurrent tasks for checks (default: 4)
-- `timeout`: Default timeout in seconds (default: 30)
-- `report_template`: Template filename (default: `report_template.md`)
-- `github_workflow_badge`: Workflow badge URL
-- `pagespeed_api_key`: Google PageSpeed API key (can also be set via environment variable)
-
-## 🔧 Customizing Checks
-
-You can customize which checks run and add new checks to extend the monitoring capabilities.
-
-### Adding New Checks
-
-1. **Create a Check File**: Create a new file in the `checks/` directory following the naming pattern `check_<feature>.py`
-
-2. **Implement the Check Function**: Follow this template:
-   ```python
-   def check_<feature>(url: str, timeout: int = 30) -> str:
-       """
-       Description of what this check does.
-       
-       Args:
-           url: Website URL to check
-           timeout: Request timeout in seconds
-       
-       Returns:
-           Status emoji with description
-       """
-       try:
-           # Your check logic here
-           return "🟢 Check passed"
-       except Exception as e:
-           return f"⚪ Error: {str(e)}"
-   ```
-
-3. **Register the Check**: Add imports to `main.py` and `api.py`
-
-4. **Update Documentation**: Add the check to README.md in the appropriate category
-
-For detailed instructions, see [CONTRIBUTING.md](CONTRIBUTING.md#adding-new-checks).
-
-### Available Check Categories
-
-All 53 checks are organized into these categories:
-
-#### 🛡️ Security & Protection (10 checks)
-| Check | Description |
-|-------|-------------|
-| `ssl_cert` | Validates SSL/TLS certificate validity and expiration |
-| `ssl_cipher_strength` | Analyzes SSL/TLS cipher strength and configuration |
-| `security_headers` | Checks for essential security headers |
-| `hsts` | Verifies HTTP Strict Transport Security |
-| `xss_protection` | Checks XSS protection headers |
-| `cors_headers` | Analyzes CORS configuration |
-| `mixed_content` | Detects mixed HTTP/HTTPS content |
-| `subresource_integrity` | Checks SRI implementation |
-| `rate_limiting` | Tests for rate limiting |
-| `data_leakage` | Scans for potential data leaks |
-
-#### ⚡ Performance & Speed (8 checks)
-| Check | Description |
-|-------|-------------|
-| `pagespeed_performances` | Google PageSpeed Insights score |
-| `website_load_time` | Measures total page load time |
-| `server_response_time` | Measures server response latency |
-| `brotli_compression` | Checks for Brotli compression |
-| `asset_minification` | Verifies CSS/JS minification |
-| `cdn` | Detects CDN usage |
-| `redirect_chains` | Analyzes redirect chains |
-| `redirects` | Checks redirect optimization |
-
-#### 🎯 SEO & Content (9 checks)
-| Check | Description |
-|-------|-------------|
-| `sitemap` | Validates sitemap.xml existence |
-| `robot_txt` | Checks robots.txt configuration |
-| `open_graph_protocol` | Validates Open Graph meta tags |
-| `alt_tags` | Checks image alt attributes |
-| `semantic_markup` | Analyzes HTML5 semantic elements |
-| `url_canonicalization` | Checks canonical URLs |
-| `favicon` | Verifies favicon presence |
-| `broken_links` | Detects broken internal links |
-| `external_links` | Analyzes external link quality |
-
-#### 🌍 Domain & DNS (7 checks)
-| Check | Description |
-|-------|-------------|
-| `domain_expiration` | Monitors domain expiration date |
-| `dnssec` | Validates DNSSEC configuration |
-| `dns_blacklist` | Checks DNS blacklists |
-| `domain_breach` | Checks breach databases |
-| `domainsblacklists_blacklist` | Additional blacklist verification |
-| `subdomain_enumeration` | Discovers subdomains |
-| `email_domain` | Validates email domain configuration |
-
-#### 🔒 Privacy & Tracking (10 checks)
-| Check | Description |
-|-------|-------------|
-| `cookie_policy` | Checks cookie policy compliance |
-| `cookie_flags` | Validates secure cookie flags |
-| `cookie_duration` | Analyzes cookie expiration |
-| `cookie_samesite_attribute` | Checks SameSite attributes |
-| `ad_and_tracking` | Detects advertising trackers |
-| `floc` | Checks FLoC opt-out |
-| `privacy_exposure` | Scans for privacy issues |
-| `privacy_protected_whois` | Verifies WHOIS privacy |
-| `third_party_requests` | Monitors third-party requests |
-| `third_party_resources` | Analyzes third-party resources |
-
-#### 📱 Accessibility & Mobile (5 checks)
-| Check | Description |
-|-------|-------------|
-| `accessibility` | WCAG accessibility compliance |
-| `mobile_friendly` | Mobile-friendliness testing |
-| `amp_compatibility` | AMP page validation |
-| `internationalization` | i18n support verification |
-| `browser_compatibility` | Cross-browser compatibility |
-
-#### 🔧 Technical & Infrastructure (4 checks)
-| Check | Description |
-|-------|-------------|
-| `content_type_headers` | Validates Content-Type headers |
-| `cms_used` | Detects CMS platform |
-| `clientside_rendering` | Checks for CSR implementation |
-| `deprecated_libraries` | Scans for outdated libraries |
-
-### Check Format Reference
-
-Each check returns a status string in the format:
-```
-<emoji> <detailed_message>
-```
-
-Examples:
-- `🟢 Valid until 2025-12-31` (SSL certificate)
-- `🔴 Missing: X-Frame-Options, X-Content-Type-Options` (Security headers)
-- `🟡 Score: 72/100 - Could be improved` (PageSpeed)
-- `⚪ Error: Connection timeout` (Any check failure)
-
-## 📊 Understanding Results
-
-### Status Indicators:
-
-All checks return one of four status indicators:
-
-| Emoji | Status | Meaning |
-|-------|--------|---------|
-| 🟢 | **Success** | Check passed - no issues detected |
-| 🔴 | **Failed** | Check failed - issue found that needs attention |
-| 🟡 | **Warning** | Check completed with warnings - review recommended |
-| ⚪ | **Error** | Check could not be completed due to technical error |
-
-### Result Formats
-
-#### Web Interface:
-- **Real-time Display**: Results appear as checks complete
-- **Color Coding**: Visual indicators match the emoji status
-- **Detailed Explanations**: Each result includes specific details
-- **Category Organization**: Results grouped by check category
-- **Mobile Responsive**: Works on all devices
-
-#### API Response:
-```json
-{
-  "url": "example.com",
-  "results": {
-    "ssl_cert": "🟢 Valid until 2025-12-31",
-    "security_headers": "🔴 Missing: X-Frame-Options, X-Content-Type-Options",
-    "hsts": "🟢 Max-age: 31536000",
-    "pagespeed": "🟡 Score: 72/100 - Could be improved"
-  }
-}
-```
-
-#### GitHub Reports:
-- **Markdown Tables**: Easy-to-read tabular format
-- **Automatic Updates**: Updated daily via GitHub Actions
-- **Historical Tracking**: Track changes over time through git commits
-- **Badge Integration**: Status badges for quick overview
-
-### Interpreting Specific Results
-
-**Security Checks** (🛡️):
-- 🟢 means your security measures are properly configured
-- 🔴 indicates missing or misconfigured security features
-- Fix these immediately to protect your users
-
-**Performance Checks** (⚡):
-- 🟢 indicates good performance
-- 🟡 suggests optimization opportunities
-- 🔴 means significant performance issues that affect user experience
-
-**SEO Checks** (🎯):
-- 🟢 means search engines can properly index your site
-- 🔴 indicates missing elements that harm search rankings
-
-**Accessibility Checks** (📱):
-- 🟢 means your site is accessible to all users
-- 🔴 indicates barriers that prevent some users from accessing your content
-
-## 🛡️ Security Features
-
-- **SSL/TLS Analysis**: Certificate validation, cipher strength, HSTS
-- **Header Security**: Security headers, XSS protection, CORS
-- **Content Security**: Mixed content detection, subresource integrity
-- **Privacy Protection**: Cookie analysis, tracking detection, data leakage
-
-## ⚡ Performance Monitoring
-
-- **Speed Analysis**: Load times, server response, PageSpeed scores
-- **Optimization**: Compression, minification, CDN detection
-- **Network**: Redirect chains, external resource analysis
-
-## 🔍 SEO & Accessibility
-
-- **SEO Compliance**: Sitemaps, robots.txt, meta tags, structured data
-- **Accessibility**: WCAG compliance, mobile-friendly testing
-- **Content Quality**: Alt tags, semantic markup, internationalization
-
-## 🐳 Docker Deployment
-
-The project includes full Docker support for easy deployment:
-
-```bash
-# Available on Docker Hub
-docker pull fabriziosalmi/websites-monitor
-
-# Run with custom port
-docker run -p 3000:8000 fabriziosalmi/websites-monitor
-
-# Run with environment variables
-docker run -e PAGESPEED_API_KEY=your_key fabriziosalmi/websites-monitor
-```
-
-For detailed Docker setup instructions, see [docs/DOCKER.md](docs/DOCKER.md).
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-#### Port Already in Use
-```bash
-# Check what's using port 8000
-lsof -i :8000
-
-# Or use a different port
-python api.py --port 8001
-```
-
-#### Chrome/ChromeDriver Issues
-```bash
-# Install Chrome dependencies on Linux
-sudo apt-get update
-sudo apt-get install -y chromium-browser chromium-chromedriver
-
-# Or use Docker which handles this automatically
-docker-compose up
-```
-
-#### Import Errors
-```bash
-# Reinstall dependencies
-pip install --upgrade -r requirements.txt
-pip install fastapi uvicorn[standard] pydantic
-```
-
-#### PageSpeed API Errors
-- Ensure your `PAGESPEED_API_KEY` is set correctly in `.env` or as an environment variable
-- Verify the API key is valid at https://developers.google.com/speed/docs/insights/v5/get-started
-- Check your API quota hasn't been exceeded
-
-#### Timeout Errors
-```yaml
-# Increase timeout in config.yaml
-timeout: 60  # Increase from default 30 seconds
-```
-
-For more help, check:
-- [GitHub Issues](https://github.com/fabriziosalmi/websites-monitor/issues)
-- [Documentation](docs/DOCKER.md)
-- API docs at http://localhost:8000/api/docs
-
-## ❓ Frequently Asked Questions (FAQ)
-
-### General Questions
-
-**Q: How many websites can I monitor?**  
-A: There's no hard limit, but for performance reasons, we recommend monitoring 10-50 websites. For larger deployments, consider adjusting `max_workers` in config.yaml or running multiple instances.
-
-**Q: How long does each check take?**  
-A: Individual checks typically take 1-5 seconds. A full scan of all 53 checks usually completes in 30-60 seconds per website, depending on network conditions and website response times.
-
-**Q: Do I need all the dependencies for just the API?**  
-A: For the web API, you need `requests`, `beautifulsoup4`, `dnspython`, `python-whois`, `fastapi`, `uvicorn`, and `pydantic`. Selenium and Chrome are only needed for certain advanced checks.
-
-### Configuration Questions
-
-**Q: Can I run only specific checks?**  
-A: Yes! When using the API, specify the checks you want:
-```bash
-curl -X POST "http://localhost:8000/monitor" \
-  -H "Content-Type: application/json" \
-  -d '{"url": "example.com", "checks": ["ssl_cert", "security_headers"]}'
-```
-
-**Q: How do I disable a specific check?**  
-A: Remove it from the checks list when calling the API, or modify the `WebsiteMonitor` class in `main.py` to exclude it from default checks.
-
-**Q: Can I customize the timeout for slow websites?**  
-A: Yes, edit `config.yaml`:
-```yaml
-timeout: 60  # Increase from default 30 seconds
-```
-
-### API Questions
-
-**Q: Can I use the API without the web interface?**  
-A: Yes! Just call the API endpoints directly. The web interface is optional.
-
-**Q: Is there rate limiting on the API?**  
-A: There's no built-in rate limiting. For production use, consider adding nginx or another reverse proxy with rate limiting.
-
-**Q: Can I get results in JSON format?**  
-A: Yes, all API endpoints return JSON by default. The web interface is just a user-friendly view of the JSON data.
-
-### GitHub Actions Questions
-
-**Q: Why isn't my workflow running?**  
-A: Check that:
-- GitHub Actions is enabled in your repository
-- The workflow file is in `.github/workflows/`
-- Actions have write permissions (Settings → Actions → General)
-
-**Q: The workflow fails with "No changes to commit"**  
-A: This is normal if the results haven't changed since the last run. It's not an error.
-
-**Q: Can I trigger the workflow manually?**  
-A: Yes! Go to Actions → Create report → Run workflow.
-
-### Docker Questions
-
-**Q: Do I need Docker to use Website Monitor?**  
-A: No, Docker is optional. You can run it directly with Python, but Docker simplifies deployment.
-
-**Q: Can I use docker-compose for production?**  
-A: Yes! Use `docker-compose --profile production up -d` for the full production stack with nginx, Redis, and PostgreSQL.
-
-**Q: How do I update the Docker image?**  
-A: Pull the latest image:
-```bash
-docker pull fabriziosalmi/websites-monitor
-docker-compose up -d
-```
-
-## 📚 API Documentation
-
-### Interactive Documentation:
-- **Swagger UI**: Visit `/api/docs` for interactive API testing
-- **ReDoc**: Visit `/api/redoc` for detailed API reference
-
-### Integration Examples:
-- REST API endpoints for all monitoring functions
-- JSON response format for easy integration
-- Comprehensive error handling and status codes
-
-## 📁 Project Structure
-
-```
-websites-monitor/
-├── api.py                 # FastAPI web server and REST API
-├── main.py               # Core monitoring logic and check orchestration
-├── scheduler.py          # Scheduled monitoring service
-├── config.yaml           # Configuration file for websites and settings
-├── requirements.txt      # Python dependencies
-├── Dockerfile            # Docker image definition
-├── docker-compose.yml    # Docker Compose configuration
-├── checks/               # Individual check implementations
-│   ├── check_ssl_cert.py
-│   ├── check_security_headers.py
-│   └── ... (53 check files)
-├── docs/                 # Additional documentation
-│   └── DOCKER.md        # Docker deployment guide
-├── .env.example         # Environment variables template
-├── CONTRIBUTING.md      # Contribution guidelines
-└── README.md            # This file
-```
-
-### Key Components
-
-- **`api.py`**: Web interface and RESTful API endpoints
-- **`main.py`**: Core monitoring engine that orchestrates all checks
-- **`scheduler.py`**: Background service for periodic monitoring
-- **`checks/`**: Modular check implementations - each file contains one check
-- **`config.yaml`**: Website list and monitoring configuration
-- **`.env`**: Environment variables (API keys, secrets)
-
-## 🤝 Contributing
-
-We welcome contributions! To get started:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Run tests and ensure everything works
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to your branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
-
-For detailed guidelines, please see [CONTRIBUTING.md](CONTRIBUTING.md).
-
-### Adding New Checks
-
-To add a new monitoring check:
-
-1. Create a new check file in the `checks/` directory
-2. Follow the existing check format (return 🟢, 🔴, 🟡, or ⚪)
-3. Register the check in `main.py` and `api.py`
-4. Update documentation
-5. Submit a pull request
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed instructions.
-
-## 🎯 Best Practices
-
-### For Monitoring Multiple Websites
-
-**Optimize Performance:**
-```yaml
-# config.yaml
-max_workers: 4  # Adjust based on your system resources
-timeout: 45     # Increase for slow websites
-```
-
-**Selective Checking:**  
-Instead of running all 53 checks, focus on the most important ones for your use case:
-```bash
-# Security-focused monitoring
-curl -X POST "http://localhost:8000/monitor" \
-  -d '{"url": "example.com", "categories": ["security"]}'
-
-# Performance-focused monitoring  
-curl -X POST "http://localhost:8000/monitor" \
-  -d '{"url": "example.com", "categories": ["performance"]}'
-```
-
-### For GitHub Actions
-
-**Optimize Workflow:**
-- Run critical checks daily, comprehensive checks weekly
-- Use caching for dependencies
-- Set appropriate timeout values
-- Monitor Actions usage limits
-
-**Example schedule:**
-```yaml
-# Daily critical checks
-- cron: '0 4 * * *'
-
-# Weekly comprehensive scan
-- cron: '0 4 * * 0'
-```
-
-### For Production Deployment
-
-**Security:**
-- Use environment variables for sensitive data
-- Enable SSL/TLS for API endpoints
-- Implement rate limiting
-- Use Docker secrets for production credentials
-
-**Performance:**
-- Deploy behind a reverse proxy (nginx)
-- Enable caching with Redis
-- Use PostgreSQL for persistent storage
-- Scale API service horizontally with multiple containers
-
-**Monitoring:**
-- Set up health check monitoring
-- Configure log aggregation
-- Track API response times
-- Monitor system resources
-
-See [docs/DOCKER.md](docs/DOCKER.md) for production deployment details.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-Website Monitor uses several excellent open-source projects:
-
-- [FastAPI](https://fastapi.tiangolo.com/) - Modern web framework for building APIs
-- [Selenium](https://www.selenium.dev/) - Browser automation
-- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/) - HTML parsing
-- [python-whois](https://pypi.org/project/python-whois/) - WHOIS lookups
-- [dnspython](https://www.dnspython.org/) - DNS toolkit
-- [Docker](https://www.docker.com/) - Containerization platform
-
-Special thanks to all [contributors](https://github.com/fabriziosalmi/websites-monitor/graphs/contributors) who help improve this project!
-
-## 📞 Support & Contact
-
-- **Issues**: [GitHub Issues](https://github.com/fabriziosalmi/websites-monitor/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/fabriziosalmi/websites-monitor/discussions)
-- **Documentation**: This README and [docs/](docs/)
-- **Changelog**: [CHANGELOG.md](CHANGELOG.md)
-
----
-
-<div align="center">
-
-**[⬆ Back to Top](#website-monitor)**
-
-Made with ❤️ by [Fabrizio Salmi](https://github.com/fabriziosalmi)
-
-[![GitHub stars](https://img.shields.io/github/stars/fabriziosalmi/websites-monitor?style=social)](https://github.com/fabriziosalmi/websites-monitor/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/fabriziosalmi/websites-monitor?style=social)](https://github.com/fabriziosalmi/websites-monitor/network/members)
-
-</div>
-
+MIT, see [LICENSE](LICENSE).

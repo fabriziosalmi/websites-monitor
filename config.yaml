@@ -1,8 +1,10 @@
+# Websites the scheduler and the GitHub Action check. Domains or URLs.
 websites:
   - audiolibri.org
   - example.com
-output_file: report.md
-max_workers: 2
+# Seconds each check may take before it counts as no verdict.
 timeout: 30
+# Where main.py writes the report; Docker overrides it with OUTPUT_FILE.
+output_file: report.md
+# Optional text placed above the results table.
 report_template: report_template.md
-github_workflow_badge: https://github.com/fabriziosalmi/websites-monitor/actions/workflows/create-report.yml/badge.svg
