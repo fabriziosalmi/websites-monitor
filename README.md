@@ -193,8 +193,8 @@ The same operations are available four ways. The REST API, the command line and 
 |---|---|---|---|---|
 | health | `GET /health` | `websites-monitor health` | `health` | sidebar |
 | list_checks | `GET /checks` | `websites-monitor checks` | `list_checks` | Check catalog |
-| run_check | `GET /check/{id}?website=` | `websites-monitor check <id> <website>` | `run_check` | Run again, on a result row |
-| scan | `POST /monitor/single` | `websites-monitor scan <website>` | `scan` | New scan, Results, JSON export |
+| run_check | `GET /check/{id}?website=` | `websites-monitor check <id> <website>` | `run_check` | |
+| scan | `POST /monitor/single` | `websites-monitor scan <website>` | `scan` | New scan, Results, JSON export; Run again on a result row is a scan with one check |
 | scan_many | `POST /monitor` | `websites-monitor scan-many <website>...` | `scan_many` | |
 | report | `POST /generate-report` | `websites-monitor report <website>...` | `report` | |
 

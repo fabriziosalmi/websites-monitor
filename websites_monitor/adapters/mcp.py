@@ -56,7 +56,8 @@ def run_stdio(server: MCPServer) -> None:
     at stderr while it serves, but print() fills Python's stdout buffer, which
     is only flushed at exit, after the SDK has given fd 1 back to the protocol:
     the text then arrived on the wire as a broken JSON-RPC message. Flushing
-    at every newline sends it to stderr while the diversion holds.
+    at every newline sends it to stderr while the diversion holds. Reported
+    upstream: https://github.com/modelcontextprotocol/python-sdk/issues/3821
     """
     sys.stdout.reconfigure(line_buffering=True)
     server.run("stdio")
