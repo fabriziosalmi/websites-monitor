@@ -69,6 +69,17 @@ docker inspect -f '{{.State.Health.Status}}' website-monitor-api
 
 The API container has a health check on `GET /health`. The scheduler has none: if its process stops, the container stops and Docker restarts it.
 
+## Command line and MCP server
+
+The image has the `websites-monitor` command (the same as `python -m websites_monitor`). Run it in a container of its own:
+
+```bash
+docker run --rm --memory 256m ghcr.io/fabriziosalmi/websites-monitor:latest websites-monitor scan example.com --checks ssl_cert,hsts
+docker run --rm --memory 256m ghcr.io/fabriziosalmi/websites-monitor:latest websites-monitor report example.com --format markdown
+```
+
+`docker exec` into the API container also works, but the new process shares the container's 256 MB with the API: the API takes about 80 MB and a process that loads the checks about 50 MB more, so a scan there can be killed for lack of memory. For the MCP server, see the MCP section of the README: the client configuration starts it with `docker run --rm -i`.
+
 ## Prebuilt image
 
 Each push to `main` publishes `ghcr.io/fabriziosalmi/websites-monitor:latest` for linux/amd64 and linux/arm64. To use it instead of building, replace `build: .` with `image: ghcr.io/fabriziosalmi/websites-monitor:latest` in both services. The image already contains the web UI, so the `./docs` mount is then optional.

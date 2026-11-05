@@ -113,7 +113,7 @@
   const LANGS = ['en', 'it'];
   // Bump with every change to app.js, app.css or a locale file, together with
   // the ?v= in index.html: browsers keep the previous files under the same URL.
-  const ASSET_VERSION = '3';
+  const ASSET_VERSION = '4';
   const i18n = { lang: 'en', dict: {}, fallback: {}, plural: new Intl.PluralRules('en') };
 
   function readLangPref() {
@@ -334,7 +334,7 @@
     return {
       id: entry.id, target: entry.target, startedAt: entry.startedAt, finishedAt: entry.finishedAt,
       cancelled: !!entry.cancelled, timeout: entry.timeout, concurrency: entry.concurrency,
-      rows: entry.rows.map(r => ({ id: r.id, status: r.status, text: r.text, error: r.error, ms: r.ms })),
+      rows: entry.rows.map(r => ({ id: r.id, status: r.status, text: r.text, error: r.error, ms: r.ms, outcome: r.outcome || null })),
     };
   }
 
@@ -365,6 +365,11 @@
   /* ---------- Results ---------- */
 
   function parseResult(r) {
+    // The API (2.0 and later) sends the verdict and the detail itself; the
+    // emoji parsing below is for older APIs.
+    if (r && STATUS[r.verdict] && DONE.has(r.verdict)) {
+      return { status: r.verdict, text: r.detail || '', error: r.error ? String(r.error) : '' };
+    }
     const raw = r && r.result !== null && r.result !== undefined ? String(r.result).trim() : '';
     let status = 'unknown';
     let text = raw;
@@ -550,6 +555,8 @@
       const r = results.find(x => x && x.check_id === row.id) || results[0];
       if (!r) throw new Error(t('err.noResult'));
       Object.assign(row, parseResult(r));
+      // Kept as the API sent it, so the JSON export is the API's own output.
+      row.outcome = r;
     } catch (e) {
       if (e.name === 'AbortError') { row.status = 'cancelled'; row.error = ''; }
       else { row.status = 'unknown'; row.text = ''; row.error = e.message; }
@@ -605,20 +612,34 @@
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
+  // The same JSON as POST /monitor/single, python -m websites_monitor scan
+  // --json and the MCP scan tool: each row carries the outcome the API
+  // returned; a row the API never answered gets one in the same shape.
   function exportJson(entry) {
+    const results = entry.rows.map(r => r.outcome ? r.outcome : {
+      check_id: r.id, check_name: CHECK[r.id] ? fallbackName(r.id) : r.id, category: CHECK[r.id] ? CHECK[r.id].cat : null,
+      website: entry.target, result: '', verdict: DONE.has(r.status) ? r.status : 'unknown', detail: r.text || '',
+      status: 'error', error: r.error || (r.status === 'cancelled' ? 'Cancelled' : 'No result'),
+      timestamp: new Date(entry.finishedAt || Date.now()).toISOString(), duration_ms: r.ms === null ? 0 : Math.round(r.ms),
+    });
     const c = tally(entry.rows);
     const doc = {
-      target: entry.target,
-      started_at: new Date(entry.startedAt).toISOString(),
-      finished_at: entry.finishedAt ? new Date(entry.finishedAt).toISOString() : null,
-      duration_ms: entryDuration(entry),
-      cancelled: !!entry.cancelled,
-      api: apiDisplay(),
-      timeout_s: entry.timeout,
-      summary: { passed: c.pass, warnings: c.warn, failed: c.fail, no_verdict: c.unknown, pass_rate_percent: c.passRate },
-      checks: exportRows(entry),
+      success: true,
+      message: 'Custom monitoring completed successfully',
+      website: entry.target,
+      results,
+      summary: { total: entry.rows.length, passed: c.pass, warnings: c.warn, failed: c.fail, no_verdict: c.unknown + c.cancelled + c.queued + c.running, pass_rate_percent: c.passRate },
+      execution_time: (entryDuration(entry) || 0) / 1000,
+      timestamp: new Date(entry.finishedAt || Date.now()).toISOString(),
+      websites_checked: 1,
+      checks_performed: results.length,
     };
     download(`website-monitor-${entry.target}-${fileStamp(entry.startedAt)}.json`, 'application/json', JSON.stringify(doc, null, 2) + '\n');
+  }
+  // The English name, as the API reports it, whatever the UI language.
+  function fallbackName(id) {
+    const value = i18n.fallback[`check.${id}.name`];
+    return typeof value === 'string' ? value : id;
   }
   function csvCell(v) {
     let s = v === null || v === undefined ? '' : String(v);

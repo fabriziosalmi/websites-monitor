@@ -50,6 +50,40 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{"website":"https://example.com/","checks":["ssl_cert","hsts","ssl_cert"]}' \
           | python3 -c 'import json,sys; r=json.load(sys.stdin)["results"]; print(r); assert [x["check_id"] for x in r] == ["ssl_cert","hsts"]; assert all(x["website"] == "example.com" for x in r)'
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.11"
+      # Each in a container of its own, as the README recommends: run inside
+      # the API container they would share its 256 MB with the API.
+      - name: The command line in its own container
+        run: |
+          docker run --rm --memory 256m websites-monitor:ci websites-monitor health
+          docker run --rm --memory 256m websites-monitor:ci websites-monitor scan https://example.com/ --checks ssl_cert,hsts --json \
+          | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d["summary"]); assert d["website"] == "example.com"; assert [r["check_id"] for r in d["results"]] == ["ssl_cert","hsts"]; assert all(r["verdict"] in ("pass","warn","fail","unknown") for r in d["results"])'
+      - name: The MCP server, started by a client as the README configures it
+        run: |
+          pip install "$(grep '^mcp==' requirements.txt)"
+          python - <<'PY'
+          import asyncio
+          from mcp import ClientSession, StdioServerParameters
+          from mcp.client.stdio import stdio_client
+
+          async def main():
+              params = StdioServerParameters(command="docker", args=[
+                  "run", "--rm", "-i", "--memory", "256m", "websites-monitor:ci", "websites-monitor", "mcp"])
+              async with stdio_client(params) as (read, write):
+                  async with ClientSession(read, write) as session:
+                      await session.initialize()
+                      tools = sorted(t.name for t in (await session.list_tools()).tools)
+                      print(tools)
+                      assert tools == ["health", "list_checks", "report", "run_check", "scan", "scan_many"]
+                      result = await session.call_tool("scan", {"website": "example.com", "checks": ["ssl_cert", "cookie_policy"]})
+                      verdicts = [r["verdict"] for r in result.structured_content["results"]]
+                      print(verdicts)
+                      assert len(verdicts) == 2
+
+          asyncio.run(main())
+          PY
       - name: Container state
         if: always()
         run: |

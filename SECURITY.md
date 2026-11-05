@@ -29,3 +29,8 @@ the API accepts cross-origin requests from any origin, so that the web UI
 hosted on GitHub Pages can call it. Publish it only on a trusted network or
 behind an authenticating reverse proxy. Docker Compose publishes it on 127.0.0.1 unless
 `WM_BIND_ADDRESS` says otherwise.
+
+The same applies to the MCP server over HTTP
+(`websites-monitor mcp --transport streamable-http`), which has no
+authentication either. Over stdio it is only reachable by the process that
+starts it.
