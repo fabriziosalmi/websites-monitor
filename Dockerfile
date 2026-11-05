@@ -1,42 +1,33 @@
-# Website Monitor - Dockerfile
-FROM python:3.11-slim
+# Website Monitor: the API (python api.py) and the scheduler
+# (python scheduler.py) run from this image.
+FROM python:3.11-slim@sha256:db20d8506e2f15b6db39b40b6015ca46bae855dec6dd326d462cfe79ae972893
 
-# Set working directory
+LABEL org.opencontainers.image.title="Website Monitor" \
+      org.opencontainers.image.description="Security, performance and SEO checks for websites, with a web UI and a REST API" \
+      org.opencontainers.image.source="https://github.com/fabriziosalmi/websites-monitor" \
+      org.opencontainers.image.licenses="MIT"
+
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+# curl for the health check; dnsutils and whois for the DNS and WHOIS checks.
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     dnsutils \
     whois \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
 COPY requirements.txt .
-COPY pyproject.toml .
-
-# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install additional API dependencies
-RUN pip install --no-cache-dir fastapi uvicorn[standard] pydantic
-
-# Copy application code
 COPY . .
-
-# Create necessary directories
 RUN mkdir -p /app/logs /app/reports
 
-# Set environment variables
-ENV PYTHONPATH=/app
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app \
+    PYTHONUNBUFFERED=1
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-# Expose API port
 EXPOSE 8000
 
-# Default command - can be overridden in docker-compose
 CMD ["python", "api.py"]
