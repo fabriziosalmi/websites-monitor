@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- The web UI is available in Italian. By default it follows the browser's language, and Settings can fix it to English or Italian. Numbers and dates follow the language; the text the checks return stays in English.
+
+### Fixed
+- Dates inside a sentence are no longer capitalised ("started today 10:47").
+- The container image link in Settings points to ghcr.io instead of the outdated Docker Hub image.
+
 ## [1.4.1] - 2026-11-05
 
 ### Fixed

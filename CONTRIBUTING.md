@@ -71,9 +71,13 @@ Rules:
 
 1. `api.py`: add the module to `CHECK_MODULES` and the category to `CHECK_CATEGORIES`.
 2. `main.py`: add it to `WebsiteMonitor._initialize_check_functions` so the scheduled report runs it.
-3. `docs/assets/app.js`: add it to `CHECKS` with a name, a short description and the same category. `tests/test_ui_catalog.py` fails while the web UI and the API disagree.
+3. `docs/assets/app.js`: add it to `CHECKS` with the same category; `tests/test_ui_catalog.py` fails while the web UI and the API disagree. Add `check.<id>.name` and `check.<id>.hint` to every file in `docs/assets/locales/`; `tests/test_ui_locales.py` fails while a language lacks them.
 4. Run `python scripts/export_openapi.py`. `tests/test_openapi_snapshot.py` fails while `docs/openapi.json` is out of date.
 5. Add the check to the table in `README.md`.
+
+## Interface text
+
+Every string of the web UI is in `docs/assets/locales/en.json` and `it.json`, read through `t()` in `app.js` (static text in `index.html` through `data-i18n` attributes). To change or add text, edit both files: the tests fail when a key exists in one language only, when a translation drops a `{placeholder}`, or when a key is unused. After changing `app.js`, `app.css` or a locale file, bump `ASSET_VERSION` in `app.js` and the `?v=` in `index.html` together, or browsers keep the cached files.
 
 ## Commits and pull requests
 
