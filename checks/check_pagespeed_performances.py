@@ -1,3 +1,4 @@
+import os
 import requests
 import logging
 from requests.exceptions import RequestException, HTTPError, Timeout
@@ -12,12 +13,15 @@ def check_pagespeed_performances(website: str, api_key: str = None) -> str:
 
     Args:
         website (str): The URL of the website to be checked.
-        api_key (str, optional): The Google PageSpeed Insights API key. Defaults to None.
+        api_key (str, optional): The Google PageSpeed Insights API key.
+            Defaults to the PAGESPEED_API_KEY environment variable.
 
     Returns:
         str:
-            - An integer representing the PageSpeed score if successful.
-            - "⚪" if any errors occur during the check or if no API key was provided.
+            - "🟢 (93/100, mobile)": the performance score with Lighthouse's
+              bands, 🟢 90-100, 🟠 50-89, 🔴 0-49.
+            - "⚪" if any errors occur during the check.
+            - "⚪ (no PageSpeed API key)" if no API key is available.
     """
     # Input validation and URL normalization
     if not website or not isinstance(website, str):
@@ -25,8 +29,10 @@ def check_pagespeed_performances(website: str, api_key: str = None) -> str:
         return "⚪"
         
     if not api_key:
-        logger.error("No API key provided for PageSpeed check.")
-        return "⚪"
+        api_key = os.environ.get("PAGESPEED_API_KEY")
+    if not api_key:
+        logger.info("No PageSpeed API key (argument or PAGESPEED_API_KEY), skipping check.")
+        return "⚪ (no PageSpeed API key)"
     
     website = website.strip()
     if not website.startswith(('http://', 'https://')):
@@ -52,21 +58,32 @@ def check_pagespeed_performances(website: str, api_key: str = None) -> str:
         score = performance_category.get("score")
         
         if score is not None:
-            score_percentage = int(score * 100)
+            score_percentage = round(score * 100)
             logger.info(f"PageSpeed score for {website} is {score_percentage}.")
-            return str(score_percentage)
+            # Lighthouse's own bands: 90-100 good, 50-89 needs improvement,
+            # 0-49 poor. A bare number carried no verdict for the UI or the
+            # report to show.
+            if score_percentage >= 90:
+                verdict = "🟢"
+            elif score_percentage >= 50:
+                verdict = "🟠"
+            else:
+                verdict = "🔴"
+            return f"{verdict} ({score_percentage}/100, mobile)"
             
         logger.warning(f"PageSpeed score not found for {website}.")
         return "⚪"
 
+    # requests puts the full URL (with the API key) in its error messages:
+    # never log the key.
     except Timeout:
         logger.error(f"Timeout occurred while fetching PageSpeed data for {website}")
         return "⚪"
     except HTTPError as http_err:
-        logger.error(f"HTTP error occurred while fetching PageSpeed data for {website}: {http_err}")
+        logger.error(f"HTTP error occurred while fetching PageSpeed data for {website}: {str(http_err).replace(api_key, '***')}")
         return "⚪"
     except RequestException as req_err:
-        logger.error(f"Request error occurred while fetching PageSpeed data for {website}: {req_err}")
+        logger.error(f"Request error occurred while fetching PageSpeed data for {website}: {str(req_err).replace(api_key, '***')}")
         return "⚪"
     except ValueError as json_err:
         logger.error(f"JSON parsing error occurred while fetching PageSpeed data for {website}: {json_err}")

@@ -1,3 +1,4 @@
+import os
 import requests
 import re
 from requests.exceptions import RequestException, Timeout, HTTPError
@@ -7,13 +8,21 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def check_accessibility(website):
+def check_accessibility(website, api_key=None):
     """
     Check the website's accessibility score using Lighthouse or similar services.
-    
+
+    Order of attempts:
+    1. Lighthouse via the PageSpeed Insights API (key: api_key or PAGESPEED_API_KEY).
+    2. WAVE API, only when WAVE_API_KEY is set.
+    3. Local heuristics on the page HTML (result marked "(heuristic)").
+    Any API failure (HTTP error, 429 quota, malformed JSON) falls through to
+    the next step instead of raising.
+
     Args:
     - website (str): URL of the website to be checked.
-    
+    - api_key (str, optional): PageSpeed Insights API key.
+
     Returns:
     - str: "🟢" if the accessibility score is high (0.9 to 1),
            "🟠" if the score is moderate (0.8 to 0.9),
@@ -28,6 +37,9 @@ def check_accessibility(website):
     website = website.strip()
     if not website.startswith(('http://', 'https://')):
         website = f"https://{website}"
+
+    if api_key is None:
+        api_key = os.environ.get("PAGESPEED_API_KEY")
 
     LIGHTHOUSE_API_ENDPOINT = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed"
     WAVE_API_ENDPOINT = "https://wave.webaim.org/api/request"
@@ -53,6 +65,8 @@ def check_accessibility(website):
         "category": "accessibility",
         "strategy": "desktop"
     }
+    if api_key:
+        lighthouse_params["key"] = api_key
 
     headers = {'User-Agent': 'AccessibilityChecker/1.0'}
 
@@ -70,14 +84,18 @@ def check_accessibility(website):
         else:
             return "🔴"
 
-    except (Timeout, HTTPError, RequestException) as e:
-        logger.warning(f"Lighthouse API failed for {website}: {e}")
-        
-        # Fallback to WAVE API (if API key is available)
+    except (RequestException, ValueError, KeyError, TypeError) as e:
+        # requests puts the full URL (with the API key) in its error messages
+        message = str(e).replace(api_key, '***') if api_key else str(e)
+        logger.warning(f"Lighthouse API failed for {website}: {message}")
+
+    # Fallback to WAVE API (only if an API key is available)
+    wave_key = os.environ.get("WAVE_API_KEY")
+    if wave_key:
         wave_params = {
-            "key": "YOUR_WAVE_API_KEY",
+            "key": wave_key,
             "url": website,
-            "reporttype": "json"
+            "reporttype": "1"
         }
         try:
             wave_response = requests.get(WAVE_API_ENDPOINT, params=wave_params, headers=headers, timeout=15)
@@ -93,51 +111,55 @@ def check_accessibility(website):
             else:
                 return "🔴"
 
-        except (Timeout, HTTPError, RequestException) as e:
-            logger.warning(f"WAVE API failed for {website}: {e}")
-            
-            # Enhanced manual heuristic accessibility check
-            try:
-                response = requests.get(website, headers=headers, timeout=15)
-                response.raise_for_status()
-                content = response.text.lower()  # Case-insensitive matching
-                
-                # Calculate weighted accessibility score
-                score_components = {
-                    'alt_text': _check_images_accessibility(content, accessibility_patterns),
-                    'aria_support': _check_aria_support(content, accessibility_patterns),
-                    'language_attr': bool(accessibility_patterns['language_attr'].search(content)),
-                    'heading_structure': _check_heading_structure(content, accessibility_patterns),
-                    'form_accessibility': _check_form_accessibility(content, accessibility_patterns),
-                    'navigation_support': bool(accessibility_patterns['skip_links'].search(content)),
-                    'focus_management': bool(accessibility_patterns['focus_indicators'].search(content)),
-                }
-                
-                # Weighted scoring system
-                weights = {
-                    'alt_text': 0.25,
-                    'aria_support': 0.20,
-                    'language_attr': 0.15,
-                    'heading_structure': 0.15,
-                    'form_accessibility': 0.15,
-                    'navigation_support': 0.05,
-                    'focus_management': 0.05,
-                }
-                
-                total_score = sum(score_components[key] * weights[key] for key in weights)
-                logger.info(f"Manual accessibility score for {website}: {total_score:.2f}")
-                logger.debug(f"Score components: {score_components}")
-                
-                if total_score >= 0.8:
-                    return "🟢"
-                elif total_score >= 0.6:
-                    return "🟠"
-                else:
-                    return "🔴"
+        except (RequestException, ValueError, KeyError, TypeError) as e:
+            logger.warning(f"WAVE API failed for {website}: {str(e).replace(wave_key, '***')}")
 
-            except Exception as e:
-                logger.error(f"Error during manual heuristic accessibility check for {website}: {e}")
-                return "⚪"
+    return _heuristic_accessibility(website, headers, accessibility_patterns)
+
+
+def _heuristic_accessibility(website, headers, accessibility_patterns):
+    """Enhanced manual heuristic accessibility check on the page HTML."""
+    try:
+        response = requests.get(website, headers=headers, timeout=15)
+        response.raise_for_status()
+        content = response.text.lower()  # Case-insensitive matching
+        
+        # Calculate weighted accessibility score
+        score_components = {
+            'alt_text': _check_images_accessibility(content, accessibility_patterns),
+            'aria_support': _check_aria_support(content, accessibility_patterns),
+            'language_attr': bool(accessibility_patterns['language_attr'].search(content)),
+            'heading_structure': _check_heading_structure(content, accessibility_patterns),
+            'form_accessibility': _check_form_accessibility(content, accessibility_patterns),
+            'navigation_support': bool(accessibility_patterns['skip_links'].search(content)),
+            'focus_management': bool(accessibility_patterns['focus_indicators'].search(content)),
+        }
+        
+        # Weighted scoring system
+        weights = {
+            'alt_text': 0.25,
+            'aria_support': 0.20,
+            'language_attr': 0.15,
+            'heading_structure': 0.15,
+            'form_accessibility': 0.15,
+            'navigation_support': 0.05,
+            'focus_management': 0.05,
+        }
+        
+        total_score = sum(score_components[key] * weights[key] for key in weights)
+        logger.info(f"Manual accessibility score for {website}: {total_score:.2f}")
+        logger.debug(f"Score components: {score_components}")
+        
+        if total_score >= 0.8:
+            return "🟢 (heuristic)"
+        elif total_score >= 0.6:
+            return "🟠 (heuristic)"
+        else:
+            return "🔴 (heuristic)"
+
+    except Exception as e:
+        logger.error(f"Error during manual heuristic accessibility check for {website}: {e}")
+        return "⚪"
 
 def _check_images_accessibility(content, patterns):
     """Check image accessibility with alt text."""

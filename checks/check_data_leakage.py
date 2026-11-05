@@ -1,3 +1,4 @@
+import os
 import requests
 import logging
 from requests.exceptions import RequestException, HTTPError
@@ -13,13 +14,14 @@ _github_rate_limit = {
     'min_interval': 1.0  # Respect GitHub API rate limits
 }
 
-def check_data_leakage(website: str, token: str) -> str:
+def check_data_leakage(website: str, token: str = None) -> str:
     """
     Check public repositories on GitHub for potential data leakages related to the website.
 
     Args:
         website (str): URL of the website to be checked.
-        token (str): GitHub Personal Access Token for authenticated requests.
+        token (str, optional): GitHub Personal Access Token for authenticated requests.
+            Defaults to the GITHUB_TOKEN environment variable.
 
     Returns:
         str:
@@ -27,11 +29,18 @@ def check_data_leakage(website: str, token: str) -> str:
             - "🟡" if minor/low-risk leakages are found.
             - "🔴" if critical data leakages are identified.
             - "⚪" if any errors occurred.
+            - "⚪ (GITHUB_TOKEN not set)" if no token is available.
     """
     # Input validation and normalization
-    if not website or not token:
-        logger.error("Website URL and GitHub token are required")
+    if not website:
+        logger.error("Website URL is required")
         return "⚪"
+
+    if not token:
+        token = os.environ.get("GITHUB_TOKEN")
+    if not token:
+        logger.info("No GitHub token (argument or GITHUB_TOKEN), skipping data leakage check")
+        return "⚪ (GITHUB_TOKEN not set)"
     
     # Normalize domain
     website = website.lower().strip()
