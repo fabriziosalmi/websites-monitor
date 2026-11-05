@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-11-05
+
 ### Added
 - Web UI rewritten on the design system shared with secure-proxy-manager and rustcd. Each check runs as its own request, four at a time, with live progress, per-check retry, filters, CSV and JSON export, scan history, a check catalog, settings, light and dark themes and a mobile layout.
 - CI: tests on Python 3.11, and an image smoke test under the 256 MB memory limit.
@@ -68,6 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Markdown report generation
 - Core security and performance checks
 
-[Unreleased]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.2.0...v1.3.0
 [1.0.0]: https://github.com/fabriziosalmi/websites-monitor/releases/tag/v1.0.0
