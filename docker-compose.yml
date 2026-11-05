@@ -43,11 +43,10 @@ services:
       - ./docs:/app/docs:ro
       - ./reports:/app/reports
       - ./logs:/app/logs
-      - ./README.md:/app/README.md
-      - ./report_template.md:/app/report_template.md:ro
     environment:
       - PYTHONUNBUFFERED=1
       - PAGESPEED_API_KEY=${PAGESPEED_API_KEY:-}
+      - OUTPUT_FILE=reports/report.md
       - MONITOR_INTERVAL=${MONITOR_INTERVAL:-3600}  # Default: 1 hour
     command: ["python", "scheduler.py"]
     restart: unless-stopped

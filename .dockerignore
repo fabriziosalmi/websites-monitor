@@ -47,6 +47,7 @@ reports/
 
 # Documentation
 *.md
+!report_template.md
 
 # Tests
 tests/

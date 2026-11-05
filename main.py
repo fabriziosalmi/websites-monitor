@@ -1,5 +1,5 @@
 # Standard library imports
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 from typing import List, Tuple, Callable, Optional
 import sys
@@ -110,19 +110,23 @@ class WebsiteMonitor:
         async def execute(self, website: str, config: Config, default_timeout: int) -> str:
             """Execute the check with timeout handling."""
             try:
-                if self.name == "Pagespeed" and asyncio.iscoroutinefunction(self.function):
-                  return await asyncio.wait_for(self.function(f"https://{website}", api_key=config.pagespeed_api_key), self.timeout or default_timeout)
-                elif self.name == "Pagespeed":
-                  return self.function(f"https://{website}", api_key=config.pagespeed_api_key)
+                if self.name == "Pagespeed":
+                    args, kwargs = (f"https://{website}",), {"api_key": config.pagespeed_api_key}
                 elif self.name == "Rate Limiting":
-                   return self.function(f"https://{website}")
-                elif asyncio.iscoroutinefunction(self.function):
-                  return await asyncio.wait_for(self.function(website), self.timeout or default_timeout)
+                    args, kwargs = (f"https://{website}",), {}
                 else:
-                   return self.function(website)
+                    args, kwargs = (website,), {}
+                if asyncio.iscoroutinefunction(self.function):
+                    pending = self.function(*args, **kwargs)
+                else:
+                    # A sync check runs in a worker thread: called inline it
+                    # blocked the event loop, and with it every other request
+                    # the API was serving, until it returned.
+                    pending = asyncio.to_thread(self.function, *args, **kwargs)
+                return await asyncio.wait_for(pending, self.timeout or default_timeout)
             except asyncio.TimeoutError:
                 logger.warning(f"Check {self.name} for {website} timed out.")
-                return "🔴"  # Timeout indicator
+                return "⚪"  # A timeout is no verdict on the site
             except Exception as e:
                 logger.error(f"Check {self.name} failed for {website}: {e}")
                 return "⚪"  # Error indicator
@@ -223,23 +227,17 @@ class PerformanceMonitor:
         }
 
 def generate_report(config: Config, check_results: List[Tuple[str, List[str]]]):
-    """Generates the markdown report."""
-    
+    """Writes the markdown report: the template's text, then one row per website."""
     try:
-        with open("usage.md", "r") as f:
-            usage_content = f.read()
+        with open(config.report_template, "r") as f:
+            report_template = f.read().strip()
     except FileNotFoundError:
-        usage_content = "Usage instructions not found. Create a `usage.md` file in the root directory for usage instructions."
-    
-    with open(config.report_template, "r") as f:
-        report_template = f.read()
-        
-    # Initialize the report content
-    report_content = f"""{usage_content}
+        # The template is optional: without it the report is the table alone.
+        report_template = ""
 
-{report_template}
+    report_content = f"""# Website Monitor report
 
-This report was automatically generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}.
+{report_template + chr(10) + chr(10) if report_template else ''}Generated on {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}.
 
 | Website | {' | '.join([check_name for check_name, _ in check_results])} |
 |---------|{'|'.join(['---' for _ in check_results])}|
@@ -282,10 +280,16 @@ async def main():
         
     except Exception as e:
         logger.error(f"Critical error: {e}")
-        
+        failed = True
+    else:
+        failed = False
 
     performance_monitor.stop()
     logger.info(f"Execution completed in {performance_monitor.get_summary()['total_duration']} seconds.")
+    if failed:
+        # The scheduler reads the exit code: a run that wrote no report
+        # must not look like a success.
+        raise SystemExit(1)
 
 
 def load_config(config_file: str = 'config.yaml') -> Config:
@@ -297,6 +301,11 @@ def load_config(config_file: str = 'config.yaml') -> Config:
         api_key = os.environ.get('PAGESPEED_API_KEY')
         if api_key:
             config_data['pagespeed_api_key'] = api_key
+        # The container writes its report to the reports/ volume, not over
+        # the README of the checkout it runs from.
+        output_file = os.environ.get('OUTPUT_FILE')
+        if output_file:
+            config_data['output_file'] = output_file
         return Config.from_dict(config_data)
     except FileNotFoundError:
         logger.warning("Config file not found. Falling back to default configuration.")
