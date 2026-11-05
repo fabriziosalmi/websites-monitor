@@ -380,7 +380,7 @@
     $('#health-row').title = a.status === 'down' ? `${apiDisplay()}: ${a.error}` : apiDisplay();
     const docs = $('#nav-api-docs');
     docs.href = a.status === 'ok' ? apiUrl('/api/docs') : 'swagger.html';
-    $('#sb-sub').textContent = apiBase() ? apiBase().replace(/^https?:\/\//, '') : 'Security, speed and SEO checks';
+    $('#sb-sub').textContent = apiBase() ? apiBase().replace(/^https?:\/\//, '') : 'Security, speed, SEO';
   }
 
   /* ---------- Scan engine ---------- */
@@ -871,7 +871,6 @@
             h('thead', null, h('tr', null,
               h('th', { class: 'col-status', text: 'Status' }),
               h('th', { text: 'Check' }),
-              h('th', { text: 'Result' }),
               h('th', { class: 'col-num', text: 'Time' }),
               h('th', null, h('span', { class: 'sr-only', text: 'Actions' })))),
             ui.tbody)),
@@ -976,7 +975,7 @@
 
     clear(ui.tbody);
     if (!rows.length) {
-      ui.tbody.appendChild(h('tr', null, h('td', { colspan: '5', class: 'empty-row-cell', text: 'No check matches these filters.' })));
+      ui.tbody.appendChild(h('tr', null, h('td', { colspan: '4', class: 'empty-row-cell', text: 'No check matches these filters.' })));
       return;
     }
     const busy = !!(state.scan && state.scan.running);
@@ -990,8 +989,8 @@
         h('td', { class: 'col-status' }, statusBadge(r.status)),
         h('td', null,
           h('div', { class: 'cell-primary', text: c.name }),
-          h('div', { class: 'cell-sub' }, (CATEGORY[c.cat] || { label: c.cat }).label, ' · ', h('code', { text: r.id }))),
-        h('td', { 'data-label': 'Result' }, result),
+          h('div', { class: 'cell-sub' }, (CATEGORY[c.cat] || { label: c.cat }).label, ' · ', h('code', { text: r.id })),
+          result),
         h('td', { class: 'col-num', 'data-label': 'Time', text: fmtDuration(r.ms) }),
         h('td', { class: 'col-right' }, h('div', { class: 'action-group' },
           iconButton(r.status === 'running' ? 'loader' : 'retry', `Run ${c.name} again`, () => retryCheck(entry, r.id),
