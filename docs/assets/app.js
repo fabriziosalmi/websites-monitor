@@ -365,7 +365,7 @@
   /* ---------- Results ---------- */
 
   function parseResult(r) {
-    // The API (1.6 and later) sends the verdict and the detail itself; the
+    // The API (2.0 and later) sends the verdict and the detail itself; the
     // emoji parsing below is for older APIs.
     if (r && STATUS[r.verdict] && DONE.has(r.verdict)) {
       return { status: r.verdict, text: r.detail || '', error: r.error ? String(r.error) : '' };

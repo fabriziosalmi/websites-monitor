@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-11-05
+
+The REST API, a new command line and a new MCP server share one implementation and return the same JSON. Some responses change: see Changed.
+
 ### Added
 - A command line, `python -m websites_monitor` (`websites-monitor` in the Docker image), with the commands health, checks, check, scan, scan-many, report, serve and mcp. `--json` prints the JSON the REST API returns; `--fail-on fail|warn` sets exit code 1 for CI.
 - An MCP server for AI assistants over stdio or streamable HTTP, with one tool per operation and the same JSON as the REST API.
@@ -109,7 +113,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Markdown report generation
 - Core security and performance checks
 
-[Unreleased]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/fabriziosalmi/websites-monitor/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.5.0...v2.0.0
 [1.5.0]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.3.0...v1.4.0
