@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-11-05
+
 ### Added
 - The web UI is available in Italian. By default it follows the browser's language, and Settings can fix it to English or Italian. Numbers and dates follow the language; the text the checks return stays in English.
 
@@ -88,7 +90,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Markdown report generation
 - Core security and performance checks
 
-[Unreleased]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.4.1...HEAD
+[Unreleased]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.2.0...v1.3.0

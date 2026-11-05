@@ -164,7 +164,7 @@ app = FastAPI(
         "POST /monitor/single runs a selection against one site, and "
         "GET /check/{name} runs a single check."
     ),
-    version="1.4.1",
+    version="1.5.0",
     docs_url=None,
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json"
