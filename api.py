@@ -5,13 +5,15 @@ Includes individual endpoints for all 53+ security, performance, and compliance 
 """
 
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Query, Path
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, HttpUrl, Field
+from pydantic import BaseModel, HttpUrl, Field, field_validator
+from urllib.parse import urlsplit
 from typing import List, Optional, Dict, Any, Union
 import asyncio
 import logging
+import threading
 from datetime import datetime
 import uvicorn
 import importlib
@@ -147,22 +149,53 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def normalize_website(value: str) -> str:
+    """
+    The host the checks run against: "https://Example.com:8443/path" and
+    "example.com" both give "example.com". Each check builds its own URLs
+    from a bare host; given a URL, rate_limiting asked for
+    https://https://audiolibri.org/.
+    """
+    raw = (value or "").strip()
+    if not raw:
+        raise ValueError("website is empty")
+    host = urlsplit(raw if "://" in raw else f"//{raw}").hostname
+    if not host or any(c.isspace() for c in host):
+        raise ValueError(f"not a domain or URL: {raw!r}")
+    return host.rstrip(".").lower()
+
+
 # Pydantic models for API
 class WebsiteRequest(BaseModel):
     websites: List[str] = Field(..., description="List of website URLs or domains to monitor", example=["example.com", "google.com"])
     timeout: Optional[int] = Field(30, description="Timeout in seconds for each check", ge=5, le=300)
     pagespeed_api_key: Optional[str] = Field(None, description="Optional Google PageSpeed Insights API key")
 
+    @field_validator("websites")
+    @classmethod
+    def hosts_only(cls, values: List[str]) -> List[str]:
+        return [normalize_website(v) for v in values]
+
 class SingleCheckRequest(BaseModel):
     website: str = Field(..., description="Website URL or domain to check", example="example.com")
     timeout: Optional[int] = Field(30, description="Timeout in seconds", ge=5, le=300)
     pagespeed_api_key: Optional[str] = Field(None, description="Optional Google PageSpeed Insights API key")
+
+    @field_validator("website")
+    @classmethod
+    def host_only(cls, value: str) -> str:
+        return normalize_website(value)
 
 class CustomMonitorRequest(BaseModel):
     website: str = Field(..., description="Website URL or domain to monitor", example="example.com")
     checks: List[str] = Field(..., description="List of check names to run", example=["ssl_cert", "security_headers"])
     timeout: Optional[int] = Field(30, description="Timeout in seconds for each check", ge=5, le=300)
     pagespeed_api_key: Optional[str] = Field(None, description="Optional Google PageSpeed Insights API key")
+
+    @field_validator("website")
+    @classmethod
+    def host_only(cls, value: str) -> str:
+        return normalize_website(value)
 
 class CheckResult(BaseModel):
     check_name: str = Field(..., description="Name of the check performed")
@@ -223,16 +256,24 @@ async def startup_event():
         # Create a minimal config as fallback
         default_config = Config(websites=["example.com"])
 
-@app.get("/", response_class=FileResponse, tags=["Root"])
+    # The domain blacklist takes 20-30 s to download: fetch it now, not
+    # inside the first scan, where it would hit the check timeout.
+    from checks.check_domainsblacklists_blacklist import prefetch_blacklist
+    threading.Thread(target=prefetch_blacklist, daemon=True).start()
+
+@app.get("/", tags=["Root"])
 async def root():
     """
-    Serve the enhanced Website Monitor interface.
+    Redirect to the web interface under /docs/.
+
+    The page loads its stylesheet, script and fonts by relative path, and
+    those only exist under the /docs mount: served at /, every one of them
+    was a 404.
     """
     html_file_path = os.path.join(os.path.dirname(__file__), "docs", "index.html")
-    if os.path.exists(html_file_path):
-        return FileResponse(html_file_path, media_type="text/html")
-    else:
+    if not os.path.exists(html_file_path):
         raise HTTPException(status_code=404, detail="Frontend interface not found")
+    return RedirectResponse(url="/docs/", status_code=307)
 
 @app.get("/api", response_class=HTMLResponse, tags=["Documentation"])
 async def api_landing():
@@ -325,7 +366,7 @@ async def health_check():
     global default_config
     return HealthResponse(
         status="healthy",
-        version="1.0.0", 
+        version=app.version,
         timestamp=datetime.now(),
         total_checks_available=len(CHECK_FUNCTIONS),
         config_loaded=default_config is not None
@@ -527,128 +568,106 @@ async def monitor_single_website_custom(request: CustomMonitorRequest):
     - Detailed results for selected checks only
     """
     start_time = datetime.now()
-    
+
     try:
-        # Create config from request
         config = Config(
             websites=[request.website],
             timeout=request.timeout or 30,
             pagespeed_api_key=request.pagespeed_api_key
         )
-        
         monitor = WebsiteMonitor(config)
-        
-        # Filter checks based on request
-        selected_check_functions = []
-        for check in monitor.check_functions:
-            check_slug = check.name.lower().replace(" ", "_").replace("-", "_")
-            if check_slug in request.checks:
-                selected_check_functions.append(check)
-        
-        # Also check individual check functions
-        available_individual_checks = {}
-        for check_name in request.checks:
-            if check_name in CHECK_FUNCTIONS:
-                available_individual_checks[check_name] = CHECK_FUNCTIONS[check_name]
-        
-        # Run selected checks
+        monitor_checks = {
+            check.name.lower().replace(" ", "_").replace("-", "_"): check
+            for check in monitor.check_functions
+        }
+
+        # Each requested check runs once, in request order. A CHECK_FUNCTIONS
+        # key and a WebsiteMonitor slug can name the same function (hsts, cdn,
+        # security_headers, ...): the CHECK_FUNCTIONS key wins, so asking for
+        # five checks no longer runs nine.
         results = []
-        total_checks = 0
-        
-        # Run WebsiteMonitor checks
-        for check in selected_check_functions:
-            try:
-                result = await asyncio.wait_for(
-                    check.execute(request.website, config, config.timeout),
-                    timeout=config.timeout
-                )
+        for check_id in dict.fromkeys(request.checks):
+            if check_id in CHECK_FUNCTIONS:
+                check_name = check_id.replace("_", " ").title()
+                pending = _run_individual_check(check_id, request.website, config)
+            elif check_id in monitor_checks:
+                check = monitor_checks[check_id]
+                check_name = check.name
+                pending = check.execute(request.website, config, config.timeout)
+            else:
                 results.append({
-                    "check_name": check.name,
+                    "check_id": check_id,
+                    "check_name": check_id,
+                    "website": request.website,
+                    "result": "⚪",
+                    "status": "error",
+                    "error": "Unknown check",
+                    "timestamp": datetime.now()
+                })
+                continue
+
+            try:
+                result = await asyncio.wait_for(pending, timeout=config.timeout)
+                results.append({
+                    "check_id": check_id,
+                    "check_name": check_name,
                     "website": request.website,
                     "result": result,
                     "status": "completed",
                     "timestamp": datetime.now()
                 })
-                total_checks += 1
-            except Exception as e:
-                logger.error(f"Check {check.name} failed for {request.website}: {e}")
+            except asyncio.TimeoutError:
+                logger.warning(f"Check {check_id} timed out for {request.website}")
                 results.append({
-                    "check_name": check.name,
+                    "check_id": check_id,
+                    "check_name": check_name,
                     "website": request.website,
                     "result": "⚪",
                     "status": "error",
-                    "error": str(e),
+                    "error": f"Timed out after {config.timeout}s",
                     "timestamp": datetime.now()
                 })
-                total_checks += 1
-        
-        # Run individual check functions
-        for check_name, check_func in available_individual_checks.items():
-            try:
-                if check_name == "pagespeed_performances":
-                    if asyncio.iscoroutinefunction(check_func):
-                        result = await asyncio.wait_for(
-                            check_func(request.website, config.pagespeed_api_key or ""),
-                            timeout=config.timeout
-                        )
-                    else:
-                        result = await asyncio.wait_for(
-                            asyncio.to_thread(check_func, request.website, config.pagespeed_api_key or ""),
-                            timeout=config.timeout
-                        )
-                elif check_name == "rate_limiting":
-                    result = await asyncio.wait_for(
-                        asyncio.to_thread(check_func, request.website, 10),
-                        timeout=config.timeout
-                    )
-                elif asyncio.iscoroutinefunction(check_func):
-                    result = await asyncio.wait_for(
-                        check_func(request.website),
-                        timeout=config.timeout
-                    )
-                else:
-                    result = await asyncio.wait_for(
-                        asyncio.to_thread(check_func, request.website),
-                        timeout=config.timeout
-                    )
-                
-                results.append({
-                    "check_name": check_name.replace("_", " ").title(),
-                    "website": request.website,
-                    "result": result,
-                    "status": "completed",
-                    "timestamp": datetime.now()
-                })
-                total_checks += 1
-                
             except Exception as e:
-                logger.error(f"Individual check {check_name} failed for {request.website}: {e}")
+                logger.error(f"Check {check_id} failed for {request.website}: {e}")
                 results.append({
-                    "check_name": check_name.replace("_", " ").title(),
+                    "check_id": check_id,
+                    "check_name": check_name,
                     "website": request.website,
                     "result": "⚪",
                     "status": "error",
-                    "error": str(e),
+                    "error": str(e) or type(e).__name__,
                     "timestamp": datetime.now()
                 })
-                total_checks += 1
-        
+
         end_time = datetime.now()
-        execution_time = (end_time - start_time).total_seconds()
-        
+
         return MonitorResponse(
             success=True,
-            message=f"Custom monitoring completed successfully",
+            message="Custom monitoring completed successfully",
             results=results,
-            execution_time=execution_time,
+            execution_time=(end_time - start_time).total_seconds(),
             timestamp=end_time,
             websites_checked=1,
-            checks_performed=total_checks
+            checks_performed=len(results)
         )
-        
+
     except Exception as e:
         logger.error(f"Custom monitoring failed: {e}")
         raise HTTPException(status_code=500, detail=f"Custom monitoring failed: {str(e)}")
+
+
+async def _run_individual_check(check_id: str, website: str, config: Config):
+    """Run one CHECK_FUNCTIONS entry with the arguments its signature needs."""
+    check_func = CHECK_FUNCTIONS[check_id]
+    if check_id == "pagespeed_performances":
+        args = (website, config.pagespeed_api_key or os.environ.get("PAGESPEED_API_KEY", ""))
+    elif check_id == "rate_limiting":
+        args = (website, 10)
+    else:
+        args = (website,)
+    if asyncio.iscoroutinefunction(check_func):
+        return await check_func(*args)
+    return await asyncio.to_thread(check_func, *args)
 
 # Generate individual endpoints for each check function
 def create_check_endpoint(check_name: str, check_func: callable):
@@ -657,21 +676,16 @@ def create_check_endpoint(check_name: str, check_func: callable):
         timeout: Optional[int] = Query(30, description="Timeout in seconds", ge=5, le=300)
     ):
         try:
+            website = normalize_website(website)
+        except ValueError as e:
+            raise HTTPException(status_code=422, detail=str(e))
+        try:
             start_time = datetime.now()
-            
-            # Handle different function signatures  
-            if check_name == "pagespeed_performances":
-                if asyncio.iscoroutinefunction(check_func):
-                    result = await asyncio.wait_for(check_func(f"https://{website}"), timeout)
-                else:
-                    result = check_func(f"https://{website}")
-            elif check_name == "rate_limiting":
-                result = check_func(f"https://{website}")
-            elif asyncio.iscoroutinefunction(check_func):
-                result = await asyncio.wait_for(check_func(website), timeout)
-            else:
-                result = check_func(website)
-            
+            # Sync checks run in a worker thread: called inline they blocked
+            # the event loop, /health included, for as long as they took.
+            config = Config(websites=[website], timeout=timeout or 30)
+            result = await asyncio.wait_for(_run_individual_check(check_name, website, config), timeout)
+
             end_time = datetime.now()
             
             return {
@@ -957,4 +971,8 @@ if __name__ == "__main__":
     print("   - http://localhost:8000/api/docs (Swagger UI)")
     print("   - http://localhost:8000/api/redoc (ReDoc)")
     print("   - http://localhost:8000/ (UI)")
-    uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=True)
+    # Reloading restarts the server whenever a file under the app changes,
+    # and drops every request in flight: development only.
+    reload = os.environ.get("API_RELOAD", "").lower() in ("1", "true", "yes")
+    uvicorn.run("api:app", host=os.environ.get("API_HOST", "0.0.0.0"),
+                port=int(os.environ.get("API_PORT", "8000")), reload=reload)
