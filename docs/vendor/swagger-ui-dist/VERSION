@@ -1,0 +1,3 @@
+swagger-ui-dist 5.34.0 from https://registry.npmjs.org/swagger-ui-dist/-/swagger-ui-dist-5.34.0.tgz
+integrity sha512-H6tAIjr3XqE31PbkZl0OFya1ziRLDfTwh3J6OHdumPtPCLfjTnyLeagl/55kFNZcTOz9a9QI9WP0FXldwiGJag==
+Files: swagger-ui-bundle.js, swagger-ui-standalone-preset.js (in docs/vendor/) and swagger-ui.css.
