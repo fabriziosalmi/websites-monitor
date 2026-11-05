@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-11-05
+
 ### Fixed
 - Web UI: no empty gap above the summary on the Results view when no scan is running; the status filter no longer sticks out of its panel on narrow screens; a long domain among the recent targets is shortened with an ellipsis instead of overflowing its chip; hyphens in table cells keep their normal width ("X-Frame-Options").
 - README: a single check from the web UI (Run again) is a `scan` with one check, not `run_check`; the screenshots show the 2.0.0 API. The page description mentions the command line and the MCP server.
@@ -120,7 +122,8 @@ The REST API, a new command line and a new MCP server share one implementation a
 - Markdown report generation
 - Core security and performance checks
 
-[Unreleased]: https://github.com/fabriziosalmi/websites-monitor/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/fabriziosalmi/websites-monitor/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/fabriziosalmi/websites-monitor/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.5.0...v2.0.0
 [1.5.0]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/fabriziosalmi/websites-monitor/compare/v1.4.0...v1.4.1
