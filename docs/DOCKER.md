@@ -71,14 +71,14 @@ The API container has a health check on `GET /health`. The scheduler has none: i
 
 ## Command line and MCP server
 
-The image has the `websites-monitor` command (the same as `python -m websites_monitor`):
+The image has the `websites-monitor` command (the same as `python -m websites_monitor`). Run it in a container of its own:
 
 ```bash
-docker exec website-monitor-api websites-monitor scan example.com --checks ssl_cert,hsts
-docker exec website-monitor-api websites-monitor report example.com --format markdown
+docker run --rm --memory 256m ghcr.io/fabriziosalmi/websites-monitor:latest websites-monitor scan example.com --checks ssl_cert,hsts
+docker run --rm --memory 256m ghcr.io/fabriziosalmi/websites-monitor:latest websites-monitor report example.com --format markdown
 ```
 
-An MCP client can run the MCP server inside the container over stdio with `docker exec -i website-monitor-api websites-monitor mcp`; see the MCP section of the README for the client configuration.
+`docker exec` into the API container also works, but the new process shares the container's 256 MB with the API: the API takes about 80 MB and a process that loads the checks about 50 MB more, so a scan there can be killed for lack of memory. For the MCP server, see the MCP section of the README: the client configuration starts it with `docker run --rm -i`.
 
 ## Prebuilt image
 

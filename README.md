@@ -300,7 +300,11 @@ python -m websites_monitor report example.com example.org --format html --output
 python -m websites_monitor serve --port 8000               # REST API and web UI
 ```
 
-In the Docker image the same command is `websites-monitor`, for example `docker exec website-monitor-api websites-monitor scan example.com`.
+In the Docker image the same command is `websites-monitor`. Run it in a container of its own rather than inside the API container, where it would share the API's 256 MB:
+
+```bash
+docker run --rm --memory 256m ghcr.io/fabriziosalmi/websites-monitor:latest websites-monitor scan example.com
+```
 
 Without `--json` the output is a line per check (`PASS`, `WARN`, `FAIL` or `----` for no verdict) and a summary. With `--json` it is the JSON the REST API returns for the same operation. The checks' own log lines are hidden unless you pass `-v`.
 
@@ -316,18 +320,25 @@ Over stdio, for an assistant on the same machine:
 python -m websites_monitor mcp
 ```
 
-With the Docker Compose setup running, an MCP client can start it inside the API container. A client configuration in the usual `mcpServers` format:
+With Docker, an MCP client can start the server in a container of its own for each session. A client configuration in the usual `mcpServers` format:
 
 ```json
 {
   "mcpServers": {
     "websites-monitor": {
       "command": "docker",
-      "args": ["exec", "-i", "website-monitor-api", "websites-monitor", "mcp"]
+      "args": [
+        "run", "--rm", "-i", "--memory", "256m",
+        "-v", "websites-monitor-cache:/tmp/websites-monitor",
+        "ghcr.io/fabriziosalmi/websites-monitor:latest",
+        "websites-monitor", "mcp"
+      ]
     }
   }
 }
 ```
+
+The volume keeps the 107 MB domain blacklist between sessions: the first scan that needs it downloads it (about 20 seconds), later ones read it from the volume. A separate container also keeps the MCP server from sharing the memory of a running API container: the API takes about 80 MB and a process that loads the checks about 50 MB more, and in CI an MCP session started inside the API container, while the domain blacklist was downloading, was killed for lack of memory.
 
 Over HTTP: `python -m websites_monitor mcp --transport streamable-http --port 8001`, then point the client at `http://127.0.0.1:8001/mcp`. Like the REST API, it has no authentication; see [SECURITY.md](SECURITY.md).
 
