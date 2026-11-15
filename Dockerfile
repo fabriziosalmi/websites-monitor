@@ -1,7 +1,7 @@
 # Website Monitor: the API (python api.py), the scheduler
 # (python scheduler.py), the command line (websites-monitor) and the MCP
 # server (websites-monitor mcp) run from this image.
-FROM python:3.11-slim@sha256:db20d8506e2f15b6db39b40b6015ca46bae855dec6dd326d462cfe79ae972893
+FROM python:3.11-slim@sha256:07d4824036af339fa1b6ef769cc99d9c10a141769538b52b3b597c84f7a7b535
 
 LABEL org.opencontainers.image.title="Website Monitor" \
       org.opencontainers.image.description="Security, performance and SEO checks for websites, with a web UI and a REST API" \
